@@ -1,0 +1,34 @@
+// CUP specification for a simple expression evaluator (no actions)
+import java_cup.runtime.*;
+
+/* Preliminaries to set up and use the scanner.  */
+init with {: scanner.init();              :};
+scan with {: return scanner.next_token(); :};
+
+/* Terminals (tokens returned by the scanner). */
+terminal            VOID, IF, ELSE, WHILE, RETURN, NULL, NOTEQ, NOT, LTEQ, LT, GTEQ, GT, EQEQ, EQ;
+terminal			ANDAND, OROR, MULTEQ, MULT, DIVEQ, DIV, PLUSPLUS, PLUSEQ, PLUS, MINUSMINUS, MINUSEQ, MINUS;
+terminal			LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, ID; 
+terminal Integer    INTEGER, INT;
+terminal Float		NUMBERF, FLOAT;
+terminal Character	CHARACTER, CHAR;
+terminal String		STRING;
+
+/* Non terminals */
+non terminal		program, decl_glob, body, type_var, type_ret, method, method_params, method_code;
+//non terminal Integer    expr, term, factor;
+
+/* Precedences */
+//precedence left PLUS, MINUS;
+//precedence left TIMES, DIVIDE, MOD;
+//precedence left UMINUS;
+
+/* The grammar */
+program ::= decl_glob body; 
+decl_glob ::= type_var ID SEMICOLON decl_glob| empty;
+type_var ::= INT | FLOAT | CHAR;
+body ::= method body | method;
+method ::= type_ret ID LPAREN method_params RPAREN LBRACE method_code RBRACE
+type_ret::= INT | FLOAT | CHAR | VOID;
+method_params ::= empty; 
+method_code ::= empty;

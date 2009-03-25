@@ -1,0 +1,266 @@
+// Inicio del programa
+ Program ::= _ExternalDeclaration_ ;
+
+// Declaraciones globales
+ _ExternalDeclaration_ ::= ExternalDeclaration;
+ _ExternalDeclaration_ ::= ExternalDeclaration _ExternalDeclaration_;
+ _ExternalDeclaration_ ::= error _ExternalDeclaration_;
+
+ ExternalDeclaration ::= FunctionDef ;
+ ExternalDeclaration ::= Dec ;
+ 
+// Declaracion de funciones
+ FunctionDef ::= TypeSpecifier Declarator _Dec_ CompoundStm ;
+ FunctionDef ::= TypeSpecifier Declarator CompoundStm ;
+ FunctionDef ::= Declarator _Dec_ CompoundStm ;
+ FunctionDef ::= Declarator CompoundStm ;
+
+// Declaracion de variables
+ Dec ::= TypeSpecifier _InitDeclarator_ ";" ;
+
+ _Dec_ ::= Dec;
+ _Dec_ ::= Dec _Dec_; 
+
+ _InitDeclarator_ ::= InitDeclarator ;
+ _InitDeclarator_ ::= InitDeclarator "," _InitDeclarator_ ;
+
+ InitDeclarator ::= Declarator ;
+ InitDeclarator ::= Declarator "=" Initializer;
+
+ TypeSpecifier ::= "void";
+ TypeSpecifier ::= "char";
+ TypeSpecifier ::= "short";
+ TypeSpecifier ::= "int";
+ TypeSpecifier ::= "long";
+ TypeSpecifier ::= "float";
+
+ StructOrUnionSpec ::= StructOrUnion Ident "{" _StructDec_ "}" ;
+ StructOrUnionSpec ::= StructOrUnion "{" _StructDec_ "}";
+ StructOrUnionSpec ::= StructOrUnion Ident ;
+
+ StructOrUnion ::= "struct";
+ StructOrUnion ::= "union";
+
+ _StructDec_ ::= StructDec ;
+ _StructDec_ ::= StructDec _StructDec_ ;
+
+ StructDec ::= _SpecQual_ _StructDeclarator_ ";" ;
+
+ _SpecQual_ ::= SpecQual ;
+ _SpecQual_ ::= SpecQual _SpecQual_;
+
+ SpecQual ::= TypeSpecifier ;
+
+ _StructDeclarator_ ::= StructDeclarator;
+ _StructDeclarator_ ::= StructDeclarator "," _StructDeclarator_;
+
+ StructDeclarator ::= Declarator;
+ StructDeclarator ::= ":" ConstantExpression;
+ StructDeclarator ::= Declarator ":" ConstantExpression ;
+
+
+ EnumSpecifier ::= "enum" "{" _Enumerator_ "}" ;
+ EnumSpecifier ::= "enum" Ident "{" _Enumerator_ "}" ;
+ EnumSpecifier ::= "enum" Ident ;
+
+ _Enumerator_ ::= Enumerator ;
+ _Enumerator_ ::= Enumerator "," _Enumerator_ ;
+
+ Enumerator ::= Ident ;
+ Enumerator ::= Ident "=" ConstantExpression ;
+
+
+ Declarator ::= Pointer DirectDeclarator ;
+ Declarator ::= DirectDeclarator ;
+
+ DirectDeclarator ::= Ident ;
+ DirectDeclarator ::= "(" Declarator ")" ;
+ DirectDeclarator ::= DirectDeclarator "_" ConstantExpression "_" ;
+ DirectDeclarator ::= DirectDeclarator "_" "_" ;
+ DirectDeclarator ::= DirectDeclarator "(" ParameterType ")" ;
+ DirectDeclarator ::= DirectDeclarator "(" _Ident_ ")" ;
+ DirectDeclarator ::= DirectDeclarator "(" ")" ;
+
+
+ ParameterType ::= ParameterDeclarations ;
+" ;
+
+ ParameterDeclarations ::= ParameterDeclaration ; 
+ ParameterDeclarations ::= ParameterDeclarations "," ParameterDeclaration ;
+
+ ParameterDeclaration ::= TypeSpecifier ;
+ ParameterDeclaration ::= TypeSpecifier Declarator ;
+ ParameterDeclaration ::= TypeSpecifier AbstractDeclarator ;
+
+
+ _Ident_ ::= Ident ;
+ _Ident_ ::= Ident "," _Ident_ ;
+
+ Initializer ::= Exp2 ;
+ Initializer ::= "{" Initializers "}" ;
+ Initializer ::= "{" Initializers "," "}" ;
+
+
+ Initializers ::= Initializer ;
+ Initializers ::= Initializers "," Initializer ;
+
+
+ TypeName ::= _SpecQual_ ;
+ TypeName ::= _SpecQual_ AbstractDeclarator ;
+
+ AbstractDeclarator ::= Pointer ;
+ AbstractDeclarator ::= DirAbsDec ;
+ AbstractDeclarator ::= Pointer DirAbsDec ;
+
+
+ DirAbsDec ::= "(" AbstractDeclarator ")" ;
+ DirAbsDec ::= "_" "_" ;
+ DirAbsDec ::= "_" ConstantExpression "_" ;
+ DirAbsDec ::= DirAbsDec "_" "_" ;
+ DirAbsDec ::= DirAbsDec "_" ConstantExpression "_" ;
+ DirAbsDec ::= "(" ")" ;
+ DirAbsDec ::= "(" ParameterType ")" ;
+ DirAbsDec ::= DirAbsDec "(" ")" ;
+ DirAbsDec ::= DirAbsDec "(" ParameterType ")" ;
+
+
+
+ Stm ::= LabeledStm ;
+ Stm ::= CompoundStm ;
+ Stm ::= ExpressionStm ;
+ Stm ::= SelectionStm ;
+ Stm ::= IterStm ;
+ Stm ::= JumpStm ;
+
+ LabeledStm ::= Ident ":" Stm ;
+ LabeledStm ::= "case" ConstantExpression ":" Stm ;
+ LabeledStm ::= "default" ":" Stm;
+
+ CompoundStm ::= "{" "}" ;
+ CompoundStm ::= "{" _Stm_ "}" ;
+ CompoundStm ::= "{" _Dec_ "}" ;
+ CompoundStm ::= "{" _Dec_ _Stm_ "}" ;
+
+ ExpressionStm ::= ";" ;
+ ExpressionStm ::= Exp ";" ;
+
+ SelectionStm ::= "if" "(" Exp ")" Stm ;
+ SelectionStm ::= "if" "(" Exp ")" Stm "else" Stm ;
+ SelectionStm ::= "switch" "(" Exp ")" Stm ;
+
+ IterStm ::= "while" "(" Exp ")" Stm;
+ IterStm ::= "do" Stm "while" "(" Exp ")" ";" ;
+ IterStm ::= "for" "(" ExpressionStm ExpressionStm ")" Stm ;
+ IterStm ::= "for" "(" ExpressionStm ExpressionStm Exp ")" Stm;
+
+ JumpStm ::= "goto" Ident ";" ;
+ JumpStm ::= "continue" ";" ;
+ JumpStm ::= "break" ";" ;
+ JumpStm ::= "return" ";" ;
+ JumpStm ::= "return" Exp ";" ;
+
+
+ _Stm_ ::= Stm ;
+ _Stm_ ::= Stm _Stm_;
+
+ Exp ::= Exp "," Exp2;
+ Exp2 ::= Exp15 AssignmentOp Exp2;
+ Exp3 ::= Exp4 "?" Exp ":" Exp3;
+ Exp4 ::= Exp4 "||" Exp5;
+ Exp5 ::= Exp5 "&&" Exp6;
+ Exp6 ::= Exp6 "|" Exp7;
+ Exp7 ::= Exp7 "^" Exp8;
+ Exp8 ::= Exp8 "&" Exp9;
+ Exp9 ::= Exp9 "==" Exp10;
+ Exp9 ::= Exp9 "!=" Exp10;
+ Exp10 ::= Exp10 "<" Exp11;
+ Exp10 ::= Exp10 ">" Exp11;
+ Exp10 ::= Exp10 "<=" Exp11;
+ Exp10 ::= Exp10 ">=" Exp11;
+ Exp11 ::= Exp11 "<<" Exp12;
+ Exp11 ::= Exp11 ">>" Exp12;
+ Exp12 ::= Exp12 "+" Exp13;
+ Exp12 ::= Exp12 "-" Exp13;
+ Exp13 ::= Exp13 "*" Exp14;
+ Exp13 ::= Exp13 "/" Exp14;
+ Exp13 ::= Exp13 "%" Exp14;
+ Exp14 ::= "(" TypeName ")" Exp14;
+ Exp15 ::= "++" Exp15;
+ Exp15 ::= "--" Exp15;
+ Exp15 ::= UnaryOperator Exp14;
+ Exp15 ::= "sizeof" Exp15;
+ Exp15 ::= "sizeof" "(" TypeName ")";
+ Exp16 ::= Exp16 "_" Exp "_" ;
+ Exp16 ::= Exp16 "(" ")";
+ Exp16 ::= Exp16 "(" _Exp2_ ")";
+" Ident;
+ Exp16 ::= Exp16 "->" Ident;
+ Exp16 ::= Exp16 "++";
+ Exp16 ::= Exp16 "--";
+ Exp17 ::= Ident;
+ Exp17 ::= Constant;
+ Exp17 ::= String;
+
+ Constant ::= Double;
+ Constant ::= Char;
+ Constant ::= Unsigned;
+ Constant ::= Long;
+ Constant ::= UnsignedLong;
+ Constant ::= Hexadecimal;
+ Constant ::= HexUnsigned;
+ Constant ::= HexLong;
+ Constant ::= HexUnsLong;
+ Constant ::= Octal;
+ Constant ::= OctalUnsigned;
+ Constant ::= OctalLong;
+ Constant ::= OctalUnsLong;
+ Constant ::= CDouble;
+ Constant ::= CFloat;
+ Constant ::= CLongDouble;
+ Constant ::= Integer; 
+
+ Constant ::= Integer;
+ Constant ::= Double;
+
+ ConstantExpression ::= Exp3;
+
+ Exp ::= Exp2 ;
+ Exp2 ::= Exp3 ;
+ Exp3 ::= Exp4 ;
+ Exp4 ::= Exp5 ;
+ Exp5 ::= Exp6 ;
+ Exp6 ::= Exp7 ;
+ Exp7 ::= Exp8 ;
+ Exp8 ::= Exp9 ;
+ Exp9 ::= Exp10 ;
+ Exp10 ::= Exp11 ;
+ Exp11 ::= Exp12 ;
+ Exp12 ::= Exp13 ;
+ Exp13 ::= Exp14 ;
+ Exp14 ::= Exp15 ;
+ Exp15 ::= Exp16 ;
+ Exp16 ::= Exp17 ;
+ Exp17 ::= "(" Exp ")" ;
+
+
+ UnaryOperator ::= "&" ;
+ UnaryOperator ::= "*" ;
+ UnaryOperator ::= "+" ;
+ UnaryOperator ::= "-" ;
+ UnaryOperator ::= "~" ;
+ UnaryOperator ::= "!" ;
+
+ _Exp2_ ::= Exp2 ;
+ _Exp2_ ::= Exp2 "," _Exp2_;
+
+ AssignmentOp ::= "=" ;
+ AssignmentOp ::= "*=" ;
+ AssignmentOp ::= "/=" ;
+ AssignmentOp ::= "%=" ;
+ AssignmentOp ::= "+=" ;
+ AssignmentOp ::= "-=" ;
+ AssignmentOp ::= "<<=" ;
+ AssignmentOp ::= ">>=" ;
+ AssignmentOp ::= "&=" ;
+ AssignmentOp ::= "^=" ;
+ AssignmentOp ::= "|=" ;
