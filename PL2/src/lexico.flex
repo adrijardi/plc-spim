@@ -8,7 +8,6 @@ Para crear:
 > javac Lexer.java
 
 */
-import JFlex.sym;
 import java_cup.runtime.*;
 
 /* Nombre de la clase*/
@@ -62,62 +61,62 @@ import java_cup.runtime.*;
 "//"[^\n]*		{ System.out.println("comentario: "+ yytext()); /* Linea de comentarios */}
 
 /*Palabras reservadas*/
-"int"			{ System.out.println("int"); /**/ System.out.println("/*/ return symbol(sym.INT, 0/**/ "/**/);}
-"float"			{ System.out.println("float"); /**/ System.out.println("/*/ return symbol(sym.FLOAT, 0.0f/**/ "/**/);}
-"char"			{ System.out.println("char"); /**/ System.out.println("/*/ return symbol(sym.CHAR, 0/**/ "/**/);}
-"void"			{ System.out.println("void"); /**/ System.out.println("/*/ return symbol(sym.VOID/**/ "/**/);}
-"if"			{ System.out.println("if"); /**/ System.out.println("/*/ return symbol(sym.IF/**/ "/**/);}
-"else"			{ System.out.println("else"); /**/ System.out.println("/*/ return symbol(sym.ELSE/**/ "/**/);}
-"while"			{ System.out.println("while"); /**/ System.out.println("/*/ return symbol(sym.WHILE/**/ "/**/);}
-"return"		{ System.out.println("return"); /**/ System.out.println("/*/ return symbol(sym.RETURN/**/ "/**/);}
-"printf"		{ System.out.println("printf"); /**/ System.out.println("/*/ return symbol(sym.PRINTF/**/ "/**/);}
-"gets"			{ System.out.println("gets"); /**/ System.out.println("/*/ return symbol(sym.GETS/**/ "/**/);}
+"int"			{ System.out.println("int"); return symbol(sym.INT, 0);}
+"float"			{ System.out.println("float"); return symbol(sym.FLOAT, 0.0f);}
+"char"			{ System.out.println("char"); return symbol(sym.CHAR, 0);}
+"void"			{ System.out.println("void"); return symbol(sym.VOID);}
+"if"			{ System.out.println("if"); return symbol(sym.IF);}
+"else"			{ System.out.println("else"); return symbol(sym.ELSE);}
+"while"			{ System.out.println("while"); return symbol(sym.WHILE);}
+"return"		{ System.out.println("return"); return symbol(sym.RETURN);}
+"printf"		{ System.out.println("printf"); return symbol(sym.PRINTF);}
+"gets"			{ System.out.println("gets"); return symbol(sym.GETS);}
 
 /* null literal */
-"null"			{ /**/ System.out.println("/*/ return symbol(sym.NULL/**/ "/**/);}
+//"null"			{ return symbol(sym.NULL);}
 
 /*Operadores*/
-"!="			{ /**/ System.out.println("/*/ return symbol(sym.NOTEQ/**/ "/**/);}
-"!"			{ /**/ System.out.println("/*/ return symbol(sym.NOT/**/ "/**/);}
-"<="			{ /**/ System.out.println("/*/ return symbol(sym.LTEQ/**/ "/**/);}
-"<"			{ /**/ System.out.println("/*/ return symbol(sym.LT/**/ "/**/);}
-">="			{ /**/ System.out.println("/*/ return symbol(sym.GTEQ/**/ "/**/);}
-">"			{ /**/ System.out.println("/*/ return symbol(sym.GT/**/ "/**/);}
-"=="			{ /**/ System.out.println("/*/ return symbol(sym.EQEQ/**/ "/**/);}
-"="			{ /**/ System.out.println("/*/ return symbol(sym.EQ/**/ "/**/);}
-"&&"			{ /**/ System.out.println("/*/ return symbol(sym.ANDAND/**/ "/**/);}
-"||"			{ /**/ System.out.println("/*/ return symbol(sym.OROR/**/ "/**/);}
-"*="			{ /**/ System.out.println("/*/ return symbol(sym.MULTEQ/**/ "/**/);}
-"*"			{ /**/ System.out.println("/*/ return symbol(sym.MULT/**/ "/**/);}
-"/="			{ /**/ System.out.println("/*/ return symbol(sym.DIVEQ/**/ "/**/);}
-"/"			{ /**/ System.out.println("/*/ return symbol(sym.DIV/**/ "/**/);}
-"++"			{ /**/ System.out.println("/*/ return symbol(sym.PLUSPLUS/**/ "/**/);}
-"+="			{ /**/ System.out.println("/*/ return symbol(sym.PLUSEQ/**/ "/**/);}
-"+"			{ /**/ System.out.println("/*/ return symbol(sym.PLUS/**/ "/**/);}
-"--"			{ /**/ System.out.println("/*/ return symbol(sym.MINUSMINUS/**/ "/**/);}
-"-="			{ /**/ System.out.println("/*/ return symbol(sym.MINUSEQ/**/ "/**/);}
-"-"			{ /**/ System.out.println("/*/ return symbol(sym.MINUS/**/ "/**/);}
+"!="			{ return symbol(sym.NOTEQ);}
+"!"			{ return symbol(sym.NOT);}
+"<="			{ return symbol(sym.LTEQ);}
+"<"			{ return symbol(sym.LT);}
+">="			{ return symbol(sym.GTEQ);}
+">"			{ return symbol(sym.GT);}
+"=="			{ return symbol(sym.EQEQ);}
+"="			{ return symbol(sym.EQ);}
+"&&"			{ return symbol(sym.ANDAND);}
+"||"			{ return symbol(sym.OROR);}
+"*="			{ return symbol(sym.MULTEQ);}
+"*"			{ return symbol(sym.MULT);}
+"/="			{ return symbol(sym.DIVEQ);}
+"/"			{ return symbol(sym.DIV);}
+"++"			{ return symbol(sym.PLUSPLUS);}
+"+="			{ return symbol(sym.PLUSEQ);}
+"+"			{ return symbol(sym.PLUS);}
+"--"			{ return symbol(sym.MINUSMINUS);}
+"-="			{ return symbol(sym.MINUSEQ);}
+"-"			{ return symbol(sym.MINUS);}
 
 /* Declaracion de numeros */
-[0-9]+ \. [0-9]* [fF] 	{ System.out.println("numerof: "+ yytext()); /**/ System.out.println("/*/ return symbol(sym.NUMBERF, new Float(yytext().substring(0,yylength()-1))/**/ "/**/);}
-\. [0-9]+ [fF]		{ System.out.println("numerof: "+ yytext()); /**/ System.out.println("/*/ return symbol(sym.NUMBERF, new Float(yytext().substring(0,yylength()-1))/**/ "/**/);}
-[0-9][0-9]* 		{ System.out.println("numero: "+ yytext()); /**/ System.out.println("/*/ return symbol(sym.INTEGER, new Integer(yytext())/**/ "/**/);}
+[0-9]+ \. [0-9]* [fF] 	{ System.out.println("numerof: "+ yytext()); return symbol(sym.NUMBERF, new Float(yytext().substring(0,yylength()-1)));}
+\. [0-9]+ [fF]		{ System.out.println("numerof: "+ yytext()); return symbol(sym.NUMBERF, new Float(yytext().substring(0,yylength()-1)));}
+[0-9][0-9]* 		{ System.out.println("numero: "+ yytext()); return symbol(sym.INTEGER, new Integer(yytext()));}
 
 /* separators */
-"("			{ /**/ System.out.println("/*/ return symbol(sym.LPAREN/**/ "/**/);}
-")"			{ /**/ System.out.println("/*/ return symbol(sym.RPAREN/**/ "/**/);}
-"{"			{ /**/ System.out.println("/*/ return symbol(sym.LBRACE/**/ "/**/);}
-"}"			{ /**/ System.out.println("/*/ return symbol(sym.RBRACE/**/ "/**/);}
-"["			{ /**/ System.out.println("/*/ return symbol(sym.LBRACK/**/ "/**/);}
-"]"			{ /**/ System.out.println("/*/ return symbol(sym.RBRACK/**/ "/**/);}
-";"			{ /**/ System.out.println("/*/ return symbol(sym.SEMICOLON/**/ "/**/);}
-","			{ /**/ System.out.println("/*/ return symbol(sym.COMMA/**/ "/**/);}
+"("			{ return symbol(sym.LPAREN);}
+")"			{ return symbol(sym.RPAREN);}
+"{"			{ return symbol(sym.LBRACE);}
+"}"			{ return symbol(sym.RBRACE);}
+"["			{ return symbol(sym.LBRACK);}
+"]"			{ return symbol(sym.RBRACK);}
+";"			{ return symbol(sym.SEMICOLON);}
+","			{ return symbol(sym.COMMA);}
 
 /*Identicadores*/
-[:jletter:][:jletterdigit:]*	{ /**/ System.out.println("/*/ return symbol(sym.ID, yytext()/**/ "/**/);}
+[:jletter:][:jletterdigit:]*	{ return symbol(sym.ID, yytext());}
 
 /*caracteres y cadenas*/
-\" [^\r\n\"\\]* \"	{ System.out.println("String: "+ yytext()); /**/ System.out.println("/*/ return symbol(sym.STRING, new String(yytext())/**/ "/**/);}
-\' [^\r\n\'\\] \'	{ System.out.println("character: "+ yytext()); /**/ System.out.println("/*/ return symbol(sym.CHARACTER, new Character(yytext().charAt(0))/**/ "/**/);}
+\" [^\r\n\"\\]* \"	{ System.out.println("String: "+ yytext()); return symbol(sym.STRING, new String(yytext()));}
+\' [^\r\n\'\\] \'	{ System.out.println("character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(0)));}
 
 }
