@@ -2,33 +2,496 @@
 import java_cup.runtime.*;
 
 /* Preliminaries to set up and use the scanner.  */
-init with {: scanner.init();              :};
-scan with {: return scanner.next_token(); :};
+parser code{:
+
+	public static void main(String args[]) throws Exception{
+		Syntactic sin;
+		Lexer lex;
+		System.out.println("Con argumentos " + args[0]);
+		lex = new Lexer(new java.io.FileReader(args[0]));
+		sin = new Syntactic(lex);
+		sin.parse();
+	}
+:};
 
 /* Terminals (tokens returned by the scanner). */
-terminal            VOID, IF, ELSE, WHILE, RETURN, NULL, NOTEQ, NOT, LTEQ, LT, GTEQ, GT, EQEQ, EQ;
-terminal			ANDAND, OROR, MULTEQ, MULT, DIVEQ, DIV, PLUSPLUS, PLUSEQ, PLUS, MINUSMINUS, MINUSEQ, MINUS;
-terminal			LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, ID; 
-terminal Integer    INTEGER, INT;
-terminal Float		NUMBERF, FLOAT;
-terminal Character	CHARACTER, CHAR;
+terminal	PRINTF;
+terminal	GETS;
+terminal	VOID;
+terminal	IF;
+terminal	ELSE;
+terminal	WHILE;
+terminal	RETURN;
+//terminal	NULL;
+terminal 	NOTEQ;
+terminal	NOT;
+terminal	LTEQ;
+terminal	LT;
+terminal	GTEQ;
+terminal	GT;
+terminal	EQEQ;
+terminal	EQ;
+terminal	ANDAND;
+terminal	OROR;
+terminal	MULTEQ;
+terminal	MULT;
+terminal	DIVEQ;
+terminal	DIV;
+terminal	PLUSPLUS;
+terminal	PLUSEQ;
+terminal	PLUS;
+terminal	MINUSMINUS;
+terminal	MINUSEQ;
+terminal	MINUS;
+terminal	LPAREN;
+terminal	RPAREN;
+terminal	LBRACE;
+terminal	RBRACE;
+terminal	LBRACK;
+terminal	RBRACK;
+terminal	SEMICOLON;
+terminal	COMMA;
+terminal	ID; 
+terminal Integer    INTEGER;
+terminal Integer	INT;
+terminal Float		NUMBERF;
+terminal Float		FLOAT;
+terminal Character	CHARACTER;
+terminal Character	CHAR;
 terminal String		STRING;
 
 /* Non terminals */
-non terminal		program, decl_glob, body, type_var, type_ret, method, method_params, method_code;
-//non terminal Integer    expr, term, factor;
+non terminal	_Dec_;
+non terminal	_Exp2_;
+non terminal	_ExternalDeclaration_;
+non terminal	_Ident_;
+non terminal	_InitDeclarator_;
+non terminal	_Initializer_;
+non terminal	_ParameterDeclaration_;
+non terminal	_PrintfParam_;
+non terminal	_Stm_;
+ 
+non terminal	AssignmentOp;
+non terminal	CompoundStm;
+non terminal	Constant;
+non terminal	ConstantExpression;
+non terminal	Dec;
+non terminal	DirectDeclarator;
+non terminal	Exp;
+non terminal	Exp2;
+non terminal	Exp3;
+non terminal	Exp4;
+non terminal	Exp5;
+non terminal	Exp6;
+non terminal	Exp7;
+non terminal	Exp8;
+non terminal	Exp9;
+non terminal	Exp10;
+non terminal	Exp11;
+non terminal	Exp12;
+non terminal	ExpressionStm;
+non terminal	ExternalDeclaration;
+non terminal	FunctionDef;
+non terminal	GetsStm;
+non terminal	InitDeclarator;
+non terminal	Initializer;
+non terminal	IterStm;
+non terminal	JumpStm;
+non terminal	ParameterDeclaration;
+non terminal	PrintfStm;
+non terminal	Program;
+non terminal	SelectionStm;
+non terminal	Stm;
+non terminal	TypeSpecifier;
 
 /* Precedences */
-//precedence left PLUS, MINUS;
-//precedence left TIMES, DIVIDE, MOD;
-//precedence left UMINUS;
+precedence left ELSE;
+
+start with Program;
 
 /* The grammar */
-program ::= decl_glob body; 
-decl_glob ::= type_var ID SEMICOLON decl_glob| empty;
-type_var ::= INT | FLOAT | CHAR;
-body ::= method body | method;
-method ::= type_ret ID LPAREN method_params RPAREN LBRACE method_code RBRACE
-type_ret::= INT | FLOAT | CHAR | VOID;
-method_params ::= empty; 
-method_code ::= empty;
+// Inicio del programa
+ Program ::= _ExternalDeclaration_ {:
+	System.out.println("Program");
+ :};
+
+// Declaraciones globales
+ _ExternalDeclaration_ ::= ExternalDeclaration {:
+	System.out.println("_ExternalDeclaration_");
+ :};
+ _ExternalDeclaration_ ::= ExternalDeclaration _ExternalDeclaration_ {:
+	System.out.println("_ExternalDeclaration_");
+ :};
+ _ExternalDeclaration_ ::= error _ExternalDeclaration_ {:
+	System.out.println("_ExternalDeclaration_->error");
+ :};
+
+ ExternalDeclaration ::= FunctionDef {:
+	System.out.println("ExternalDeclaration");
+ :};
+ ExternalDeclaration ::= Dec {:
+	System.out.println("ExternalDeclaration");
+ :};
+ 
+// Declaracion de funciones
+ FunctionDef ::= TypeSpecifier DirectDeclarator _Dec_ CompoundStm {:
+	System.out.println("FunctionDef");
+ :};
+ FunctionDef ::= TypeSpecifier DirectDeclarator CompoundStm {:
+	System.out.println("FunctionDef");
+ :};
+ FunctionDef ::= DirectDeclarator _Dec_ CompoundStm {:
+	System.out.println("FunctionDef");
+ :};
+ FunctionDef ::= DirectDeclarator CompoundStm {:
+	System.out.println("FunctionDef");
+ :};
+
+// Declaracion de variables
+ Dec ::= TypeSpecifier _InitDeclarator_ SEMICOLON {:
+	System.out.println("Dec");
+ :};
+
+ _Dec_ ::= Dec {:
+	System.out.println("_Dec_");
+ :};
+ _Dec_ ::= Dec _Dec_ {:
+	System.out.println("_Dec_");
+ :}; 
+
+ _InitDeclarator_ ::= InitDeclarator {:
+	System.out.println("_InitDeclarator_");
+ :};
+ _InitDeclarator_ ::= InitDeclarator COMMA _InitDeclarator_ {:
+	System.out.println("_InitDeclarator_");
+ :};
+
+ InitDeclarator ::= DirectDeclarator {:
+	System.out.println("InitDeclarator");
+ :};
+ InitDeclarator ::= DirectDeclarator EQ Initializer {:
+	System.out.println("InitDeclarator");
+ :};
+
+// Declaracion de tipos
+ TypeSpecifier ::= VOID {:
+	System.out.println("TypeSpecifier");
+ :};
+ TypeSpecifier ::= CHAR {:
+	System.out.println("TypeSpecifier");
+ :};
+ TypeSpecifier ::= INT {:
+	System.out.println("TypeSpecifier");
+ :};
+ TypeSpecifier ::= FLOAT {:
+	System.out.println("TypeSpecifier");
+ :};
+
+ DirectDeclarator ::= ID {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= LPAREN DirectDeclarator RPAREN {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= DirectDeclarator LBRACK ConstantExpression RBRACK {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= DirectDeclarator LBRACK RBRACK {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= DirectDeclarator LPAREN _ParameterDeclaration_ RPAREN {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= DirectDeclarator LPAREN _Ident_ RPAREN {:
+	System.out.println("DirectDeclarator");
+ :};
+ DirectDeclarator ::= DirectDeclarator LPAREN RPAREN {:
+	System.out.println("DirectDeclarator");
+ :};
+
+// Declaracion de parametros
+ _ParameterDeclaration_ ::= ParameterDeclaration {:
+	System.out.println("_ParameterDeclaration_");
+ :}; 
+ _ParameterDeclaration_ ::= ParameterDeclaration COMMA _ParameterDeclaration_ {:
+	System.out.println("_ParameterDeclaration_");
+ :};
+
+ ParameterDeclaration ::= TypeSpecifier {:
+	System.out.println("ParameterDeclaration");
+ :};
+ ParameterDeclaration ::= TypeSpecifier DirectDeclarator {:
+	System.out.println("ParameterDeclaration");
+ :};
+
+// Declaracion de identificaores
+ _Ident_ ::= ID {:
+	System.out.println("_Ident_");
+ :};
+ _Ident_ ::= ID COMMA _Ident_ {:
+	System.out.println("_Ident_");
+ :};
+
+// Inicializadores de identificadores
+ Initializer ::= Exp2 {:
+	System.out.println("Initializer");
+ :};
+ Initializer ::= LBRACE _Initializer_ RBRACE {:
+	System.out.println("Initializer");
+ :};
+ Initializer ::= LBRACE _Initializer_ COMMA RBRACE {:
+	System.out.println("Initializer");
+ :};
+
+ _Initializer_ ::= Initializer {:
+	System.out.println("_Initializer_");
+ :};
+ _Initializer_ ::= _Initializer_ COMMA Initializer {:
+	System.out.println("_Initializer_");
+ :};
+
+// Sentencias
+ Stm ::= CompoundStm {:
+	System.out.println("Stm");
+ :};
+ Stm ::= ExpressionStm {:
+	System.out.println("Stm");
+ :};
+ Stm ::= SelectionStm {:
+	System.out.println("Stm");
+ :};
+ Stm ::= IterStm {:
+	System.out.println("Stm");
+ :};
+ Stm ::= JumpStm {:
+	System.out.println("Stm");
+ :};
+ 
+
+ CompoundStm ::= LBRACE RBRACE {:
+	System.out.println("CompoundStm");
+ :};
+ CompoundStm ::= LBRACE _Stm_ RBRACE {:
+	System.out.println("CompoundStm");
+ :};
+ CompoundStm ::= LBRACE _Dec_ RBRACE {:
+	System.out.println("CompoundStm");
+ :};
+ CompoundStm ::= LBRACE _Dec_ _Stm_ RBRACE {:
+	System.out.println("CompoundStm");
+ :};
+
+ ExpressionStm ::= SEMICOLON {:
+	System.out.println("ExpressionStm");
+ :};
+ ExpressionStm ::= Exp SEMICOLON {:
+	System.out.println("ExpressionStm");
+ :};
+ ExpressionStm ::= PrintfStm SEMICOLON {:
+	System.out.println("ExpressionStm");
+ :};
+ ExpressionStm ::= GetsStm SEMICOLON {:
+	System.out.println("ExpressionStm");
+ :};
+
+ SelectionStm ::= IF LPAREN Exp RPAREN Stm {:
+	System.out.println("SelectionStm");
+ :};
+ SelectionStm ::= IF LPAREN Exp RPAREN Stm ELSE Stm {:
+	System.out.println("SelectionStm");
+ :};
+
+ IterStm ::= WHILE LPAREN Exp RPAREN Stm {:
+	System.out.println("IterStm");
+ :};
+
+ JumpStm ::= RETURN Exp SEMICOLON {:
+	System.out.println("JumpStm");
+ :};
+ 
+ PrintfStm ::= PRINTF LPAREN STRING _PrintfParam_ RPAREN {:
+	System.out.println("PrintfStm");
+ :};
+ 
+ _PrintfParam_ ::= {:
+	System.out.println("_PrintfParam_");
+ :};
+ _PrintfParam_ ::= COMMA ID _PrintfParam_ {:
+	System.out.println("_PrintfParam_");
+ :};
+ 
+ GetsStm ::= GETS LPAREN ID RPAREN {:
+	System.out.println("GetsStm");
+ :};
+
+ _Stm_ ::= Stm {:
+	System.out.println("_Stm_");
+ :};
+ _Stm_ ::= Stm _Stm_ {:
+	System.out.println("_Stm_");
+ :};
+ _Stm_ ::= error _Stm_ {:
+	System.out.println("_Stm_");
+ :};
+
+// Expresiones
+ Exp ::= Exp2 {:
+	System.out.println("Exp");
+ :};
+ Exp ::= Exp COMMA Exp2 {:
+	System.out.println("Exp");
+ :};
+ 
+ Exp2 ::= Exp3 {:
+	System.out.println("Exp2");
+ :};
+ Exp2 ::= Exp9 AssignmentOp Exp2 {:
+	System.out.println("Exp2");
+ :};
+ 
+ Exp3 ::= Exp4 {:
+	System.out.println("Exp3");
+ :};
+ Exp3 ::= Exp3 OROR Exp4 {:
+	System.out.println("Exp3");
+ :};
+ 
+ Exp4 ::= Exp5 {:
+	System.out.println("Exp4");
+ :};
+ Exp4 ::= Exp4 ANDAND Exp5 {:
+	System.out.println("Exp4");
+ :};
+
+ Exp5 ::= Exp6 {:
+	System.out.println("Exp5");
+ :};
+ Exp5 ::= Exp5 EQEQ Exp6 {:
+	System.out.println("Exp5");
+ :};
+ Exp5 ::= Exp5 NOTEQ Exp6 {:
+	System.out.println("Exp5");
+ :};
+ 
+ Exp6 ::= Exp7 {:
+	System.out.println("Exp6");
+ :};
+ Exp6 ::= Exp6 LT Exp7 {:
+	System.out.println("Exp6");
+ :};
+ Exp6 ::= Exp6 GT Exp7 {:
+	System.out.println("Exp6");
+ :};
+ Exp6 ::= Exp6 LTEQ Exp7 {:
+	System.out.println("Exp6");
+ :};
+ Exp6 ::= Exp6 GTEQ Exp7 {:
+	System.out.println("Exp6");
+ :};
+ 
+ Exp7 ::= Exp8 {:
+	System.out.println("Exp7");
+ :};
+ Exp7 ::= Exp7 PLUS Exp8 {:
+	System.out.println("Exp7");
+ :};
+ Exp7 ::= Exp7 MINUS Exp8 {:
+	System.out.println("Exp7");
+ :};
+ 
+ Exp8 ::= Exp12 {:
+	System.out.println("Exp8");
+ :};
+ Exp8 ::= Exp8 MULT Exp12 {:
+	System.out.println("Exp8");
+ :};
+ Exp8 ::= Exp8 DIV Exp12 {:
+	System.out.println("Exp8");
+ :};
+ 
+ Exp12 ::= Exp9 {:
+	System.out.println("Exp12");
+ :};
+ Exp12 ::= LPAREN TypeSpecifier RPAREN Exp12 {:
+	System.out.println("Exp12");
+ :};
+ 
+ Exp9 ::= Exp10 {:
+	System.out.println("Exp9");
+ :};
+ Exp9 ::= PLUSPLUS Exp9 {:
+	System.out.println("Exp9");
+ :};
+ Exp9 ::= MINUSMINUS Exp9 {:
+	System.out.println("Exp9");
+ :};
+ Exp9 ::= NOT Exp12 {:
+	System.out.println("Exp9");
+ :};
+ 
+ Exp10 ::= Exp11 {:
+	System.out.println("Exp10");
+ :};
+ Exp10 ::= Exp10 LBRACK Exp RBRACK {:
+	System.out.println("Exp10");
+ :};
+ Exp10 ::= Exp10 LPAREN RPAREN {:
+	System.out.println("Exp10");
+ :};
+ Exp10 ::= Exp10 LPAREN _Exp2_ RPAREN {:
+	System.out.println("Exp10");
+ :};
+ Exp10 ::= Exp10 PLUSPLUS {:
+	System.out.println("Exp10");
+ :};
+ Exp10 ::= Exp10 MINUSMINUS {:
+	System.out.println("Exp10");
+ :};
+ 
+ Exp11 ::= LPAREN Exp RPAREN {:
+	System.out.println("Exp11");
+ :};
+ Exp11 ::= ID {:
+	System.out.println("Exp11");
+ :};
+ Exp11 ::= Constant {:
+	System.out.println("Exp11");
+ :};
+
+ Constant ::= NUMBERF {:
+	System.out.println("Constant");
+ :};
+ Constant ::= CHARACTER {:
+	System.out.println("Constant");
+ :};
+ Constant ::= INTEGER {:
+	System.out.println("Constant");
+ :};
+
+ ConstantExpression ::= Exp3 {:
+	System.out.println("ConstantExpression");
+ :};
+
+ _Exp2_ ::= Exp2 {:
+	System.out.println("_Exp2_");
+ :};
+ _Exp2_ ::= Exp2 COMMA _Exp2_ {:
+	System.out.println("_Exp2_");
+ :};
+
+// Simbolos de asignacion
+ AssignmentOp ::= EQ {:
+	System.out.println("AssignmentOp");
+ :};
+ AssignmentOp ::= MULTEQ {:
+	System.out.println("AssignmentOp");
+ :};
+ AssignmentOp ::= DIVEQ {:
+	System.out.println("AssignmentOp");
+ :};
+ AssignmentOp ::= PLUSEQ {:
+	System.out.println("AssignmentOp");
+ :};
+ AssignmentOp ::= MINUSEQ {:
+	System.out.println("AssignmentOp");
+ :};
