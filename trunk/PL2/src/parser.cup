@@ -3,14 +3,48 @@ import java_cup.runtime.*;
 
 /* Preliminaries to set up and use the scanner.  */
 parser code{:
+	private Lexer lex;
+	private Syntactic sin;
+	private boolean is_error;
+	private java.util.LinkedList<AnalyzerError> errors;
 
 	public static void main(String args[]) throws Exception{
-		Syntactic sin;
-		Lexer lex;
 		System.out.println("Con argumentos " + args[0]);
-		lex = new Lexer(new java.io.FileReader(args[0]));
-		sin = new Syntactic(lex);
-		sin.parse();
+		Syntactic sin = new Syntactic(new Lexer(new java.io.FileReader(args[0])));
+		sin.initializeParser();
+		sin.runParser();
+	}
+	
+	private void initializeParser(){
+		is_error = false;
+		errors = new java.util.LinkedList<AnalyzerError>();
+	}
+	
+	private void runParser(){
+		
+		try {
+			parse();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(is_error){
+			showErrors();
+		}else{
+			generate();
+		}
+	}
+	
+	private void showErrors(){
+		System.out.println("No se generara codigo, se han encontrado "+errors.size()+" errores");
+		for (AnalyzerError ae : errors) {
+			System.out.println(ae);
+		}
+	}
+	
+	private void generate(){
+	
 	}
 :};
 
@@ -22,7 +56,6 @@ terminal	IF;
 terminal	ELSE;
 terminal	WHILE;
 terminal	RETURN;
-//terminal	NULL;
 terminal 	NOTEQ;
 terminal	NOT;
 terminal	LTEQ;
