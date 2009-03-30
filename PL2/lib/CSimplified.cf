@@ -28,10 +28,10 @@
  InitDeclarator ::= DirectDeclarator EQ Initializer;
 
 // Declaracion de tipos
- TypeSpecifier ::= "void";
- TypeSpecifier ::= "char";
- TypeSpecifier ::= "int";
- TypeSpecifier ::= "float";
+ TypeSpecifier ::= VOID;
+ TypeSpecifier ::= CHAR;
+ TypeSpecifier ::= INT;
+ TypeSpecifier ::= FLOAT;
 
  DirectDeclarator ::= ID ;
  DirectDeclarator ::= LPAREN DirectDeclarator RPAREN ;
@@ -66,6 +66,7 @@
  Stm ::= SelectionStm ;
  Stm ::= IterStm ;
  Stm ::= JumpStm ;
+ 
 
  CompoundStm ::= LBRACE RBRACE ;
  CompoundStm ::= LBRACE _Stm_ RBRACE ;
@@ -74,13 +75,22 @@
 
  ExpressionStm ::= SEMICOLON ;
  ExpressionStm ::= Exp SEMICOLON ;
+ ExpressionStm ::= PrintfStm SEMICOLON;
+ ExpressionStm ::= GetsStm SEMICOLON;
 
- SelectionStm ::= "if" LPAREN Exp RPAREN Stm ;
- SelectionStm ::= "if" LPAREN Exp RPAREN Stm "else" Stm ;
+ SelectionStm ::= IF LPAREN Exp RPAREN Stm ;
+ SelectionStm ::= IF LPAREN Exp RPAREN Stm ELSE Stm ;
 
- IterStm ::= "while" LPAREN Exp RPAREN Stm;
+ IterStm ::= WHILE LPAREN Exp RPAREN Stm;
 
- JumpStm ::= "return" Exp SEMICOLON ;
+ JumpStm ::= RETURN Exp SEMICOLON ;
+ 
+ PrintfStm ::= PRINTF LPAREN STRING _PrintfParam_ RPAREN;
+ 
+ _PrintfParam_ ::= ;
+ _PrintfParam_ ::= COMMA ID _PrintfParam_ ;
+ 
+ GetsStm ::= GETS LPAREN ID RPAREN;
 
  _Stm_ ::= Stm ;
  _Stm_ ::= Stm _Stm_;
@@ -148,3 +158,48 @@
  AssignmentOp ::= DIVEQ ;
  AssignmentOp ::= PLUSEQ ;
  AssignmentOp ::= MINUSEQ ;
+ 
+ 
+ //No terminals
+ _Dec_
+ _Exp2_
+ _ExternalDeclaration_
+ _Ident_
+ _InitDeclarator_
+ _Initializer_
+ _ParameterDeclaration_
+ _PrintfParam_
+ _Stm_
+ 
+ AssignmentOp
+ CompoundStm
+ Constant
+ ConstantExpression
+ Dec
+ DirectDeclarator
+ Exp
+ Exp2
+ Exp3
+ Exp4
+ Exp5
+ Exp6
+ Exp7
+ Exp8
+ Exp9
+ Exp10
+ Exp11
+ ExpressionStm
+ ExternalDeclaration
+ FunctionDef
+ GetsStm
+ InitDeclarator
+ Initializer
+ IterStm
+ JumpStm
+ ParameterDeclaration
+ PrintfStm
+ Program
+ SelectionStm
+ Stm
+ TypeSpecifier
+ 
