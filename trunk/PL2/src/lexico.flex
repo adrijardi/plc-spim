@@ -111,10 +111,12 @@ import java_cup.runtime.*;
 ","			{ System.out.println(">>COMMA"); return symbol(sym.COMMA);}
 
 /*Identicadores*/
-[:jletter:][:jletterdigit:]*	{ return symbol(sym.ID, yytext());}
+[:jletter:][:jletterdigit:]*	{ System.out.println(">>ID"); return symbol(sym.ID, yytext());}
 
 /*caracteres y cadenas*/
 \" [^\r\n\"\\]* \"	{ System.out.println(">>String: "+ yytext()); return symbol(sym.STRING, new String(yytext()));}
 \' [^\r\n\'\\] \'	{ System.out.println(">>character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(0)));}
+
+. {System.out.println("ERROR LEXICO");}
 
 }
