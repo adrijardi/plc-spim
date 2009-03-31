@@ -3,11 +3,12 @@ varias lineas */
 
 // Esto es un comentario de un a linea
 
-int x;
-int y
+int x
+int y;
+int z;
 
 void mult(){
-  int z;
+  int z
   int p;
   x = 2;
   y = 3;
