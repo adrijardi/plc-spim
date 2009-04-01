@@ -357,12 +357,13 @@ start with Program;
 	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
 	RESULT = nodo;
  :};*/
- DirectDeclarator ::= DirectDeclarator:dd LPAREN _ParameterDeclaration_ RPAREN {:
+ DirectDeclarator ::= DirectDeclarator:dd LPAREN _ParameterDeclaration_:lpd RPAREN {:
 	System.out.println("DirectDeclarator");
  	NodeAnalyzer nadd = (NodeAnalyzer)dd;
  	switch (nadd.getNodeType()) {
 	case VAR:
 		nadd.setNodeType(NodeType.FUNCTION_DEC);
+		nadd.copyHijos(((NodeAnalyzer)lpd).getHijos());
 		break;
 	default:
 		parser.addError("Incorrecta llamada de funcion.");
@@ -403,25 +404,37 @@ start with Program;
  :};
 
 // Declaracion de parametros
- _ParameterDeclaration_ ::= ParameterDeclaration {:
+ _ParameterDeclaration_ ::= ParameterDeclaration:pd {:
 	System.out.println("_ParameterDeclaration_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_ParameterDeclaration_");
+	nodo.addRightHijo((NodeAnalyzer)pd);
 	RESULT = nodo;
  :}; 
- _ParameterDeclaration_ ::= _ParameterDeclaration_ COMMA ParameterDeclaration {:
+ _ParameterDeclaration_ ::= _ParameterDeclaration_:lpd COMMA ParameterDeclaration:pd {:
 	System.out.println("_ParameterDeclaration_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_ParameterDeclaration_");
-	RESULT = nodo;
+	((NodeAnalyzer)lpd).addRightHijo((NodeAnalyzer)pd);
+	RESULT = lpd;
  :};
 
- ParameterDeclaration ::= TypeSpecifier {:
+ ParameterDeclaration ::= TypeSpecifier:ts DirectDeclarator:dd {:
 	System.out.println("ParameterDeclaration");
 	NodeAnalyzer nodo =new NodeAnalyzer("ParameterDeclaration");
-	RESULT = nodo;
- :};
- ParameterDeclaration ::= TypeSpecifier DirectDeclarator {:
-	System.out.println("ParameterDeclaration");
-	NodeAnalyzer nodo =new NodeAnalyzer("ParameterDeclaration");
+	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+	nodo.addRightHijo((NodeAnalyzer)ts);
+ 	switch (nadd.getNodeType()) {
+	case VAR:
+		nodo.addRightHijo(nadd);
+		break;
+	case ARRAYVAR:
+		nodo.addRightHijo(nadd);
+		break;
+
+	default:
+		parser.addError("Incorrecta declaracion de parametro.");
+		nodo.setError(true);
+		break;
+	}
+ 	
 	RESULT = nodo;
  :};
 

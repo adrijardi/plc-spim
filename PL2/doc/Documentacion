@@ -8,3 +8,10 @@ Decisiones de diseño:
 ¿Permitimos declarar arrays sin tamaño c[][] en vez de c[2][3]?
 ¿Definimos un tamaño por defecto si lo permitimos?
 
+Controles semanticos:
+- Se comprueba que no se declaren variables globales entre métodos.
+- Se comprueba que no se declaren variables con tipo void.
+- Se comprueba que el formato de declaracion de un array sea el correcto.
+- Se comprueba que el formato de declaracion de una funcion sea la correcta.
+- Se comprueba que el formato de llamada de una funcion sea la correcta.
+
