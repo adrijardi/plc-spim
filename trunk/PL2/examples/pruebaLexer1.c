@@ -30,7 +30,7 @@ int rest(){
   return z;
 }
 
-char paramsInv(int p){
+void paramsInv(int p){
   int z;
   x = 2;
   y = 3;
@@ -39,4 +39,8 @@ char paramsInv(int p){
   printf("El resultado es %d", z);
   
   return z;
+}
+
+void multParams(int p, int h, char c[5]){
+  
 }
