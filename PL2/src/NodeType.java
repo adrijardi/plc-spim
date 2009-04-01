@@ -1,0 +1,3 @@
+public enum NodeType {
+	VAR, ARRAYVAR, FUNCTION, FUNCTION_DEC, FUNCTION_CALL;
+}

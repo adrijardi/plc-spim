@@ -34,6 +34,10 @@ import java_cup.runtime.*;
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
     }
+    
+    public int getLine() {
+        return yyline;
+    }
 
    public static void main(String[] args){
         Lexer analizadorLexico = new Lexer(new java.io.InputStreamReader(System.in));
@@ -63,7 +67,7 @@ import java_cup.runtime.*;
 /*Palabras reservadas*/
 "int"			{ System.out.println(">>int"); return symbol(sym.INT, 0);}
 "float"			{ System.out.println(">>float"); return symbol(sym.FLOAT, 0.0f);}
-"char"			{ System.out.println(">>char"); return symbol(sym.CHAR, 0);}
+"char"			{ System.out.println(">>char"); return symbol(sym.CHAR, '0');}
 "void"			{ System.out.println(">>void"); return symbol(sym.VOID);}
 "if"			{ System.out.println(">>if"); return symbol(sym.IF);}
 "else"			{ System.out.println(">>else"); return symbol(sym.ELSE);}

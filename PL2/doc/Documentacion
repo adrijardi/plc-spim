@@ -1,0 +1,10 @@
+
+Medidas tomadas:
+-Para controlar la definición de variables globales se prohibe la declaración de las mismas una vez se haya declarado una función.
+-Se eliminan los nodos supérfluos en la generación del árbol
+-Se marcan los nodos en los que ha habido un error, también se añade el error a la lista de errores.
+-Los arrays son de tamaño declarado.
+Decisiones de diseño:
+¿Permitimos declarar arrays sin tamaño c[][] en vez de c[2][3]?
+¿Definimos un tamaño por defecto si lo permitimos?
+

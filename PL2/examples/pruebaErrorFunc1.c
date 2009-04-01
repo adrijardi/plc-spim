@@ -14,7 +14,7 @@ void mult(){
   int z;
   x = 2;
   y = 3;
-  z = x * paramsInv(4);
+  z = x * y;
   
   printf("El resultado es %d", z);
 }
@@ -30,13 +30,7 @@ int rest(){
   return z;
 }
 
-char paramsInv(int p){
-  int z;
-  x = 2;
-  y = 3;
-  z = x - rest();
+int mal[3](){
   
-  printf("El resultado es %d", z);
-  
-  return z;
 }
+
