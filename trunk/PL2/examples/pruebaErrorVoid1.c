@@ -9,34 +9,23 @@ char c=5, x;
 char d[2];
 char m[2][2];
 float f;
+void v;
 
 void mult(){
   int z;
   x = 2;
   y = 3;
-  z = x * paramsInv(4);
+  z = x * y;
   
   printf("El resultado es %d", z);
 }
 
-int rest(){
+void rest(){
   int z;
   x = 2;
   y = 3;
   z = x - y;
   
   printf("El resultado es %d", z);
-  
-  return z;
 }
 
-char paramsInv(int p){
-  int z;
-  x = 2;
-  y = 3;
-  z = x - rest();
-  
-  printf("El resultado es %d", z);
-  
-  return z;
-}

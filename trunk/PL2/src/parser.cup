@@ -8,18 +8,30 @@ parser code{:
 	private boolean error;
 	private java.util.LinkedList<AnalyzerError> errorsList;
 	private NodeAnalyzer main;
+	private StateAnalyzer state;
 
 	public static void main(String args[]) throws Exception{
 		System.out.println("Con argumentos " + args[0]);
-		Syntactic sin = new Syntactic(new Lexer(new java.io.FileReader(args[0])));
-		sin.initializeParser();
+		Lexer lex = new Lexer(new java.io.FileReader(args[0]));
+		Syntactic sin = new Syntactic(lex);
+		sin.initializeParser(lex);
 		sin.runParser();
 	}
 	
-	private void initializeParser(){
+	private void initializeParser(Lexer lexer){
 		error = false;
+		lex = lexer;
 		errorsList = new java.util.LinkedList<AnalyzerError>();
 		lookahead = new Symbol[]{new Symbol(sym.SEMICOLON), new Symbol(sym.RBRACE)};
+		state = new StateAnalyzer();
+	}
+	
+	public StateAnalyzer getState() {
+		return state;
+	}
+	
+	public int getLine(){
+		return lex.getLine();
 	}
 	
 	private void runParser(){
@@ -29,10 +41,10 @@ parser code{:
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			main.print(0);
 		}
 		
-		if(error){
+		
+		if(isError()){
 			showErrors();
 		}else{
 			generate();
@@ -47,19 +59,27 @@ parser code{:
 	}
 	
 	private void generate(){
+		System.out.println("\nMostrando el arbol");
 		main.print(0);
 	}
 	
-	public boolean isError() {
-		return error;
+	private boolean isError() {
+		return this.error;
 	}
-
-	public void setError(boolean is_error) {
-		this.error = is_error;
+	
+	public void addError(int line, String msg){
+		System.out.println("!!!!! ERROR !!!!");
+		if(this.error == false)
+			this.error = true;
+		this.errorsList.add(new AnalyzerError(line,msg));
 	}
-
-	public java.util.LinkedList<AnalyzerError> getErrorsList() {
-		return errorsList;
+	
+	public void addError(String msg){
+		addError(getLine()-1, msg);
+	}
+	
+	public void setMain(NodeAnalyzer main) {
+		this.main = main;
 	}
 	
 :};
@@ -160,65 +180,72 @@ start with Program;
 
 /* The grammar */
 // Inicio del programa
- Program ::= _ExternalDeclaration_ {:
+ Program ::= _ExternalDeclaration_:led{:
 	System.out.println("Program");
 	NodeAnalyzer nodo =new NodeAnalyzer("Program");
+	nodo.copyHijos(((NodeAnalyzer)led).getHijos());
+	parser.setMain(nodo);
 	RESULT = nodo; :};
 
 // Declaraciones globales
- _ExternalDeclaration_ ::= ExternalDeclaration {:
+ _ExternalDeclaration_ ::= ExternalDeclaration:ed {:
 	System.out.println("_ExternalDeclaration_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
+	nodo.addLeftHijo((NodeAnalyzer)ed);
 	RESULT = nodo; :};
- _ExternalDeclaration_ ::= ExternalDeclaration _ExternalDeclaration_ {:
+ _ExternalDeclaration_ ::= ExternalDeclaration:ed _ExternalDeclaration_:led {:
 	System.out.println("_ExternalDeclaration_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
-	RESULT = nodo; :};
+	((NodeAnalyzer)led).addLeftHijo((NodeAnalyzer)ed);
+	RESULT = led; :};
  _ExternalDeclaration_ ::= error _ExternalDeclaration_ {:
-	parser.setError(true);
-	parser.getErrorsList().add(new AnalyzerError(0,"void"));
+	parser.addError("Error sintactico.");
 	System.out.println("error _Stm_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
+	nodo.setError(true);
 	RESULT = nodo;
  :};
 
- ExternalDeclaration ::= FunctionDef {:
+ ExternalDeclaration ::= FunctionDef:fd {:
 	System.out.println("ExternalDeclaration");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExternalDeclaration");
-	RESULT = nodo;
+	StateAnalyzer sa = parser.getState();
+	if(sa.isDecStates(StateAnalyzer.DeclarationStates.GLOBAL))
+		sa.changeDecStates();
+	((NodeAnalyzer)fd).setStates(sa.getDecStates().name());
+	RESULT = fd;
  :};
- ExternalDeclaration ::= Dec {:
+ ExternalDeclaration ::= Dec:d {:
+ 	NodeAnalyzer nad = ((NodeAnalyzer)d);
 	System.out.println("ExternalDeclaration");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExternalDeclaration");
-	RESULT = nodo;
+	StateAnalyzer sa = parser.getState();
+	if(!sa.isDecStates(StateAnalyzer.DeclarationStates.GLOBAL)){
+		parser.addError("Declaracion de variable global entre funciones.");
+		nad.setError(true);
+	}
+	nad.setStates(sa.getDecStates().name());
+	RESULT = nad;
  :};
  
 // Declaracion de funciones
- FunctionDef ::= TypeSpecifier DirectDeclarator _Dec_ CompoundStm {:
+ FunctionDef ::= TypeSpecifier:ts DirectDeclarator:dd CompoundStm:cs {:
 	System.out.println("FunctionDef");
 	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef");
-	RESULT = nodo;
- :};
- FunctionDef ::= TypeSpecifier DirectDeclarator CompoundStm {:
-	System.out.println("FunctionDef");
-	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef");
-	RESULT = nodo;
- :};
- FunctionDef ::= DirectDeclarator _Dec_ CompoundStm {:
-	System.out.println("FunctionDef");
-	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef");
-	RESULT = nodo;
- :};
- FunctionDef ::= DirectDeclarator CompoundStm {:
-	System.out.println("FunctionDef");
-	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef");
+	nodo.addLeftHijo((NodeAnalyzer)cs);
+	nodo.addLeftHijo((NodeAnalyzer)dd);
+	nodo.addLeftHijo((NodeAnalyzer)ts);
 	RESULT = nodo;
  :};
 
 // Declaracion de variables
- Dec ::= TypeSpecifier _InitDeclarator_ SEMICOLON {:
+ Dec ::= TypeSpecifier:ts _InitDeclarator_:lid SEMICOLON {:
 	System.out.println("Dec");
 	NodeAnalyzer nodo =new NodeAnalyzer("Dec");
+	NodeAnalyzer nats = (NodeAnalyzer)ts;
+ 	if(nats.getStrAtr(NodeKeys.TYPE).equals("void")){
+ 		parser.addError("Variable declarad con tipo Void.");
+ 		nodo.setError(true);
+ 	}
+	nodo.copyHijos(((NodeAnalyzer)lid).getHijos());
+	nodo.addLeftHijo(nats);
 	RESULT = nodo;
  :};
 
@@ -233,25 +260,28 @@ start with Program;
 	RESULT = nodo;
  :}; 
 
- _InitDeclarator_ ::= InitDeclarator {:
+ _InitDeclarator_ ::= InitDeclarator:id {:
 	System.out.println("_InitDeclarator_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_InitDeclarator_");
+	nodo.addLeftHijo((NodeAnalyzer)id);
 	RESULT = nodo;
  :};
- _InitDeclarator_ ::= InitDeclarator COMMA _InitDeclarator_ {:
+ _InitDeclarator_ ::= InitDeclarator:id COMMA _InitDeclarator_:lid {:
 	System.out.println("_InitDeclarator_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_InitDeclarator_");
-	RESULT = nodo;
+	((NodeAnalyzer)lid).addLeftHijo((NodeAnalyzer)id);
+	RESULT = lid;
  :};
 
- InitDeclarator ::= DirectDeclarator {:
+ InitDeclarator ::= DirectDeclarator:dd {:
 	System.out.println("InitDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("InitDeclarator");
-	RESULT = nodo;
+	//NodeAnalyzer nodo =new NodeAnalyzer("InitDeclarator");
+	RESULT = dd;
  :};
- InitDeclarator ::= DirectDeclarator EQ Initializer {:
+ InitDeclarator ::= DirectDeclarator:dd EQ Initializer:i {:
 	System.out.println("InitDeclarator");
 	NodeAnalyzer nodo =new NodeAnalyzer("InitDeclarator");
+	nodo.addLeftHijo((NodeAnalyzer)i);
+	nodo.addLeftHijo((NodeAnalyzer)dd);
 	RESULT = nodo;
  :};
 
@@ -259,58 +289,117 @@ start with Program;
  TypeSpecifier ::= VOID {:
 	System.out.println("TypeSpecifier");
 	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	nodo.setAtribute(NodeKeys.TYPE, "void");
 	RESULT = nodo;
  :};
- TypeSpecifier ::= CHAR {:
+ TypeSpecifier ::= CHAR:c {:
 	System.out.println("TypeSpecifier");
 	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	nodo.setAtribute(NodeKeys.TYPE, "char");
+	nodo.setAtribute(NodeKeys.CONST_CHAR_VALUE, ""+c.charValue());
 	RESULT = nodo;
  :};
- TypeSpecifier ::= INT {:
+ TypeSpecifier ::= INT:i {:
 	System.out.println("TypeSpecifier");
 	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	nodo.setAtribute(NodeKeys.TYPE, "int");
+	nodo.setAtribute(NodeKeys.CONST_INT_VALUE, ""+i.intValue());
 	RESULT = nodo;
  :};
- TypeSpecifier ::= FLOAT {:
+ TypeSpecifier ::= FLOAT:f {:
 	System.out.println("TypeSpecifier");
 	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	nodo.setAtribute(NodeKeys.TYPE, "float");
+	nodo.setAtribute(NodeKeys.CONST_FLOAT_VALUE, ""+f.floatValue());
 	RESULT = nodo;
  :};
 
- DirectDeclarator ::= ID {:
+ DirectDeclarator ::= ID:id {:
 	System.out.println("DirectDeclarator");
 	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
+	nodo.setStates(parser.getState().getDecStates().name());
+	nodo.setNodeType(NodeType.VAR);
+	nodo.setAtribute(NodeKeys.VAR_ID, id.toString());
 	RESULT = nodo;
  :};
- DirectDeclarator ::= LPAREN DirectDeclarator RPAREN {:
+// Creo que no necesitamos el tipo de declaracion entre parentesis
+/* DirectDeclarator ::= LPAREN DirectDeclarator RPAREN {:
 	System.out.println("DirectDeclarator");
 	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
 	RESULT = nodo;
+ :};*/
+ DirectDeclarator ::= DirectDeclarator:dd LBRACK ConstantExpression:ce RBRACK {:
+	System.out.println("DirectDeclarator");
+ 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+ 	switch (nadd.getNodeType()) {
+	case VAR:
+		nadd.setNodeType(NodeType.ARRAYVAR);
+		nadd.setAtribute(NodeKeys.ARRAY_DIM, "1");
+		nadd.addLeftHijo((NodeAnalyzer)ce);
+		break;
+	case ARRAYVAR:
+		Integer i = nadd.getIntAtr(NodeKeys.ARRAY_DIM);
+		nadd.setAtribute(NodeKeys.ARRAY_DIM, ""+(i.intValue()+1));
+		nadd.addLeftHijo((NodeAnalyzer)ce);
+		break;
+
+	default:
+		parser.addError("Incorrecta declaracion de array.");
+		nadd.setError(true);
+		break;
+	}
+ 	
+	RESULT = nadd;
  :};
- DirectDeclarator ::= DirectDeclarator LBRACK ConstantExpression RBRACK {:
+// TODO: Creo que no necesitamos esto (declaracion de arrays sin tamaño) usar como producción de error?
+/* DirectDeclarator ::= DirectDeclarator:dd LBRACK RBRACK {:
 	System.out.println("DirectDeclarator");
 	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
 	RESULT = nodo;
+ :};*/
+ DirectDeclarator ::= DirectDeclarator:dd LPAREN _ParameterDeclaration_ RPAREN {:
+	System.out.println("DirectDeclarator");
+ 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+ 	switch (nadd.getNodeType()) {
+	case VAR:
+		nadd.setNodeType(NodeType.FUNCTION_DEC);
+		break;
+	default:
+		parser.addError("Incorrecta llamada de funcion.");
+		nadd.setError(true);
+		break;
+	}
+ 	RESULT = nadd;
  :};
- DirectDeclarator ::= DirectDeclarator LBRACK RBRACK {:
+ DirectDeclarator ::= DirectDeclarator:dd LPAREN _Ident_ RPAREN {:
 	System.out.println("DirectDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
-	RESULT = nodo;
+ 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+	switch (nadd.getNodeType()) {
+	case VAR:
+		nadd.setNodeType(NodeType.FUNCTION_CALL);
+		break;
+	default:
+		parser.addError("Incorrecta llamada de funcion.");
+		nadd.setError(true);
+		break;
+	}
+	
+	RESULT = nadd;
  :};
- DirectDeclarator ::= DirectDeclarator LPAREN _ParameterDeclaration_ RPAREN {:
+ DirectDeclarator ::= DirectDeclarator:dd LPAREN RPAREN {:
 	System.out.println("DirectDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
-	RESULT = nodo;
- :};
- DirectDeclarator ::= DirectDeclarator LPAREN _Ident_ RPAREN {:
-	System.out.println("DirectDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
-	RESULT = nodo;
- :};
- DirectDeclarator ::= DirectDeclarator LPAREN RPAREN {:
-	System.out.println("DirectDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
-	RESULT = nodo;
+ 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+	switch (nadd.getNodeType()) {
+	case VAR:
+		nadd.setNodeType(NodeType.FUNCTION);
+		break;
+	default:
+		parser.addError("Incorrecta declaracion de funcion.");
+		nadd.setError(true);
+		break;
+	}
+	
+	RESULT = nadd;
  :};
 
 // Declaracion de parametros
@@ -502,10 +591,10 @@ start with Program;
 	RESULT = nodo;
  :};
 _Stm_ ::= error _Stm_ {:
-	parser.setError(true);
-	parser.getErrorsList().add(new AnalyzerError(0,"void"));
+	parser.addError("Error sintactico.");
 	System.out.println("error _Stm_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
+	nodo.setError(true);
 	RESULT = nodo;
  :};
 
@@ -723,20 +812,23 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
 
- ConstantExpression ::= Exp3 {:
+ ConstantExpression ::= Exp3:e3 {:
 	System.out.println("ConstantExpression");
 	NodeAnalyzer nodo =new NodeAnalyzer("ConstantExpression");
-	RESULT = nodo;
+	RESULT = nodo ;
  :};
 
- _Exp2_ ::= Exp2 {:
+ _Exp2_ ::= Exp2:e2 {:
 	System.out.println("_Exp2_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_");
+	//nodo.addHijo((NodeAnalyzer)e2);
 	RESULT = nodo;
  :};
- _Exp2_ ::= Exp2 COMMA _Exp2_ {:
+ _Exp2_ ::= Exp2:e2 COMMA _Exp2_:le2 {:
 	System.out.println("_Exp2_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_");
+	//nodo.addHijo((NodeAnalyzer)e2);
+	//nodo.addHijo((NodeAnalyzer)le2);
 	RESULT = nodo;
  :};
 
