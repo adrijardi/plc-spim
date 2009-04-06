@@ -7,6 +7,7 @@ parser code{:
 	private Syntactic sin;
 	private boolean error;
 	private java.util.LinkedList<AnalyzerError> errorsList;
+	private java.util.LinkedList<AnalyzerError> warningList;
 	private NodeAnalyzer main;
 	private StateAnalyzer state;
 
@@ -22,6 +23,7 @@ parser code{:
 		error = false;
 		lex = lexer;
 		errorsList = new java.util.LinkedList<AnalyzerError>();
+		warningList = new java.util.LinkedList<AnalyzerError>();
 		lookahead = new Symbol[]{new Symbol(sym.SEMICOLON), new Symbol(sym.RBRACE)};
 		state = new StateAnalyzer();
 	}
@@ -43,6 +45,7 @@ parser code{:
 			e.printStackTrace();
 		}
 		
+		showWarnings();
 		
 		if(isError()){
 			showErrors();
@@ -55,6 +58,13 @@ parser code{:
 		System.out.println("No se generara codigo, se han encontrado "+errorsList.size()+" errores");
 		for (AnalyzerError ae : errorsList) {
 			System.out.println(ae);
+		}
+	}
+	
+	private void showWarnings(){
+		System.out.println("Se han encontrado "+warningList.size()+" Warnings");
+		for (AnalyzerError ae : warningList) {
+			System.out.println(ae.toWarningString());
 		}
 	}
 	
@@ -74,8 +84,24 @@ parser code{:
 		this.errorsList.add(new AnalyzerError(line,msg));
 	}
 	
+	public void addError(String msg, int lineMod){
+		addWarning(getLine()+ lineMod, msg);
+	}
+	
 	public void addError(String msg){
-		addError(getLine()-1, msg);
+		addWarning(getLine(), msg);
+	}
+	
+	public void addWarning(int line, String msg){		
+		this.warningList.add(new AnalyzerError(line,msg));
+	}
+	
+	public void addWarning(String msg, int lineMod){
+		addWarning(getLine()+lineMod, msg);
+	}
+	
+	public void addWarning(String msg){
+		addWarning(getLine(), msg);
 	}
 	
 	public void setMain(NodeAnalyzer main) {
@@ -197,12 +223,13 @@ start with Program;
 	System.out.println("_ExternalDeclaration_");
 	((NodeAnalyzer)led).addLeftHijo((NodeAnalyzer)ed);
 	RESULT = led; :};
- _ExternalDeclaration_ ::= error _ExternalDeclaration_ {:
-	parser.addError("Error sintactico.");
-	System.out.println("error _Stm_");
+ _ExternalDeclaration_ ::= error _ExternalDeclaration_:led {:
+	parser.addError("Error sintactico.", -1);
+	System.out.println("error _ExternalDeclaration_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
 	nodo.setError(true);
-	RESULT = nodo;
+	((NodeAnalyzer)led).addLeftHijo(nodo);
+	RESULT = led;
  :};
 
  ExternalDeclaration ::= FunctionDef:fd {:
@@ -218,7 +245,7 @@ start with Program;
 	System.out.println("ExternalDeclaration");
 	StateAnalyzer sa = parser.getState();
 	if(!sa.isDecStates(StateAnalyzer.DeclarationStates.GLOBAL)){
-		parser.addError("Declaracion de variable global entre funciones.");
+		parser.addError("Declaracion de variable global entre funciones.", -1);
 		nad.setError(true);
 	}
 	nad.setStates(sa.getDecStates().name());
@@ -241,7 +268,7 @@ start with Program;
 	NodeAnalyzer nodo =new NodeAnalyzer("Dec");
 	NodeAnalyzer nats = (NodeAnalyzer)ts;
  	if(nats.getStrAtr(NodeKeys.TYPE).equals("void")){
- 		parser.addError("Variable declarad con tipo Void.");
+ 		parser.addError("Variable declarad con tipo Void.", -1);
  		nodo.setError(true);
  	}
 	nodo.copyHijos(((NodeAnalyzer)lid).getHijos());
@@ -249,16 +276,25 @@ start with Program;
 	RESULT = nodo;
  :};
 
- _Dec_ ::= Dec {:
+ _Dec_ ::= Dec:d {:
 	System.out.println("_Dec_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Dec_");
+	nodo.addLeftHijo((NodeAnalyzer)d);
 	RESULT = nodo;
  :};
- _Dec_ ::= Dec _Dec_ {:
+ _Dec_ ::= Dec:d _Dec_:ld {:
 	System.out.println("_Dec_");
+	((NodeAnalyzer)ld).addLeftHijo((NodeAnalyzer)d);
+	RESULT = ld;
+ :};
+/* _Dec_ ::= error _Dec_:ld {:
+	parser.addError("Error sintactico.", -1);
+	System.out.println("error _Dec_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Dec_");
-	RESULT = nodo;
- :}; 
+	nodo.setError(true);
+	((NodeAnalyzer)ld).addLeftHijo(nodo);
+	RESULT = ld;
+ :}; */
 
  _InitDeclarator_ ::= InitDeclarator:id {:
 	System.out.println("_InitDeclarator_");
@@ -344,7 +380,7 @@ start with Program;
 		break;
 
 	default:
-		parser.addError("Incorrecta declaracion de array.");
+		parser.addError("Incorrecta declaracion de array.", -1);
 		nadd.setError(true);
 		break;
 	}
@@ -366,7 +402,7 @@ start with Program;
 		nadd.copyHijos(((NodeAnalyzer)lpd).getHijos());
 		break;
 	default:
-		parser.addError("Incorrecta llamada de funcion.");
+		parser.addError("Incorrecta llamada de funcion.", -1);
 		nadd.setError(true);
 		break;
 	}
@@ -380,7 +416,7 @@ start with Program;
 		nadd.setNodeType(NodeType.FUNCTION_CALL);
 		break;
 	default:
-		parser.addError("Incorrecta llamada de funcion.");
+		parser.addError("Incorrecta llamada de funcion.", -1);
 		nadd.setError(true);
 		break;
 	}
@@ -395,7 +431,7 @@ start with Program;
 		nadd.setNodeType(NodeType.FUNCTION);
 		break;
 	default:
-		parser.addError("Incorrecta declaracion de funcion.");
+		parser.addError("Incorrecta declaracion de funcion.", -1);
 		nadd.setError(true);
 		break;
 	}
@@ -430,7 +466,7 @@ start with Program;
 		break;
 
 	default:
-		parser.addError("Incorrecta declaracion de parametro.");
+		parser.addError("Incorrecta declaracion de parametro.", -1);
 		nodo.setError(true);
 		break;
 	}
@@ -479,94 +515,102 @@ start with Program;
  :};
 
 // Sentencias
- Stm ::= CompoundStm {:
+ Stm ::= CompoundStm:cs {:
 	System.out.println("Stm");
-	NodeAnalyzer nodo =new NodeAnalyzer("Stm");
-	RESULT = nodo;
+	RESULT = cs;
  :};
- Stm ::= ExpressionStm {:
+ Stm ::= ExpressionStm:es {:
 	System.out.println("Stm");
-	NodeAnalyzer nodo =new NodeAnalyzer("Stm");
-	RESULT = nodo;
+	RESULT = es;
  :};
- Stm ::= SelectionStm {:
+ Stm ::= SelectionStm:ss {:
 	System.out.println("Stm");
-	NodeAnalyzer nodo =new NodeAnalyzer("Stm");
-	RESULT = nodo;
+	RESULT = ss;
  :};
- Stm ::= IterStm {:
+ Stm ::= IterStm:is {:
 	System.out.println("Stm");
-	NodeAnalyzer nodo =new NodeAnalyzer("Stm");
-	RESULT = nodo;
+	RESULT = is;
  :};
- Stm ::= JumpStm {:
+ Stm ::= JumpStm:js {:
 	System.out.println("Stm");
-	NodeAnalyzer nodo =new NodeAnalyzer("Stm");
-	RESULT = nodo;
+	RESULT = js;
  :};
 
  CompoundStm ::= LBRACE RBRACE {:
 	System.out.println("CompoundStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	parser.addWarning("Cuerpo de sentencias vacio.");
 	RESULT = nodo;
  :};
- CompoundStm ::= LBRACE _Stm_ RBRACE {:
+ CompoundStm ::= LBRACE _Stm_:ls RBRACE {:
 	System.out.println("CompoundStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	nodo.copyHijos(((NodeAnalyzer)ls).getHijos());
 	RESULT = nodo;
  :};
- CompoundStm ::= LBRACE _Dec_ RBRACE {:
+ CompoundStm ::= LBRACE _Dec_:ld RBRACE {:
 	System.out.println("CompoundStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	nodo.copyHijos(((NodeAnalyzer)ld).getHijos());
 	RESULT = nodo;
  :};
- CompoundStm ::= LBRACE _Dec_ _Stm_ RBRACE {:
+ CompoundStm ::= LBRACE _Dec_:ld _Stm_:ls RBRACE {:
 	System.out.println("CompoundStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	nodo.copyHijos(((NodeAnalyzer)ld).getHijos());
+	nodo.copyHijos(((NodeAnalyzer)ls).getHijos());
 	RESULT = nodo;
  :};
 
  ExpressionStm ::= SEMICOLON {:
 	System.out.println("ExpressionStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+	parser.addWarning("Expresion vacia.");
 	RESULT = nodo;
  :};
- ExpressionStm ::= Exp SEMICOLON {:
+ ExpressionStm ::= Exp:e SEMICOLON {:
 	System.out.println("ExpressionStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+	nodo.addLeftHijo((NodeAnalyzer)e);
 	RESULT = nodo;
  :};
- ExpressionStm ::= PrintfStm SEMICOLON {:
+ ExpressionStm ::= PrintfStm:pf SEMICOLON {:
 	System.out.println("ExpressionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+	RESULT = pf;
+ :};
+ ExpressionStm ::= GetsStm:gs SEMICOLON {:
+	System.out.println("ExpressionStm");
+	RESULT = gs;
+ :};
+
+ SelectionStm ::= IF LPAREN Exp:e RPAREN Stm:s {:
+	System.out.println("SelectionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	nodo.addLeftHijo((NodeAnalyzer)e);
+	nodo.addLeftHijo((NodeAnalyzer)s);
 	RESULT = nodo;
  :};
- ExpressionStm ::= GetsStm SEMICOLON {:
-	System.out.println("ExpressionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+ SelectionStm ::= IF LPAREN Exp:e RPAREN Stm:s ELSE Stm:se {:
+	System.out.println("SelectionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	nodo.addLeftHijo((NodeAnalyzer)e);
+	nodo.addLeftHijo((NodeAnalyzer)s);
+	nodo.addLeftHijo((NodeAnalyzer)se);
 	RESULT = nodo;
  :};
 
- SelectionStm ::= IF LPAREN Exp RPAREN Stm {:
-	System.out.println("SelectionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
-	RESULT = nodo;
- :};
- SelectionStm ::= IF LPAREN Exp RPAREN Stm ELSE Stm {:
-	System.out.println("SelectionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
-	RESULT = nodo;
- :};
-
- IterStm ::= WHILE LPAREN Exp RPAREN Stm {:
+ IterStm ::= WHILE LPAREN Exp:e RPAREN Stm:s {:
 	System.out.println("IterStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("IterStm");
+	nodo.addLeftHijo((NodeAnalyzer)e);
+	nodo.addLeftHijo((NodeAnalyzer)s);
 	RESULT = nodo;
  :};
 
- JumpStm ::= RETURN Exp SEMICOLON {:
+ JumpStm ::= RETURN Exp:e SEMICOLON {:
 	System.out.println("JumpStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("JumpStm");
+	nodo.addLeftHijo((NodeAnalyzer)e);
 	RESULT = nodo;
  :};
  
@@ -593,29 +637,30 @@ start with Program;
 	RESULT = nodo;
  :};
 
- _Stm_ ::= Stm {:
+ _Stm_ ::= Stm:s {:
 	System.out.println("_Stm_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
+	nodo.addLeftHijo((NodeAnalyzer)s);
 	RESULT = nodo;
  :};
- _Stm_ ::= Stm _Stm_ {:
+ _Stm_ ::= Stm:s _Stm_:ls {:
 	System.out.println("_Stm_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
-	RESULT = nodo;
+ 	((NodeAnalyzer)ls).addLeftHijo((NodeAnalyzer)s);
+	RESULT = ls;
  :};
-_Stm_ ::= error _Stm_ {:
-	parser.addError("Error sintactico.");
+_Stm_ ::= error _Stm_:ls {:
+	parser.addError("Error sintactico.", -1);
 	System.out.println("error _Stm_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
 	nodo.setError(true);
-	RESULT = nodo;
+	((NodeAnalyzer)ls).addLeftHijo(nodo);
+	RESULT = ls;
  :};
 
 // Expresiones
- Exp ::= Exp2 {:
+ Exp ::= Exp2:e2 {:
 	System.out.println("Exp");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp");
-	RESULT = nodo;
+	RESULT = e2;
  :};
  Exp ::= Exp COMMA Exp2 {:
 	System.out.println("Exp");
@@ -623,10 +668,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp2 ::= Exp3 {:
+ Exp2 ::= Exp3:e3 {:
 	System.out.println("Exp2");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp2");
-	RESULT = nodo;
+	RESULT = e3;
  :};
  Exp2 ::= Exp9 AssignmentOp Exp2 {:
 	System.out.println("Exp2");
@@ -634,10 +678,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp3 ::= Exp4 {:
+ Exp3 ::= Exp4:e4 {:
 	System.out.println("Exp3");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp3");
-	RESULT = nodo;
+	RESULT = e4;
  :};
  Exp3 ::= Exp3 OROR Exp4 {:
 	System.out.println("Exp3");
@@ -645,10 +688,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp4 ::= Exp5 {:
+ Exp4 ::= Exp5:e5 {:
 	System.out.println("Exp4");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp4");
-	RESULT = nodo;
+	RESULT = e5;
  :};
  Exp4 ::= Exp4 ANDAND Exp5 {:
 	System.out.println("Exp4");
@@ -656,10 +698,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
 
- Exp5 ::= Exp6 {:
+ Exp5 ::= Exp6:e6 {:
 	System.out.println("Exp5");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp5");
-	RESULT = nodo;
+	RESULT = e6;
  :};
  Exp5 ::= Exp5 EQEQ Exp6 {:
 	System.out.println("Exp5");
@@ -672,10 +713,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp6 ::= Exp7 {:
+ Exp6 ::= Exp7:e7 {:
 	System.out.println("Exp6");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
-	RESULT = nodo;
+	RESULT = e7;
  :};
  Exp6 ::= Exp6 LT Exp7 {:
 	System.out.println("Exp6");
@@ -698,10 +738,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp7 ::= Exp8 {:
+ Exp7 ::= Exp8:e8 {:
 	System.out.println("Exp7");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp7");
-	RESULT = nodo;
+	RESULT = e8;
  :};
  Exp7 ::= Exp7 PLUS Exp8 {:
 	System.out.println("Exp7");
@@ -714,10 +753,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp8 ::= Exp12 {:
+ Exp8 ::= Exp12:e12 {:
 	System.out.println("Exp8");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp8");
-	RESULT = nodo;
+	RESULT = e12;
  :};
  Exp8 ::= Exp8 MULT Exp12 {:
 	System.out.println("Exp8");
@@ -730,10 +768,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp12 ::= Exp9 {:
+ Exp12 ::= Exp9:e9 {:
 	System.out.println("Exp12");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp12");
-	RESULT = nodo;
+	RESULT = e9;
  :};
  Exp12 ::= LPAREN TypeSpecifier RPAREN Exp12 {:
 	System.out.println("Exp12");
@@ -741,10 +778,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp9 ::= Exp10 {:
+ Exp9 ::= Exp10:e10 {:
 	System.out.println("Exp9");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
-	RESULT = nodo;
+	RESULT = e10;
  :};
  Exp9 ::= PLUSPLUS Exp9 {:
 	System.out.println("Exp9");
@@ -762,10 +798,9 @@ _Stm_ ::= error _Stm_ {:
 	RESULT = nodo;
  :};
  
- Exp10 ::= Exp11 {:
+ Exp10 ::= Exp11:e11 {:
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
-	RESULT = nodo;
+	RESULT = e11;
  :};
  Exp10 ::= Exp10 LBRACK Exp RBRACK {:
 	System.out.println("Exp10");

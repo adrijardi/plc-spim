@@ -90,6 +90,8 @@ public class NodeAnalyzer {
 
 	public void print(int level) {
 		StringBuilder sb = new StringBuilder();
+		if(level == 1)
+			sb.append('\n');
 		for (int i = 0; i < level; i++) {
 			if(i == level-1)
 				sb.append("\\_");
