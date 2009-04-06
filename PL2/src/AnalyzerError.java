@@ -16,6 +16,18 @@ public class AnalyzerError {
 		return msg;
 	}
 	
+	public String toWarningString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("Warning en linea: ");
+		sb.append(line);
+		if(msg != null && msg.length()>0){
+			sb.append(System.getProperty("line.separator"));
+			sb.append("\t");
+			sb.append(msg);
+		}
+		return sb.toString();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
