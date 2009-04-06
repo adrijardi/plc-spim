@@ -21,9 +21,11 @@ void mult(){
 
 int rest(){
   int z;
+  int pq;
   x = 2;
   y = 3;
   z = x - y;
+  y = z;
   
   printf("El resultado es %d", z);
   
@@ -35,12 +37,11 @@ void paramsInv(int p){
   x = 2;
   y = 3;
   z = x - rest();
+  ;
   
   printf("El resultado es %d", z);
   
   return z;
 }
 
-void multParams(int p, int h, char c[5]){
-  
-}
+void multParams(int p, int h, char c[5]){}
