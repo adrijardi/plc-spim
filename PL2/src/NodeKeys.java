@@ -4,7 +4,11 @@ public enum NodeKeys {
 	CONST_FLOAT_VALUE("float"),
 	CONST_CHAR_VALUE("char"),
 	TYPE("String"),
-	ARRAY_DIM("int");
+	ARRAY_DIM("int"),
+	ASIGNMENT("String"),
+	DEBUG("int"),
+	FUNC_ID("String"),
+	STRING("String");
 
 	private final String type;
 

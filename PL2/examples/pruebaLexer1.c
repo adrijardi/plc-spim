@@ -24,7 +24,7 @@ int rest(){
   int pq;
   x = 2;
   y = 3;
-  z = x - y;
+  z *= x - y;
   y = z;
   
   printf("El resultado es %d", z);
