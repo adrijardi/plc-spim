@@ -7,8 +7,8 @@ public class VarTable {
 	private final LinkedList<Integer> scope = new LinkedList<Integer>();
 	private int nextNewScope = 1;
 	// Almacenes para las tablas
-	private final HashSet<String> global = new HashSet<String>();
-	private final Hashtable<String, HashSet<String>> local = new Hashtable<String, HashSet<String>>();
+	private final HashSet<Variable> global = new HashSet<Variable>();
+	private final Hashtable<String, HashSet<Variable>> local = new Hashtable<String, HashSet<Variable>>();
 
 	private VarTable() {
 		scope.addFirst(new Integer(0));
@@ -55,7 +55,7 @@ public class VarTable {
 		return ret;
 	}
 
-	public boolean addVariable(String var) {
+	public boolean addVariable(Variable var) {
 		boolean ret = true;
 		if (var != null) {
 			if (scope.size() == 1) {
@@ -65,28 +65,30 @@ public class VarTable {
 					global.add(var);
 				}
 			} else {
-				if (local.containsKey(var)) {
-					HashSet<String> hs = local.get(var);
+				if (local.containsKey(var.getName())) {
+					HashSet<Variable> hs = local.get(var.getName());
 					String scope = getScope();
 					if (buscarConflicto(hs, scope) != null) {
 						ret = false;
 					} else {
-						hs.add(scope);
+						var.setScope(scope);
+						hs.add(var);
 					}
 
 				} else {
-					HashSet<String> hs = new HashSet<String>();
-					hs.add(getScope());
-					local.put(var, hs);
+					HashSet<Variable> hs = new HashSet<Variable>();
+					var.setScope(getScope());
+					hs.add(var);
+					local.put(var.getName(), hs);
 				}
 			}
-		}else{
+		} else {
 			ret = false;
 		}
 		return ret;
 	}
 
-	private String buscarConflicto(HashSet<String> hs, String scope) {
+	private String buscarConflicto(HashSet<Variable> hs, String scope) {
 		boolean check = false;
 		String ret = null;
 		int pos = scope.indexOf('.');
@@ -116,7 +118,7 @@ public class VarTable {
 	private String buscarVariable(String var) {
 		String ret = null;
 		if (local.containsKey(var)) {
-			HashSet<String> hs = local.get(var);
+			HashSet<Variable> hs = local.get(var);
 			ret = buscarConflicto(hs, getScope());
 		} else if (global.contains(var)) {
 			ret = "0";
@@ -126,9 +128,9 @@ public class VarTable {
 	}
 
 	public void printTable() {
-		HashSet<String> hsvar;
+		HashSet<Variable> hsvar;
 		System.out.println("\n---Globales");
-		for (String s : global) {
+		for (Variable s : global) {
 			System.out.println(s);
 		}
 		System.out.println("\n---Locales");
@@ -136,10 +138,43 @@ public class VarTable {
 		for (String var : ids) {
 			System.out.println(var);
 			hsvar = local.get(var);
-			for (String scope : hsvar) {
+			for (Variable scope : hsvar) {
 				System.out.println("\t" + scope);
 			}
 		}
+	}
+
+	public String getDataCode() {
+		StringBuilder sb = new StringBuilder();
+		for (Variable variable : global) {
+			if (variable.isValue()) {
+				sb.append(variable.getName());
+				sb.append(":\t");
+				switch (variable.getVt()) {
+				case INT:
+					sb.append(".word ");
+					sb.append(variable.getIvalue());
+					break;
+				case CHAR:
+					sb.append(".word ");
+					sb.append(variable.getCvalue());
+					break;
+				case FLOAT:
+					sb.append(".float ");
+					sb.append(variable.getFvalue());
+					break;
+
+				}
+				sb.append("\n");
+			} else {
+				sb.append("\t\t.comm ");
+				sb.append(variable.getName());
+				sb.append(",4");
+				sb.append("\n");
+			}
+		}
+
+		return sb.toString();
 	}
 
 }
