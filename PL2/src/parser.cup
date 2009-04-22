@@ -1,5 +1,6 @@
 // CUP specification for a simple expression evaluator (no actions)
 import java_cup.runtime.*;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /* Preliminaries to set up and use the scanner.  */
@@ -13,16 +14,18 @@ parser code{:
 	private StateAnalyzer state;
 	//TODO quitar luego
 	private int auxVar = 0;
+	private Generator generator;
 
 	public static void main(String args[]) throws Exception{
 		System.out.println("Con argumentos " + args[0]);
 		Lexer lex = new Lexer(new java.io.FileReader(args[0]));
 		Syntactic sin = new Syntactic(lex);
-		sin.initializeParser(lex);
+		sin.initializeParser(lex, args[0]);
 		sin.runParser();
 	}
 	
-	private void initializeParser(Lexer lexer){
+	private void initializeParser(Lexer lexer, String filename) throws IOException{
+		generator = new Generator(filename);
 		error = false;
 		lex = lexer;
 		errorsList = new java.util.LinkedList<AnalyzerError>();
@@ -75,8 +78,8 @@ parser code{:
 	}
 	
 	private void generate(){
-		System.out.println("\nMostrando el arbol");
-		main.print(0);
+		generator.setMain(main);
+		generator.generate();
 	}
 	
 	private boolean isError() {
@@ -296,6 +299,19 @@ start with Program;
 		aux =new NodeAnalyzer("Dec");
 		aux.setAtribute(NodeKeys.TYPE, type);
 		aux.setAtribute(NodeKeys.VAR_ID, nah.getStrAtr(NodeKeys.VAR_ID));
+		//TODO falta comprobar el tipo de la asignacion
+		String cad = nah.getStrAtr(NodeKeys.CONST_INT_VALUE);
+		if(cad != null)
+			aux.setAtribute(NodeKeys.CONST_INT_VALUE, cad);
+		
+		cad = nah.getStrAtr(NodeKeys.CONST_CHAR_VALUE);
+		if(cad != null)
+			aux.setAtribute(NodeKeys.CONST_CHAR_VALUE, cad);
+		
+		cad = nah.getStrAtr(NodeKeys.CONST_FLOAT_VALUE);
+		if(cad != null)
+			aux.setAtribute(NodeKeys.CONST_FLOAT_VALUE, cad);
+		
 		aux.copyHijos(nah.getHijos());
 		aux.setNodeType(NodeType.VARDEC);
 		
@@ -352,7 +368,25 @@ start with Program;
  :};
  InitDeclarator ::= DirectDeclarator:dd EQ Initializer:i {:
 	System.out.println("InitDeclarator");
-	((NodeAnalyzer)dd).addLeftHijo((NodeAnalyzer)i);
+	
+ 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
+ 	NodeAnalyzer nai = (NodeAnalyzer)i;
+ 	
+ 	String cad = nai.getStrAtr(NodeKeys.CONST_INT_VALUE);
+	if(cad != null)
+		nadd.setAtribute(NodeKeys.CONST_INT_VALUE, cad);
+	else{
+		cad = nai.getStrAtr(NodeKeys.CONST_CHAR_VALUE);
+		if(cad != null)
+			nadd.setAtribute(NodeKeys.CONST_CHAR_VALUE, cad);
+		else{
+			cad = nai.getStrAtr(NodeKeys.CONST_FLOAT_VALUE);
+			if(cad != null)
+				nadd.setAtribute(NodeKeys.CONST_FLOAT_VALUE, cad);
+			else
+				nadd.addLeftHijo(nai);
+		}
+	}
 	RESULT = dd;
  :};
 

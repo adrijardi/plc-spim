@@ -1,5 +1,6 @@
 int prod = 2;
+int y;
 
-void main(){
+void main(){  
   printf("Prod: %d",prod);
 }
