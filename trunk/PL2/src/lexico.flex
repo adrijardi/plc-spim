@@ -119,7 +119,7 @@ import java_cup.runtime.*;
 
 /*caracteres y cadenas*/
 \" [^\r\n\"\\]* \"	{ System.out.println(">>String: "+ yytext()); return symbol(sym.STRING, new String(yytext()));}
-\' [^\r\n\'\\] \'	{ System.out.println(">>character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(0)));}
+\' [^\r\n\'\\] \'	{ System.out.println(">>character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(1)));}
 
 . {System.out.println("ERROR LEXICO");}
 
