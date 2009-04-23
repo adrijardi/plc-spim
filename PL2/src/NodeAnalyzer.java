@@ -78,9 +78,9 @@ public class NodeAnalyzer {
 				if (var != null) {
 					if (!va.addVariable(var)) {
 						syntactic.addError("Variable " + var + " duplicada");
-					}else{
-						if(!va.isGlobal()){
-							setAtribute(NodeKeys.VAR_ID, var.getScope()+var.getName());
+					} else {
+						if (!va.isGlobal()) {
+							setAtribute(NodeKeys.VAR_ID, var.getName()+var.getScope());
 						}
 					}
 				}
@@ -90,11 +90,33 @@ public class NodeAnalyzer {
 				va.newScope();
 				scope = true;
 				break;
+			
+			case PRINTFSTRING:
+				String value = getStrAtr(NodeKeys.STRING);
+				if(value != null){
+					String key = va.addString(value);
+					setAtribute(NodeKeys.STRING, key);
+				}
+				break;
 			}
 		}
 
 		for (NodeAnalyzer na : hijos) {
 			na.checkVariables(syntactic);
+		}
+
+		if (!va.isGlobal()) {
+			String varname = getStrAtr(NodeKeys.VAR_ID);
+			if (varname != null) {
+				System.out.println("Buscando Variable: "+varname);
+				String scp = va.buscarVariable(varname);
+				System.out.println("Encontrado : "+scp);
+				if (scp != null) {
+					if (scp.compareTo("0") != 0) {
+						setAtribute(NodeKeys.VAR_ID, varname+scp);
+					}
+				}
+			}
 		}
 
 		if (scope)
@@ -269,7 +291,21 @@ public class NodeAnalyzer {
 			case ASIGNATION:
 				NodeAnalyzer reciver = hijos.get(0);
 				NodeAnalyzer value = hijos.get(1);
-				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),	reciver, value));
+				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),
+						reciver, value));
+				sb.append("\n");
+				break;
+			case PRINTFID:
+				// TODO Falta controlar el tipo de dato a imprimir
+				sb.append("\t\tlw $a0, ");
+				sb.append(getStrAtr(NodeKeys.VAR_ID));
+				sb.append("_var\n\t\tjal printf_int");
+				sb.append("\n");
+				break;
+			case PRINTFSTRING:
+				sb.append("\t\tla $a0, ");
+				sb.append(getStrAtr(NodeKeys.STRING));
+				sb.append("_str\n\t\tjal printf_str");
 				sb.append("\n");
 				break;
 			default:
@@ -295,21 +331,23 @@ public class NodeAnalyzer {
 	 *            el nodo que contiene el valor
 	 * @return el codigo de la asignacion
 	 */
-	private String getAsignationCode(String strAtr, NodeAnalyzer reciver, NodeAnalyzer value) {
+	private String getAsignationCode(String strAtr, NodeAnalyzer reciver,
+			NodeAnalyzer value) {
 		StringBuilder sb = new StringBuilder();
 		if (strAtr.compareTo("=") == 0) {
 			String tipo = value.getStrAtr(NodeKeys.TYPE);
-			if(tipo.compareTo("float")== 0){
+			if (tipo.compareTo("float") == 0) {
 				sb.append(value.getFloatValueCode());
 				sb.append("\t\tsw.s $f0, ");
-			}else if(tipo.compareTo("int")== 0){
+			} else if (tipo.compareTo("int") == 0) {
 				sb.append(value.getIntValueCode());
 				sb.append("\t\tsw $t0, ");
-			}else if(tipo.compareTo("char")== 0){
+			} else if (tipo.compareTo("char") == 0) {
 				sb.append(value.getCharValueCode());
 				sb.append("\t\tsw $t0, ");
 			}
 			sb.append(reciver.getStrAtr(NodeKeys.VAR_ID));
+			sb.append("_var");
 		} else if (strAtr.compareTo("*=") == 0) {
 			sb.append(strAtr);
 		} else if (strAtr.compareTo("/=") == 0) {
@@ -333,10 +371,10 @@ public class NodeAnalyzer {
 		default:
 			break;
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	private String getCharValueCode() {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
@@ -348,10 +386,10 @@ public class NodeAnalyzer {
 		default:
 			break;
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	private String getFloatValueCode() {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
@@ -363,7 +401,7 @@ public class NodeAnalyzer {
 		default:
 			break;
 		}
-		
+
 		return sb.toString();
 	}
 

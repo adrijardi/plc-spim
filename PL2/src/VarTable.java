@@ -9,6 +9,8 @@ public class VarTable {
 	// Almacenes para las tablas
 	private final HashSet<Variable> global = new HashSet<Variable>();
 	private final Hashtable<String, HashSet<Variable>> local = new Hashtable<String, HashSet<Variable>>();
+	private final Hashtable<String, String> strings = new Hashtable<String, String>();
+	private int strid = 0;
 
 	private VarTable() {
 		scope.addFirst(new Integer(0));
@@ -29,12 +31,12 @@ public class VarTable {
 	public static VarTable getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
-
+	
 	public String getScope() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = scope.size() - 1; i > 0; i--) {
 			sb.append(scope.get(i));
-			sb.append('.');
+			sb.append('_');
 		}
 		sb.append(scope.get(0));
 		return sb.toString();
@@ -54,6 +56,23 @@ public class VarTable {
 		}
 		return ret;
 	}
+	
+	public String addString(String value){
+		// TODO se puede optimizar si se dan las vuelta, y se almacena la clave en función del string
+		String key = "str"+(strid++);
+		strings.put(key, value);
+		return key;
+	}
+	
+	private String getStringByKey(String key){
+		String s = strings.get(key);
+		if(s != null){
+			String s2 = s.substring(0, s.length()-1);
+			s = s2+"\\0\"";
+		}
+		return s;
+	}
+
 
 	public boolean addVariable(Variable var) {
 		boolean ret = true;
@@ -91,20 +110,34 @@ public class VarTable {
 	private String buscarConflicto(HashSet<Variable> hs, String scope) {
 		boolean check = false;
 		String ret = null;
-		int pos = scope.indexOf('.');
-		int pos2 = scope.indexOf('.', pos + 1);
+		int pos = scope.indexOf('_');
+		int pos2 = scope.indexOf('_', pos + 1);
 
 		while (pos2 != -1 && !check) {
 			String aux = scope.substring(0, pos2);
-			check = hs.contains(aux);
+			
+			//check = hs.contains(aux);
+			for (Variable variable : hs) {
+				if(variable.equals(aux))
+					check = true;
+			}
+			
 			if (check)
 				ret = aux;
 			pos = pos2;
-			pos2 = scope.indexOf('.', pos + 1);
+			pos2 = scope.indexOf('_', pos + 1);
 		}
 
-		if (!check && hs.contains(scope))
-			ret = scope;
+		if (!check){
+			//check = hs.contains(scope);
+			for (Variable variable : hs) {
+				if(variable.equals(scope))
+					check = true;
+			}
+			if(check)
+				ret = scope;
+		}
+			
 
 		return ret;
 	}
@@ -115,14 +148,23 @@ public class VarTable {
 	 *            variable a buscar
 	 * @return null si no la encuentra
 	 */
-	private String buscarVariable(String var) {
-		String ret = null;
-		if (local.containsKey(var)) {
-			HashSet<Variable> hs = local.get(var);
-			ret = buscarConflicto(hs, getScope());
-		} else if (global.contains(var)) {
-			ret = "0";
+	public String buscarVariable(String var) {
+		String ret = null;		
+		Set<String> ids = local.keySet();
+		for (String key : ids) {
+			if(key.equals(var)){
+				HashSet<Variable> hs = local.get(key);
+				ret = buscarConflicto(hs, getScope());
+			}
 		}
+		
+		if(ret == null){
+			for (Variable variable : global) {
+				if(variable.equals(var))
+					ret = "0";
+			}
+		}
+
 
 		return ret;
 	}
@@ -149,7 +191,7 @@ public class VarTable {
 		for (Variable variable : global) {
 			
 				sb.append(variable.getName());
-				sb.append(":\t\t");
+				sb.append("_var:\t\t");
 				switch (variable.getVt()) {
 				case INT:
 					sb.append(".word ");
@@ -175,6 +217,57 @@ public class VarTable {
 				}
 				sb.append("\n");
 		}
+		
+		HashSet<Variable> hsvar;
+		Set<String> ids = local.keySet();
+		for (String var : ids) {
+			System.out.println(var);
+			hsvar = local.get(var);
+			for (Variable variable : hsvar) {
+				sb.append(variable.getName());
+				sb.append(variable.getScope());
+				sb.append("_var:\t\t");
+				switch (variable.getVt()) {
+				case INT:
+					sb.append(".word ");
+					if (variable.isValue())
+						sb.append(variable.getIvalue());
+					else
+						sb.append(0);
+					break;
+				case CHAR:
+					sb.append(".word ");
+					if (variable.isValue())
+						sb.append(variable.getCvalue());
+					else
+						sb.append(0);
+					break;
+				case FLOAT:
+					sb.append(".float ");
+					if (variable.isValue())
+						sb.append(variable.getFvalue());
+					else
+						sb.append(0);
+					break;
+				}
+				sb.append("\n");
+			}
+		}
+		
+		ids = strings.keySet();
+		String strval;
+		for (String key : ids) {
+			strval = getStringByKey(key);
+			sb.append(key);
+			sb.append("_str");
+			sb.append(":\t\t.ascii ");
+			sb.append(strval);
+			sb.append("\n");
+		}
+		
+		sb.append("ln_str");
+		sb.append(":\t\t.ascii \"\\n\"");
+		sb.append("\n");
 
 		return sb.toString();
 	}
@@ -184,5 +277,4 @@ public class VarTable {
 			return true;
 		return false;
 	}
-
 }

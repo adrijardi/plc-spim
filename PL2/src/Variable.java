@@ -92,6 +92,8 @@ public class Variable {
 		sb.append(vt);
 		sb.append(" ");
 		sb.append(name);
+		if (!scope.equals(name))
+			sb.append(scope);
 		if (value) {
 			sb.append(" ");
 			switch (vt) {
