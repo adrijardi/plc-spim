@@ -181,7 +181,7 @@ non terminal	_Ident_;
 non terminal	_InitDeclarator_;
 non terminal	_Initializer_;
 non terminal	_ParameterDeclaration_;
-non terminal	_PrintfParam_;
+//non terminal	_PrintfParam_;
 non terminal	_Stm_;
  
 non terminal	AssignmentOp;
@@ -340,6 +340,7 @@ start with Program;
 	((NodeAnalyzer)ld).addLeftHijo((NodeAnalyzer)d);
 	RESULT = ld;
  :};
+ 
 /* _Dec_ ::= error _Dec_:ld {:
 	parser.addError("Error sintactico.", -1);
 	System.out.println("error _Dec_");
@@ -348,7 +349,7 @@ start with Program;
 	((NodeAnalyzer)ld).addLeftHijo(nodo);
 	RESULT = ld;
  :}; */
-
+ 
  _InitDeclarator_ ::= InitDeclarator:id {:
 	System.out.println("_InitDeclarator_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_InitDeclarator_");
@@ -687,7 +688,23 @@ start with Program;
 	RESULT = nodo;
  :};
  
- PrintfStm ::= PRINTF LPAREN STRING:s _PrintfParam_:lpp RPAREN {:
+ PrintfStm ::= PRINTF LPAREN STRING:s RPAREN {:
+	System.out.println("PrintfStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
+	nodo.setNodeType(NodeType.PRINTFSTRING);
+	nodo.setAtribute(NodeKeys.STRING, s);
+	RESULT = nodo;
+ :};
+ 
+ PrintfStm ::= PRINTF LPAREN ID:id RPAREN {:
+	System.out.println("PrintfStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
+	nodo.setNodeType(NodeType.PRINTFID);
+	nodo.setAtribute(NodeKeys.VAR_ID, (String)id);
+	RESULT = nodo;
+ :};
+ 
+ /*PrintfStm ::= PRINTF LPAREN STRING:s _PrintfParam_:lpp RPAREN {:
 	System.out.println("PrintfStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
 	nodo.setAtribute(NodeKeys.STRING, s);
@@ -706,7 +723,7 @@ start with Program;
 	nodo.setAtribute(NodeKeys.VAR_ID, id.toString());
 	((NodeAnalyzer)lpp).addRightHijo(nodo);
 	RESULT = lpp;
- :};
+ :};*/
  
  GetsStm ::= GETS LPAREN ID RPAREN {:
 	System.out.println("GetsStm");
@@ -932,6 +949,7 @@ _Stm_ ::= error _Stm_:ls {:
  Constant ::= NUMBERF:f {:
 	System.out.println("Constant");
 	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "float");
 	nodo.setAtribute(NodeKeys.CONST_FLOAT_VALUE, ""+f.floatValue());
 	RESULT = nodo;
@@ -939,6 +957,7 @@ _Stm_ ::= error _Stm_:ls {:
  Constant ::= CHARACTER:c {:
 	System.out.println("Constant");
 	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "char");
 	nodo.setAtribute(NodeKeys.CONST_CHAR_VALUE, ""+c.charValue());
 	RESULT = nodo;
@@ -946,6 +965,7 @@ _Stm_ ::= error _Stm_:ls {:
  Constant ::= INTEGER:i {:
 	System.out.println("Constant");
 	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "int");
 	nodo.setAtribute(NodeKeys.CONST_INT_VALUE, ""+i.intValue());
 	RESULT = nodo;

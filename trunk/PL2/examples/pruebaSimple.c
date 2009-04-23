@@ -1,6 +1,12 @@
 int prod = 2;
-int y;
 
 void main(){  
-  printf("Prod: %d",prod);
+ prod = 5;
+ printf("prod");
+ printf(prod);
+}
+
+void adri(){  
+ int y;
+ prod = 5;
 }

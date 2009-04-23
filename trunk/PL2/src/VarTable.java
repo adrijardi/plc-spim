@@ -147,34 +147,42 @@ public class VarTable {
 	public String getDataCode() {
 		StringBuilder sb = new StringBuilder();
 		for (Variable variable : global) {
-			if (variable.isValue()) {
+			
 				sb.append(variable.getName());
-				sb.append(":\t");
+				sb.append(":\t\t");
 				switch (variable.getVt()) {
 				case INT:
 					sb.append(".word ");
-					sb.append(variable.getIvalue());
+					if (variable.isValue())
+						sb.append(variable.getIvalue());
+					else
+						sb.append(0);
 					break;
 				case CHAR:
 					sb.append(".word ");
-					sb.append(variable.getCvalue());
+					if (variable.isValue())
+						sb.append(variable.getCvalue());
+					else
+						sb.append(0);
 					break;
 				case FLOAT:
 					sb.append(".float ");
-					sb.append(variable.getFvalue());
+					if (variable.isValue())
+						sb.append(variable.getFvalue());
+					else
+						sb.append(0);
 					break;
-
 				}
 				sb.append("\n");
-			} else {
-				sb.append("\t\t.comm ");
-				sb.append(variable.getName());
-				sb.append(",4");
-				sb.append("\n");
-			}
 		}
 
 		return sb.toString();
+	}
+
+	public boolean isGlobal() {
+		if(scope.size() == 1)
+			return true;
+		return false;
 	}
 
 }
