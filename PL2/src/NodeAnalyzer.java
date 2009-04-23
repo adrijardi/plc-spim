@@ -78,6 +78,10 @@ public class NodeAnalyzer {
 				if (var != null) {
 					if (!va.addVariable(var)) {
 						syntactic.addError("Variable " + var + " duplicada");
+					}else{
+						if(!va.isGlobal()){
+							setAtribute(NodeKeys.VAR_ID, var.getScope()+var.getName());
+						}
 					}
 				}
 				break;
@@ -237,29 +241,138 @@ public class NodeAnalyzer {
 		this.nodeType = nodeType;
 	}
 
+	/**
+	 * Obtien el codigo de generacion
+	 * 
+	 * @return codigo generado
+	 */
 	public String getGloblCode() {
 		StringBuilder sb = new StringBuilder();
 		if (nodeType != null) {
 			switch (nodeType) {
 			case FUNCTION_DEC:
-				sb.append(getStrAtr(NodeKeys.FUNC_ID));
-				sb.append(":\n");
-				sb.append(getChildernGlobCode());
-				sb.append("\t\t#--Fin de programa--#\n\t\tli $v0, 10\n\t\tsyscall\n\n");
+				String fname = getStrAtr(NodeKeys.FUNC_ID);
+				if (fname.equals("main")) {
+					sb.append(fname);
+					sb.append(":\n");
+					sb.append(getChildernGlobCode());
+					sb
+							.append("\t\t#--Fin de programa--#\n\t\tli $v0, 10\n\t\tsyscall\n\n");
+				} else {
+					sb.append(fname);
+					sb.append("_ini:\n");
+					sb.append(getChildernGlobCode());
+					sb.append(fname);
+					sb.append("_ret:\tjr $ra\t# retorna al invocador\n\n");
+				}
+				break;
+			case ASIGNATION:
+				NodeAnalyzer reciver = hijos.get(0);
+				NodeAnalyzer value = hijos.get(1);
+				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),	reciver, value));
+				sb.append("\n");
 				break;
 			default:
 				sb.append(getChildernGlobCode());
 				break;
 			}
-			
-		}else{
+
+		} else {
 			sb.append(getChildernGlobCode());
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Se obtiene el codigo para las asignaciones
+	 * 
+	 * @param strAtr
+	 *            tipo de asignacion
+	 * @param reciver
+	 *            el nodo receptor
+	 * @param value
+	 *            el nodo que contiene el valor
+	 * @return el codigo de la asignacion
+	 */
+	private String getAsignationCode(String strAtr, NodeAnalyzer reciver, NodeAnalyzer value) {
+		StringBuilder sb = new StringBuilder();
+		if (strAtr.compareTo("=") == 0) {
+			String tipo = value.getStrAtr(NodeKeys.TYPE);
+			if(tipo.compareTo("float")== 0){
+				sb.append(value.getFloatValueCode());
+				sb.append("\t\tsw.s $f0, ");
+			}else if(tipo.compareTo("int")== 0){
+				sb.append(value.getIntValueCode());
+				sb.append("\t\tsw $t0, ");
+			}else if(tipo.compareTo("char")== 0){
+				sb.append(value.getCharValueCode());
+				sb.append("\t\tsw $t0, ");
+			}
+			sb.append(reciver.getStrAtr(NodeKeys.VAR_ID));
+		} else if (strAtr.compareTo("*=") == 0) {
+			sb.append(strAtr);
+		} else if (strAtr.compareTo("/=") == 0) {
+			sb.append(strAtr);
+		} else if (strAtr.compareTo("+=") == 0) {
+			sb.append(strAtr);
+		} else if (strAtr.compareTo("-=") == 0) {
+			sb.append(strAtr);
+		}
+		return sb.toString();
+	}
+
+	private String getIntValueCode() {
+		StringBuilder sb = new StringBuilder();
+		switch (nodeType) {
+		case CONSTANT:
+			sb.append("\t\tli $t0, ");
+			sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
+			sb.append("\n");
+			break;
+		default:
+			break;
 		}
 		
 		return sb.toString();
 	}
 	
-	private String getChildernGlobCode(){
+	private String getCharValueCode() {
+		StringBuilder sb = new StringBuilder();
+		switch (nodeType) {
+		case CONSTANT:
+			sb.append("\t\tli $t0, ");
+			sb.append(getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+			sb.append("\n");
+			break;
+		default:
+			break;
+		}
+		
+		return sb.toString();
+	}
+	
+	private String getFloatValueCode() {
+		StringBuilder sb = new StringBuilder();
+		switch (nodeType) {
+		case CONSTANT:
+			sb.append("\t\taddi.s $f0, ");
+			sb.append(getFloatAtr(NodeKeys.CONST_FLOAT_VALUE));
+			sb.append("\n");
+			break;
+		default:
+			break;
+		}
+		
+		return sb.toString();
+	}
+
+	/**
+	 * Se obtiene el codigo de generación de los hijos.
+	 * 
+	 * @return el codigo de generacion
+	 */
+	private String getChildernGlobCode() {
 		StringBuilder sb = new StringBuilder();
 		for (NodeAnalyzer hijo : hijos) {
 			sb.append(hijo.getGloblCode());
