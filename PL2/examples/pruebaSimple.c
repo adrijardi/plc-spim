@@ -1,17 +1,25 @@
-int prod = 2;
-int y;
+#include <stdio.h>
 
-void main(){  
+int prod = 2;
+int y = 10;
+
+int main(){  
  int y = 3;
  prod = 5;
- printf(prod);
- printf(y);
- printf("prueba txt");
- printf("prueba2 txt");
+ 
+ printf("%s","prod=");
+ printf("%d\n",prod);
+ printf("%s","y=");
+ printf("%d\n",y);
+
+ printf("%s\n","Invoco a f1\n");
+ f1();
+ 
+ printf("%s","Saliendo...\n");
+ return 0;
 }
 
 void f1(){  
- int y = 3;
- prod = 5;
- printf(y);
+ printf("%s","y(global)=");
+ printf("%d\n",y);
 }

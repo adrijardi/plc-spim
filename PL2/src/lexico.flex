@@ -60,6 +60,7 @@ import java_cup.runtime.*;
 
 /*Comentarios y espacios {se ignoran}*/
 [\ \t\b\f\r\n]+		{ /* Se borran los espacios  */}
+"#" [^\n]*			{ System.out.println(">>Include: "+ yytext()); /* Se eliminan los include */}
 "/*" [^*] ~"*/"		{ System.out.println(">>comentario: "+ yytext()); /* Lineas de comentarios */}
 "/*" "*"+ "/"		{ System.out.println(">>comentario: "+ yytext()); /* Lineas de comentarios */}
 "//"[^\n]*			{ System.out.println(">>comentario: "+ yytext()); /* Linea de comentarios */}
@@ -118,8 +119,8 @@ import java_cup.runtime.*;
 [:jletter:][:jletterdigit:]*	{ System.out.println(">>ID"); return symbol(sym.ID, yytext());}
 
 /*caracteres y cadenas*/
-\" [^\r\n\"\\]* \"	{ System.out.println(">>String: "+ yytext()); return symbol(sym.STRING, new String(yytext()));}
-\' [^\r\n\'\\] \'	{ System.out.println(">>character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(1)));}
+\" [^\"]* \"	{ System.out.println(">>String: "+ yytext()); return symbol(sym.STRING, new String(yytext()));}
+\' [^\'] \'	{ System.out.println(">>character: "+ yytext()); return symbol(sym.CHARACTER, new Character(yytext().charAt(1)));}
 
 . {System.out.println("ERROR LEXICO");}
 

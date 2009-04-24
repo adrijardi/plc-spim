@@ -688,7 +688,7 @@ start with Program;
 	RESULT = nodo;
  :};
  
- PrintfStm ::= PRINTF LPAREN STRING:s RPAREN {:
+ PrintfStm ::= PRINTF LPAREN STRING COMMA STRING:s RPAREN {:
 	System.out.println("PrintfStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
 	nodo.setNodeType(NodeType.PRINTFSTRING);
@@ -696,7 +696,7 @@ start with Program;
 	RESULT = nodo;
  :};
  
- PrintfStm ::= PRINTF LPAREN ID:id RPAREN {:
+ PrintfStm ::= PRINTF LPAREN STRING COMMA ID:id RPAREN {:
 	System.out.println("PrintfStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
 	nodo.setNodeType(NodeType.PRINTFID);
@@ -907,14 +907,30 @@ _Stm_ ::= error _Stm_:ls {:
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
 	RESULT = nodo;
  :};
- Exp10 ::= Exp10 LPAREN RPAREN {:
+ Exp10 ::= Exp10:e10 LPAREN RPAREN {:
 	System.out.println("Exp10");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+	nodo.setNodeType(NodeType.FUNCTION_CALL);
+	String id = ((NodeAnalyzer)e10).getStrAtr(NodeKeys.VAR_ID);
+	if(id != null)
+		nodo.setAtribute(NodeKeys.FUNC_ID, id.toString());
+	else{
+		//TODO error
+		System.out.println("error");
+	}
 	RESULT = nodo;
  :};
- Exp10 ::= Exp10 LPAREN _Exp2_ RPAREN {:
+ Exp10 ::= Exp10:e10 LPAREN _Exp2_ RPAREN {:
 	System.out.println("Exp10");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+	nodo.setNodeType(NodeType.FUNCTION_CALL);
+	String id = ((NodeAnalyzer)e10).getStrAtr(NodeKeys.VAR_ID);
+	if(id != null)
+		nodo.setAtribute(NodeKeys.FUNC_ID, id.toString());
+	else{
+		//TODO error
+		System.out.println("error");
+	}
 	RESULT = nodo;
  :};
  Exp10 ::= Exp10 PLUSPLUS {:
