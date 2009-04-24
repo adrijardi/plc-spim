@@ -277,15 +277,24 @@ public class NodeAnalyzer {
 				if (fname.equals("main")) {
 					sb.append(fname);
 					sb.append(":\n");
+					sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+					sb.append("\t\tsw $ra,  ($sp) #Salvado de $ra\n");
 					sb.append(getChildernGlobCode());
-					sb
-							.append("\t\t#--Fin de programa--#\n\t\tli $v0, 10\n\t\tsyscall\n\n");
+					sb.append("\t\t#--Fin de programa--#\n");
+					sb.append("\t\tlw $ra,  ($sp) #Restauracion de $ra\n");
+					sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
+					sb.append("\t\tli $v0, 10\n\t\tsyscall\n\n");
 				} else {
 					sb.append(fname);
 					sb.append("_ini:\n");
+					sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+					sb.append("\t\tsw $ra,  ($sp) #Salvado de $ra\n");
 					sb.append(getChildernGlobCode());
 					sb.append(fname);
-					sb.append("_ret:\tjr $ra\t# retorna al invocador\n\n");
+					sb.append("_ret:\n");
+					sb.append("\t\tlw $ra,  ($sp) #Restauracion de $ra\n");
+					sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
+					sb.append("\t\tjr $ra\t# retorna al invocador\n\n");
 				}
 				break;
 			case ASIGNATION:
@@ -307,6 +316,12 @@ public class NodeAnalyzer {
 				sb.append(getStrAtr(NodeKeys.STRING));
 				sb.append("_str\n\t\tjal printf_str");
 				sb.append("\n");
+				break;
+			case FUNCTION_CALL:
+				sb.append("\t\tjal ");
+				String func_id = getStrAtr(NodeKeys.FUNC_ID);
+				sb.append(func_id);
+				sb.append("_ini\n");
 				break;
 			default:
 				sb.append(getChildernGlobCode());

@@ -17,7 +17,7 @@ public class Generator {
 	
 	private final String printfint="printf_int:\n\t\tli $v0, 1\n\t\tsyscall\n\t\tla $a0, ln_str\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
 	private final String printffloat="printf_float:\n\t\tmtc1 $a1, $f12\n\t\tli $v0, 2\n\t\tsyscall\n\t\tla $a0, ln_str\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
-	private final String printfstr="printf_str:\n\t\tli $v0, 4\n\t\tsyscall\n\t\tla $a0, ln_str\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
+	private final String printfstr="printf_str:\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
 	
 	public void setMain(NodeAnalyzer main) {
 		this.main = main;
