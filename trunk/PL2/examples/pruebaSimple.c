@@ -5,6 +5,7 @@ int y = 10;
 
 int main(){  
  int y = 3;
+ int f2;
  prod = 5;
  
  printf("%s","prod=");
@@ -12,8 +13,12 @@ int main(){
  printf("%s","y=");
  printf("%d\n",y);
 
- printf("%s\n","Invoco a f1\n");
+ printf("%s","Invoco a f1\n");
  f1();
+ 
+ printf("%s","Invoco a f2 con resultado: ");
+ f2 = f2();
+ printf("%d\n",f2);
  
  printf("%s","Saliendo...\n");
  return 0;
@@ -22,4 +27,8 @@ int main(){
 void f1(){  
  printf("%s","y(global)=");
  printf("%d\n",y);
+}
+
+int f2(){
+	return 42; 
 }

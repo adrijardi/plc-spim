@@ -9,6 +9,7 @@ public class VarTable {
 	// Almacenes para las tablas
 	private final HashSet<Variable> global = new HashSet<Variable>();
 	private final Hashtable<String, HashSet<Variable>> local = new Hashtable<String, HashSet<Variable>>();
+	private final Hashtable<String, String> functions = new Hashtable<String, String>();
 	private final Hashtable<String, String> strings = new Hashtable<String, String>();
 	private int strid = 0;
 
@@ -45,6 +46,19 @@ public class VarTable {
 	public void newScope() {
 		scope.addFirst(new Integer(nextNewScope));
 		nextNewScope = 1;
+	}
+	
+	public boolean addFunction(String id, String return_tipe){
+		boolean ret = false;
+		if(!functions.contains(id)){
+			functions.put(id, return_tipe);
+			ret = true;
+		}
+		return ret;	
+	}
+	
+	public String getReturnforFuction(String id){
+		return functions.get(id);
 	}
 
 	public boolean exitScope() {

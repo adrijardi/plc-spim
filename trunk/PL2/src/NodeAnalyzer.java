@@ -80,7 +80,8 @@ public class NodeAnalyzer {
 						syntactic.addError("Variable " + var + " duplicada");
 					} else {
 						if (!va.isGlobal()) {
-							setAtribute(NodeKeys.VAR_ID, var.getName()+var.getScope());
+							setAtribute(NodeKeys.VAR_ID, var.getName()
+									+ var.getScope());
 						}
 					}
 				}
@@ -90,10 +91,20 @@ public class NodeAnalyzer {
 				va.newScope();
 				scope = true;
 				break;
-			
+
+			case FUNCTION_CALL:
+				String ret = va.getReturnforFuction(getStrAtr(NodeKeys.FUNC_ID));
+				if (ret == null) {
+					// TODO Error
+					System.out.println("ERROR funcion con retorno null");
+				} else {
+					setAtribute(NodeKeys.TYPE, ret);
+				}
+				break;
+
 			case PRINTFSTRING:
 				String value = getStrAtr(NodeKeys.STRING);
-				if(value != null){
+				if (value != null) {
 					String key = va.addString(value);
 					setAtribute(NodeKeys.STRING, key);
 				}
@@ -108,12 +119,12 @@ public class NodeAnalyzer {
 		if (!va.isGlobal()) {
 			String varname = getStrAtr(NodeKeys.VAR_ID);
 			if (varname != null) {
-				System.out.println("Buscando Variable: "+varname);
+				System.out.println("Buscando Variable: " + varname);
 				String scp = va.buscarVariable(varname);
-				System.out.println("Encontrado : "+scp);
+				System.out.println("Encontrado : " + scp);
 				if (scp != null) {
 					if (scp.compareTo("0") != 0) {
-						setAtribute(NodeKeys.VAR_ID, varname+scp);
+						setAtribute(NodeKeys.VAR_ID, varname + scp);
 					}
 				}
 			}
@@ -300,28 +311,31 @@ public class NodeAnalyzer {
 			case ASIGNATION:
 				NodeAnalyzer reciver = hijos.get(0);
 				NodeAnalyzer value = hijos.get(1);
-				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),
-						reciver, value));
-				sb.append("\n");
+				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),reciver, value));
+				sb.append("\n\n");
 				break;
 			case PRINTFID:
 				// TODO Falta controlar el tipo de dato a imprimir
 				sb.append("\t\tlw $a0, ");
 				sb.append(getStrAtr(NodeKeys.VAR_ID));
 				sb.append("_var\n\t\tjal printf_int");
-				sb.append("\n");
+				sb.append("\n\n");
 				break;
 			case PRINTFSTRING:
 				sb.append("\t\tla $a0, ");
 				sb.append(getStrAtr(NodeKeys.STRING));
 				sb.append("_str\n\t\tjal printf_str");
-				sb.append("\n");
+				sb.append("\n\n");
 				break;
 			case FUNCTION_CALL:
 				sb.append("\t\tjal ");
 				String func_id = getStrAtr(NodeKeys.FUNC_ID);
 				sb.append(func_id);
-				sb.append("_ini\n");
+				sb.append("_ini\n\n");
+				break;
+			case RETURN:
+				NodeAnalyzer return_value = hijos.get(0);
+				sb.append(getReturnValue(return_value));
 				break;
 			default:
 				sb.append(getChildernGlobCode());
@@ -332,6 +346,21 @@ public class NodeAnalyzer {
 			sb.append(getChildernGlobCode());
 		}
 
+		return sb.toString();
+	}
+
+	private String getReturnValue(NodeAnalyzer return_value) {
+		StringBuilder sb = new StringBuilder();
+		switch (return_value.getNodeType()) {
+		case CONSTANT:
+			sb.append("\t\tli $v0, ");
+			sb.append(return_value.getIntAtr(NodeKeys.CONST_INT_VALUE));
+			sb.append("\n");
+			break;
+
+		default:
+			break;
+		}
 		return sb.toString();
 	}
 
@@ -383,6 +412,13 @@ public class NodeAnalyzer {
 			sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
 			sb.append("\n");
 			break;
+		case FUNCTION_CALL:
+			sb.append("\t\tjal ");
+			String func_id = getStrAtr(NodeKeys.FUNC_ID);
+			sb.append(func_id);
+			sb.append("_ini\n");
+			sb.append("\t\tmove $t0, $v0\n");
+			break;
 		default:
 			break;
 		}
@@ -398,6 +434,13 @@ public class NodeAnalyzer {
 			sb.append(getCharAtr(NodeKeys.CONST_CHAR_VALUE));
 			sb.append("\n");
 			break;
+		case FUNCTION_CALL:
+			sb.append("\t\tjal ");
+			String func_id = getStrAtr(NodeKeys.FUNC_ID);
+			sb.append(func_id);
+			sb.append("_ini\n");
+			sb.append("\t\tmove $t0, $v0\n");
+			break;
 		default:
 			break;
 		}
@@ -412,6 +455,13 @@ public class NodeAnalyzer {
 			sb.append("\t\taddi.s $f0, ");
 			sb.append(getFloatAtr(NodeKeys.CONST_FLOAT_VALUE));
 			sb.append("\n");
+			break;
+		case FUNCTION_CALL:
+			sb.append("\t\tjal ");
+			String func_id = getStrAtr(NodeKeys.FUNC_ID);
+			sb.append(func_id);
+			sb.append("_ini\n");
+			sb.append("\t\tmove $f0, $v0\n");
 			break;
 		default:
 			break;
