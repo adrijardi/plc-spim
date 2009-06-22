@@ -200,6 +200,18 @@ public class NodeAnalyzer {
 		}
 		return ret;
 	}
+	
+	public boolean getBooleanAtr(NodeKeys nk) {
+		Boolean ret = false;
+		try {
+			String s = nodeAtributes.get(nk);
+			if (s != null)
+				ret = new Boolean(s);
+		} catch (NumberFormatException nfe) {
+			System.out.println("Error al parsear atr");
+		}
+		return ret;
+	}
 
 	public NodeType getNodeType() {
 		return nodeType;
@@ -286,8 +298,7 @@ public class NodeAnalyzer {
 			case FUNCTION_DEC:
 				String fname = getStrAtr(NodeKeys.FUNC_ID);
 				if (fname.equals("main")) {
-					sb.append(fname);
-					sb.append(":\n");
+					sb.append(" __start:\n");
 					sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
 					sb.append("\t\tsw $ra,  ($sp) #Salvado de $ra\n");
 					sb.append(getChildernGlobCode());
@@ -328,14 +339,16 @@ public class NodeAnalyzer {
 				sb.append("\n\n");
 				break;
 			case FUNCTION_CALL:
-				sb.append("\t\tjal ");
-				String func_id = getStrAtr(NodeKeys.FUNC_ID);
-				sb.append(func_id);
-				sb.append("_ini\n\n");
+				sb.append(getFunctionCall());
 				break;
 			case RETURN:
 				NodeAnalyzer return_value = hijos.get(0);
 				sb.append(getReturnValue(return_value));
+				break;
+			case VARDEC:
+				if(getBooleanAtr(NodeKeys.IS_PARAM)){
+					
+				}
 				break;
 			default:
 				sb.append(getChildernGlobCode());
@@ -346,6 +359,59 @@ public class NodeAnalyzer {
 			sb.append(getChildernGlobCode());
 		}
 
+		return sb.toString();
+	}
+	
+	private int countParam(){
+		int ret = 0;
+		for (NodeAnalyzer node : hijos) {
+			if(node.nodeType.compareTo(NodeType.VARDEC)==0)
+				ret++;
+		}
+		return ret;
+	}
+
+	private String getFunctionCall() {
+		StringBuilder sb = new StringBuilder();
+		if(hijos!=null && hijos.size()>0){
+			/*int integerParam = 0;
+			int floatParam = 0;
+			String aux;
+			for (NodeAnalyzer hijo : hijos) {
+				switch (hijo.getNodeType()) {
+				case CONSTANT:
+					aux = hijo.getStrAtr(NodeKeys.TYPE);
+					if(aux.compareTo("float")==0){
+						System.out.println("Falta este codigo");//TODO Falta para float
+						floatParam++;
+					}else{
+						if(integerParam <=3){
+							
+						}else{
+							System.out.println("Que hacemos cuando nos quedamos sin registros de argumentos");//TODO ver
+						}
+						integerParam++;
+					}
+					break;
+				case VAR:
+					
+					break;
+				default:
+					System.out.println("ERROR");//TODO comprobar y quitar?
+					break;
+				}
+			}
+			sb.append("\t\tjal ");
+			String func_id = getStrAtr(NodeKeys.FUNC_ID);
+			sb.append(func_id);
+			sb.append("_ini\n\n");
+			*/
+		}else{
+			sb.append("\t\tjal ");
+			String func_id = getStrAtr(NodeKeys.FUNC_ID);
+			sb.append(func_id);
+			sb.append("_ini\n\n");
+		}
 		return sb.toString();
 	}
 

@@ -533,10 +533,12 @@ start with Program;
  	switch (nadd.getNodeType()) {
 	case VAR:
 		nodo.setAtribute(NodeKeys.VAR_ID, nadd.getStrAtr(NodeKeys.VAR_ID));
+		nodo.setAtribute(NodeKeys.IS_PARAM, "true");
 		nodo.setNodeType(NodeType.VARDEC);
 		break;
 	case ARRAYVAR:
 		nodo.setAtribute(NodeKeys.VAR_ID, nadd.getStrAtr(NodeKeys.VAR_ID));
+		nodo.setAtribute(NodeKeys.IS_PARAM, "true");
 		nodo.setNodeType(NodeType.ARRAYVARDEC);
 		break;
 
@@ -924,7 +926,7 @@ _Stm_ ::= error _Stm_:ls {:
 	}
 	RESULT = nodo;
  :};
- Exp10 ::= Exp10:e10 LPAREN _Exp2_ RPAREN {:
+ Exp10 ::= Exp10:e10 LPAREN _Exp2_:e2 RPAREN {:
 	System.out.println("Exp10");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
 	nodo.setNodeType(NodeType.FUNCTION_CALL);
@@ -935,6 +937,7 @@ _Stm_ ::= error _Stm_:ls {:
 		//TODO error
 		System.out.println("error");
 	}
+	nodo.copyHijos(((NodeAnalyzer)e2).getHijos());
 	RESULT = nodo;
  :};
  Exp10 ::= Exp10 PLUSPLUS {:
@@ -1000,15 +1003,13 @@ _Stm_ ::= error _Stm_:ls {:
  _Exp2_ ::= Exp2:e2 {:
 	System.out.println("_Exp2_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_");
-	//nodo.addHijo((NodeAnalyzer)e2);
+	nodo.addLeftHijo((NodeAnalyzer)e2);
 	RESULT = nodo;
  :};
  _Exp2_ ::= Exp2:e2 COMMA _Exp2_:le2 {:
 	System.out.println("_Exp2_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_");
-	//nodo.addHijo((NodeAnalyzer)e2);
-	//nodo.addHijo((NodeAnalyzer)le2);
-	RESULT = nodo;
+ 	((NodeAnalyzer)le2).addLeftHijo((NodeAnalyzer)e2);
+	RESULT = le2;
  :};
 
 // Simbolos de asignacion

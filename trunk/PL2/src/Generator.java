@@ -11,7 +11,7 @@ public class Generator {
 	//Variables para generar codigo
 	private final String cabecera = "#\n# UC3M - PROCESADORES DEL LENGUAJE\n# Codigo generado por los alumnos:\n# Adrian Lopez Perez\n# Daniel Conde Garcia\n###################################\n";
 	private final String text = "\n\t\t.text";
-	private final String globl = "\n\t\t.globl main";
+	private final String globl = "\n\t\t.globl __start";
 	private final String data = "\n\t\t.data";
 	private NodeAnalyzer main;
 	
@@ -25,7 +25,7 @@ public class Generator {
 
 	public Generator(String filename) throws IOException {
 		String name = filename.substring(0, filename.indexOf('.'));
-		file = new FileWriter(new File(name+".asm"));
+		file = new FileWriter(new File(name+".s"));
 	}
 
 	public void generate() {
