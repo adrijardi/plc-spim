@@ -8,7 +8,8 @@ public enum NodeKeys {
 	ASIGNMENT("String"),
 	DEBUG("int"),
 	FUNC_ID("String"),
-	STRING("String");
+	STRING("String"), 
+	IS_PARAM("boolean");
 
 	private final String type;
 

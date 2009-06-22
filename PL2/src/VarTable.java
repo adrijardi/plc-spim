@@ -82,7 +82,7 @@ public class VarTable {
 		String s = strings.get(key);
 		if(s != null){
 			String s2 = s.substring(0, s.length()-1);
-			s = s2+"\\0\"";
+			s = s2+"\""; //TODO: para linux +"\\0\"";
 		}
 		return s;
 	}
@@ -235,7 +235,7 @@ public class VarTable {
 		HashSet<Variable> hsvar;
 		Set<String> ids = local.keySet();
 		for (String var : ids) {
-			System.out.println(var);
+			//System.out.println(var);
 			hsvar = local.get(var);
 			for (Variable variable : hsvar) {
 				sb.append(variable.getName());
@@ -274,13 +274,13 @@ public class VarTable {
 			strval = getStringByKey(key);
 			sb.append(key);
 			sb.append("_str");
-			sb.append(":\t\t.ascii ");
+			sb.append(":\t\t.asciiz ");
 			sb.append(strval);
 			sb.append("\n");
 		}
 		
 		sb.append("ln_str");
-		sb.append(":\t\t.ascii \"\\n\"");
+		sb.append(":\t\t.asciiz \"\\n\"");
 		sb.append("\n");
 
 		return sb.toString();
