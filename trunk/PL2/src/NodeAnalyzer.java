@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public class NodeAnalyzer {
 	public void checkVariables(Syntactic syntactic) {
 		boolean scope = false;
 		VarTable va = VarTable.getInstance();
+		FunTable fu = FunTable.getInstance();
 		if (nodeType != null) {
 			switch (nodeType) {
 			case VARDEC:
@@ -80,8 +82,9 @@ public class NodeAnalyzer {
 						syntactic.addError("Variable " + var + " duplicada");
 					} else {
 						if (!va.isGlobal()) {
-							setAtribute(NodeKeys.VAR_ID, var.getName()
-									+ var.getScope());
+							setAtribute(NodeKeys.VAR_ID, var.getName()+ var.getScope());
+							if(getBooleanAtr(NodeKeys.IS_PARAM))
+								fu.addParameter(fu.getActualKey(), var);
 						}
 					}
 				}
@@ -89,6 +92,9 @@ public class NodeAnalyzer {
 
 			case FUNCTION_DEC:
 				va.newScope();
+				String fkey = getStrAtr(NodeKeys.FUNC_ID);
+				fu.addFunction(fkey);
+				fu.setActualKey(fkey);
 				scope = true;
 				break;
 
@@ -269,6 +275,20 @@ public class NodeAnalyzer {
 			hermano.print(level);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		if (nodeType != null) {
+			sb.append('[');
+			sb.append(nodeType);
+			sb.append(']');
+		}
+		sb.append('[');
+		sb.append(getStrAttr());
+		sb.append(']');
+		return sb.toString();
+	}
 
 	public void setAtribute(NodeKeys nk, String value) {
 		nodeAtributes.put(nk, value);
@@ -293,6 +313,7 @@ public class NodeAnalyzer {
 	 */
 	public String getGloblCode() {
 		StringBuilder sb = new StringBuilder();
+		String aux;
 		if (nodeType != null) {
 			switch (nodeType) {
 			case FUNCTION_DEC:
@@ -326,12 +347,31 @@ public class NodeAnalyzer {
 				sb.append("\n\n");
 				break;
 			case PRINTFID:
-				// TODO Falta controlar el tipo de dato a imprimir
-				sb.append("\t\tlw $a0, ");
-				sb.append(getStrAtr(NodeKeys.VAR_ID));
-				sb.append("_var\n\t\tjal printf_int");
-				sb.append("\n\n");
-				break;
+				String varid = getStrAtr(NodeKeys.VAR_ID);
+				Variable variable = VarTable.getInstance().getVariableByCompleteName(varid);
+				if(variable != null){
+					switch (variable.getVt()) {
+					case INT:
+						sb.append("\t\tlw $a0, ");
+						sb.append(getStrAtr(NodeKeys.VAR_ID));
+						sb.append("_var\n\t\tjal printf_int");
+						sb.append("\n\n");
+						break;
+					case CHAR:
+						sb.append("\t\tlw $a0, ");
+						sb.append(getStrAtr(NodeKeys.VAR_ID));
+						sb.append("_var\n\t\tjal printf_int");
+						sb.append("\n\n");
+						break;
+					case FLOAT:
+						sb.append("\t\tl.s $f12, ");
+						sb.append(getStrAtr(NodeKeys.VAR_ID));
+						sb.append("_var\n\t\tjal printf_float");
+						sb.append("\n\n");
+						break;
+					}
+				}
+					break;
 			case PRINTFSTRING:
 				sb.append("\t\tla $a0, ");
 				sb.append(getStrAtr(NodeKeys.STRING));
@@ -339,16 +379,12 @@ public class NodeAnalyzer {
 				sb.append("\n\n");
 				break;
 			case FUNCTION_CALL:
+				FunTable.getInstance().setActualKey(getStrAtr(NodeKeys.FUNC_ID));
 				sb.append(getFunctionCall());
 				break;
 			case RETURN:
 				NodeAnalyzer return_value = hijos.get(0);
 				sb.append(getReturnValue(return_value));
-				break;
-			case VARDEC:
-				if(getBooleanAtr(NodeKeys.IS_PARAM)){
-					
-				}
 				break;
 			default:
 				sb.append(getChildernGlobCode());
@@ -361,67 +397,97 @@ public class NodeAnalyzer {
 
 		return sb.toString();
 	}
-	
-	private int countParam(){
-		int ret = 0;
-		for (NodeAnalyzer node : hijos) {
-			if(node.nodeType.compareTo(NodeType.VARDEC)==0)
-				ret++;
-		}
-		return ret;
-	}
 
 	private String getFunctionCall() {
 		StringBuilder sb = new StringBuilder();
-		if(hijos!=null && hijos.size()>0){
-			/*int integerParam = 0;
-			int floatParam = 0;
-			String aux;
-			for (NodeAnalyzer hijo : hijos) {
-				switch (hijo.getNodeType()) {
-				case CONSTANT:
-					aux = hijo.getStrAtr(NodeKeys.TYPE);
-					if(aux.compareTo("float")==0){
-						System.out.println("Falta este codigo");//TODO Falta para float
-						floatParam++;
-					}else{
-						if(integerParam <=3){
+		sb.append("\t## FUNCTION CALL ##\n");
+		FunTable fu = FunTable.getInstance();
+		LinkedList<Variable> paramNames = fu.getParams(fu.getActualKey());
+		if(hijos!=null && hijos.size()== paramNames.size()){
+			if(hijos.size()>0){
+				Iterator<Variable> iv = paramNames.iterator();
+				Variable defParam;
+				String aux;
+				for (NodeAnalyzer hijo : hijos) {
+					defParam = iv.next();
+					switch (hijo.getNodeType()) {
+					case CONSTANT:
+						aux = hijo.getStrAtr(NodeKeys.TYPE);
+						if(aux.compareTo("float")==0){
+							
+						}else if(aux.compareTo("int")==0){
+							switch (defParam.getVt()) {
+							case FLOAT:
+								
+								break;
+							default:
+								sb.append("\t\tli $t0 "+hijo.getIntAtr(NodeKeys.CONST_INT_VALUE)+"\n");
+								sb.append("\t\tsw $t0 "+defParam.getName()+defParam.getScope()+"_var\n");
+								break;
+							}
+						}else if(aux.compareTo("char")==0){
 							
 						}else{
-							System.out.println("Que hacemos cuando nos quedamos sin registros de argumentos");//TODO ver
+							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");//TODO comprobar y quitar?
 						}
-						integerParam++;
+						break;
+					case VAR:
+						
+						break;
+					default:
+						System.out.println("ERROR");//TODO comprobar y quitar?
+						break;
 					}
-					break;
-				case VAR:
 					
-					break;
-				default:
-					System.out.println("ERROR");//TODO comprobar y quitar?
-					break;
 				}
+				
 			}
 			sb.append("\t\tjal ");
 			String func_id = getStrAtr(NodeKeys.FUNC_ID);
 			sb.append(func_id);
 			sb.append("_ini\n\n");
-			*/
 		}else{
-			sb.append("\t\tjal ");
-			String func_id = getStrAtr(NodeKeys.FUNC_ID);
-			sb.append(func_id);
-			sb.append("_ini\n\n");
+			System.out.println("ERROR");
 		}
 		return sb.toString();
 	}
 
 	private String getReturnValue(NodeAnalyzer return_value) {
 		StringBuilder sb = new StringBuilder();
+		String tipo;
 		switch (return_value.getNodeType()) {
 		case CONSTANT:
-			sb.append("\t\tli $v0, ");
-			sb.append(return_value.getIntAtr(NodeKeys.CONST_INT_VALUE));
-			sb.append("\n");
+			tipo = return_value.getStrAtr(NodeKeys.TYPE);
+			if("int".compareTo(tipo)==0){
+				sb.append("\t\tli $v0, ");
+				sb.append(return_value.getIntAtr(NodeKeys.CONST_INT_VALUE));
+				sb.append("\n");
+			}else if("char".compareTo(tipo)==0){
+				sb.append("\t\tli $v0, ");
+				sb.append((int)return_value.getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+				sb.append("\n");
+			}else if("float".compareTo(tipo)==0){
+				sb.append("\t\tli.s $f0, ");
+				sb.append(return_value.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE));
+				sb.append("\n");
+			}
+			
+			break;
+		case VAR:
+			tipo = getStrAtr(NodeKeys.TYPE);
+			if("int".compareTo(tipo)==0){
+				sb.append("\t\tlw $v0, ");
+				sb.append(return_value.getStrAtr(NodeKeys.VAR_ID)+"_var");
+				sb.append("\n");
+			}else if("char".compareTo(tipo)==0){
+				sb.append("\t\tlw $v0, ");
+				sb.append(return_value.getStrAtr(NodeKeys.VAR_ID)+"_var");
+				sb.append("\n");
+			}else if("float".compareTo(tipo)==0){
+				sb.append("\t\tl.s $f0, ");
+				sb.append(return_value.getStrAtr(NodeKeys.VAR_ID)+"_var");
+				sb.append("\n");
+			}
 			break;
 
 		default:
@@ -448,7 +514,7 @@ public class NodeAnalyzer {
 			String tipo = value.getStrAtr(NodeKeys.TYPE);
 			if (tipo.compareTo("float") == 0) {
 				sb.append(value.getFloatValueCode());
-				sb.append("\t\tsw.s $f0, ");
+				sb.append("\t\ts.s $f0, ");
 			} else if (tipo.compareTo("int") == 0) {
 				sb.append(value.getIntValueCode());
 				sb.append("\t\tsw $t0, ");
@@ -479,10 +545,7 @@ public class NodeAnalyzer {
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
-			sb.append("\t\tjal ");
-			String func_id = getStrAtr(NodeKeys.FUNC_ID);
-			sb.append(func_id);
-			sb.append("_ini\n");
+			sb.append(getGloblCode());			
 			sb.append("\t\tmove $t0, $v0\n");
 			break;
 		default:
@@ -501,10 +564,7 @@ public class NodeAnalyzer {
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
-			sb.append("\t\tjal ");
-			String func_id = getStrAtr(NodeKeys.FUNC_ID);
-			sb.append(func_id);
-			sb.append("_ini\n");
+			sb.append(getGloblCode());	
 			sb.append("\t\tmove $t0, $v0\n");
 			break;
 		default:
@@ -518,16 +578,12 @@ public class NodeAnalyzer {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
 		case CONSTANT:
-			sb.append("\t\taddi.s $f0, ");
+			sb.append("\t\tli.s $f0, ");
 			sb.append(getFloatAtr(NodeKeys.CONST_FLOAT_VALUE));
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
-			sb.append("\t\tjal ");
-			String func_id = getStrAtr(NodeKeys.FUNC_ID);
-			sb.append(func_id);
-			sb.append("_ini\n");
-			sb.append("\t\tmove $f0, $v0\n");
+			sb.append(getGloblCode());	
 			break;
 		default:
 			break;
@@ -547,6 +603,10 @@ public class NodeAnalyzer {
 			sb.append(hijo.getGloblCode());
 		}
 		return sb.toString();
+	}
+
+	public NodeAnalyzer getLastChildren() {
+		return hijos.getLast();
 	}
 
 }

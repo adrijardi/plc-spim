@@ -14,11 +14,13 @@ parser code{:
 	private StateAnalyzer state;
 	//TODO quitar luego
 	private int auxVar = 0;
+	int auxCountParamDec = 0;
 	private Generator generator;
 
 	public static void main(String args[]) throws Exception{
 		System.out.println("Con argumentos " + args[0]);
 		Lexer lex = new Lexer(new java.io.FileReader(args[0]));
+		FunTable.getInstance();
 		Syntactic sin = new Syntactic(lex);
 		sin.initializeParser(lex, args[0]);
 		sin.runParser();
@@ -60,6 +62,7 @@ parser code{:
 		}else{
 			generate();
 			VarTable.getInstance().printTable();
+			FunTable.getInstance().printTable();
 		}
 	}
 	
@@ -281,6 +284,10 @@ start with Program;
 	nodo.copyLeftHijos(((NodeAnalyzer)dd).getHijos());
 	String id = ((NodeAnalyzer)dd).getStrAtr(NodeKeys.VAR_ID);
 	String type = ((NodeAnalyzer)ts).getStrAtr(NodeKeys.TYPE);
+	if(!("void".compareTo(type)==0)){
+		NodeAnalyzer ret = nodo.getLastChildren().getLastChildren();
+		ret.setAtribute(NodeKeys.TYPE, type);
+	}
 	nodo.setAtribute(NodeKeys.TYPE, type);
 	nodo.setAtribute(NodeKeys.FUNC_ID, id);
 	nodo.setNodeType(NodeType.FUNCTION_DEC);
@@ -479,6 +486,7 @@ start with Program;
 		nadd.setError(true);
 		break;
 	}
+ 	parser.auxCountParamDec = 0;
  	RESULT = nadd;
  :};
  DirectDeclarator ::= DirectDeclarator:dd LPAREN _Ident_ RPAREN {:
@@ -517,11 +525,13 @@ start with Program;
 	System.out.println("_ParameterDeclaration_");
 	NodeAnalyzer nodo =new NodeAnalyzer("_ParameterDeclaration_");
 	nodo.addRightHijo((NodeAnalyzer)pd);
+	((NodeAnalyzer)pd).setAtribute(NodeKeys.PARAM_POS, ""+parser.auxCountParamDec++);
 	RESULT = nodo;
  :}; 
  _ParameterDeclaration_ ::= _ParameterDeclaration_:lpd COMMA ParameterDeclaration:pd {:
 	System.out.println("_ParameterDeclaration_");
 	((NodeAnalyzer)lpd).addRightHijo((NodeAnalyzer)pd);
+	((NodeAnalyzer)pd).setAtribute(NodeKeys.PARAM_POS, ""+parser.auxCountParamDec++);
 	RESULT = lpd;
  :};
 
