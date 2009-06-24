@@ -182,6 +182,28 @@ public class VarTable {
 
 		return ret;
 	}
+	
+	public Variable getVariableByCompleteName(String var){
+		Variable ret = null;
+		for (Variable variable : global) {
+			if(variable.equals(var))
+				ret = variable;
+		}
+		
+		if(ret == null){
+			Set<String> ids = local.keySet();
+			for (String key : ids) {
+				HashSet<Variable> hs = local.get(key);
+				for (Variable v : hs) {
+					if((v.getName()+v.getScope()).compareTo(var)==0){
+						ret = v;
+					}
+				}
+			}
+		}
+
+		return ret;
+	}
 
 	public void printTable() {
 		HashSet<Variable> hsvar;
@@ -223,10 +245,12 @@ public class VarTable {
 					break;
 				case FLOAT:
 					sb.append(".float ");
-					if (variable.isValue())
-						sb.append(variable.getFvalue());
-					else
-						sb.append(0);
+					if (variable.isValue()){
+						float f = variable.getFvalue();
+						sb.append(f);
+						
+					}else
+						sb.append("0.0");
 					break;
 				}
 				sb.append("\n");
@@ -261,7 +285,7 @@ public class VarTable {
 					if (variable.isValue())
 						sb.append(variable.getFvalue());
 					else
-						sb.append(0);
+						sb.append("0.0");
 					break;
 				}
 				sb.append("\n");
