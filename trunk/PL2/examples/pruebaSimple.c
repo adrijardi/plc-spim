@@ -75,6 +75,10 @@ int main(){
  iret = f5(10);
  printf("%d\n",iret);
  
+ printf("%s","Invocacion con parametros variables y retorno [int] f5\n");
+ iret = f5(prod);
+ printf("%d\n",iret);
+ 
  printf("%s","Saliendo...\n");
  return 0;
 }
