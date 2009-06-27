@@ -22,8 +22,9 @@ str8_str:		.asciiz "Invocacion vacia con retorno variable[float] f3f\n"
 str7_str:		.asciiz "Invocacion vacia con retorno variable[int] f3\n"
 str6_str:		.asciiz "Invocacion vacia con retorno constante[float] f2f\n"
 str5_str:		.asciiz "Invocacion vacia con retorno constante[int] f2\n"
+str12_str:		.asciiz "Saliendo...\n"
 str4_str:		.asciiz "Invocacion vacia f1\n"
-str11_str:		.asciiz "Saliendo...\n"
+str11_str:		.asciiz "Invocacion con parametros variables y retorno [int] f5\n"
 str3_str:		.asciiz "y="
 str10_str:		.asciiz "Invocacion con parametros constantes y retorno [int] f5\n"
 str2_str:		.asciiz "prod="
@@ -213,6 +214,20 @@ f5_ret:
 		jal printf_int
 
 		la $a0, str11_str
+		jal printf_str
+
+	## FUNCTION CALL ##
+		lw $t0 prod_var
+		sw $t0 z0_7_var
+		jal f5_ini
+
+		move $t0, $v0
+		sw $t0, iret0_8_var
+
+		lw $a0, iret0_8_var
+		jal printf_int
+
+		la $a0, str12_str
 		jal printf_str
 
 		li $v0, 0

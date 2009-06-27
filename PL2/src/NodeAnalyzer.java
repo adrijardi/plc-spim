@@ -407,6 +407,7 @@ public class NodeAnalyzer {
 			if(hijos.size()>0){
 				Iterator<Variable> iv = paramNames.iterator();
 				Variable defParam;
+				Variable auxvar;
 				String aux;
 				for (NodeAnalyzer hijo : hijos) {
 					defParam = iv.next();
@@ -414,11 +415,11 @@ public class NodeAnalyzer {
 					case CONSTANT:
 						aux = hijo.getStrAtr(NodeKeys.TYPE);
 						if(aux.compareTo("float")==0){
-							
+							//TODO faltaaaaaaaaaa conversion de tipos
 						}else if(aux.compareTo("int")==0){
 							switch (defParam.getVt()) {
 							case FLOAT:
-								
+								//TODO faltaaaaaaaaaa conversion de tipos
 								break;
 							default:
 								sb.append("\t\tli $t0 "+hijo.getIntAtr(NodeKeys.CONST_INT_VALUE)+"\n");
@@ -426,13 +427,40 @@ public class NodeAnalyzer {
 								break;
 							}
 						}else if(aux.compareTo("char")==0){
-							
+							//TODO faltaaaaaaaaaa conversion de tipos
 						}else{
 							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");//TODO comprobar y quitar?
 						}
 						break;
 					case VAR:
-						
+						aux = hijo.getStrAtr(NodeKeys.VAR_ID);
+						auxvar = VarTable.getInstance().getVariableByCompleteName(aux);
+						switch (auxvar.getVt()) {
+						case FLOAT:
+							//TODO faltaaaaaaaaaa conversion de tipos
+							break;
+						case INT:
+							switch (defParam.getVt()) {
+							case FLOAT:
+								//TODO faltaaaaaaaaaa conversion de tipos
+								break;
+							default:
+								sb.append("\t\tlw $t0 "+auxvar.getName());
+								if(auxvar.getName().compareTo(auxvar.getScope())!= 0)
+									sb.append(auxvar.getScope());
+								sb.append("_var\n");
+								sb.append("\t\tsw $t0 "+defParam.getName()+defParam.getScope()+"_var\n");
+								break;
+							}						
+							break;
+						case CHAR:
+							//TODO faltaaaaaaaaaa conversion de tipos
+							break;
+
+						default:
+							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");//TODO comprobar y quitar?
+							break;
+						}
 						break;
 					default:
 						System.out.println("ERROR");//TODO comprobar y quitar?
