@@ -861,11 +861,13 @@ _Stm_ ::= error _Stm_:ls {:
  Exp7 ::= Exp7 PLUS Exp8 {:
 	System.out.println("Exp7");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp7");
+	nodo.setNodeType(NodeType.OPERATION);
 	RESULT = nodo;
  :};
  Exp7 ::= Exp7 MINUS Exp8 {:
 	System.out.println("Exp7");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp7");
+	nodo.setNodeType(NodeType.OPERATION);
 	RESULT = nodo;
  :};
  
@@ -876,11 +878,13 @@ _Stm_ ::= error _Stm_:ls {:
  Exp8 ::= Exp8 MULT Exp12 {:
 	System.out.println("Exp8");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp8");
+	nodo.setNodeType(NodeType.OPERATION);
 	RESULT = nodo;
  :};
  Exp8 ::= Exp8 DIV Exp12 {:
 	System.out.println("Exp8");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp8");
+	nodo.setNodeType(NodeType.OPERATION);
 	RESULT = nodo;
  :};
  

@@ -117,7 +117,27 @@ void pruebaFunciones(){
 }
 
 void pruebaOperaciones(){
-
+ int i = 1;
+ float j = 0;
+ printf("%s","Asignaciones con operacion [+=]\n");
+ printf("%d\n",i);
+ i += 1;
+ printf("%d\n",i);
+ i += 1.6f;
+ printf("%d\n",i);
+ j += i;
+ printf("%f\n",j);
+ j += 1;
+ printf("%f\n",j);
+ j += 1.5f;
+ printf("%f\n",j);
+ j += 3 + 1.5f;
+ printf("%f\n",j);
+ i=2;
+ i*=1.5f;
+ printf("%d\n",i);
+ 
+ 
 }
 
 void pruebaSentenciasControl(){
