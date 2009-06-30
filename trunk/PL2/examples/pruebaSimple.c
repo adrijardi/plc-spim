@@ -4,6 +4,7 @@ int prod = 2;
 int y = 10;
 float fp1 = 3.5f;
 float fp2 = 6.3f;
+float fp3 = 4.3f;
 
 void f1(){  
  printf("%s","y(global)=");
@@ -38,7 +39,11 @@ int f5(int z){
 	return z;
 }
 
-int main(){  
+float f5f(float z){
+	return z;
+}
+
+void pruebaFunciones(){
  int y = 3;
  int iret;
  float fret;
@@ -75,9 +80,59 @@ int main(){
  iret = f5(10);
  printf("%d\n",iret);
  
+ printf("%s","Invocacion con parametros constantes (conversion int -> float) y retorno [int] f5f\n");
+ fret = f5f(10);
+ printf("%f\n",fret);
+ 
+ printf("%s","Invocacion con parametros constantes (conversion float -> int) y retorno [int] f5\n");
+ iret = f5(10.5f);
+ printf("%d\n",iret);
+ 
  printf("%s","Invocacion con parametros variables y retorno [int] f5\n");
  iret = f5(prod);
  printf("%d\n",iret);
+ 
+ printf("%s","Invocacion con parametros variables y retorno [int] f5f\n");
+ printf("%f\n",fp1);
+ fret = f5f(fp1);
+ printf("%f\n",fret);
+ 
+ printf("%s","Invocacion con parametros variables (conversion int -> float) y retorno [int] f5f\n");
+ fret = f5f(prod);
+ printf("%f\n",fret);
+ 
+ printf("%s","Invocacion con parametros variables (conversion float -> int) y retorno [int] f5\n");
+ printf("%f\n",fp3);
+ iret = f5(fp3);
+ printf("%d\n",iret);
+ 
+ printf("%s","Conversion de asignacion en retorno (conversion float -> int) f5f\n");
+ iret = f5f(prod);
+ printf("%d\n",iret);
+ 
+ printf("%s","Conversion de asignacion en retorno (conversion int -> float) f5\n");
+ printf("%f\n",fp3);
+ fret = f5(fp3);
+ printf("%f\n",fret);
+}
+
+void pruebaOperaciones(){
+
+}
+
+void pruebaSentenciasControl(){
+
+}
+
+int main(){  
+ printf("%s","Pruebas funciones\n");
+ pruebaFunciones();
+ 
+ printf("%s","Pruebas Operaciones\n");
+ pruebaOperaciones();
+ 
+ printf("%s","Pruebas Sentencias Control\n");
+ pruebaSentenciasControl();
  
  printf("%s","Saliendo...\n");
  return 0;

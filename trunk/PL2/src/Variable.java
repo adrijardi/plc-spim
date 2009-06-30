@@ -71,6 +71,14 @@ public class Variable {
 	public float getFvalue() {
 		return fvalue;
 	}
+	
+	public String getCompleteName(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);
+		if(name.compareTo(scope)!= 0)
+			sb.append(scope);
+		return sb.toString();
+	}
 
 	@Override
 	public boolean equals(Object obj) {

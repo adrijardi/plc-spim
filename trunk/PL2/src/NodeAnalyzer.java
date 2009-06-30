@@ -413,43 +413,88 @@ public class NodeAnalyzer {
 					defParam = iv.next();
 					switch (hijo.getNodeType()) {
 					case CONSTANT:
+						//primero miramos el tipo del hijo y luego el tipo de donde lo queremos meter
 						aux = hijo.getStrAtr(NodeKeys.TYPE);
 						if(aux.compareTo("float")==0){
-							//TODO faltaaaaaaaaaa conversion de tipos
+							switch (defParam.getVt()) {
+							case FLOAT:
+								sb.append("\t\tli.s $f0, "+hijo.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE)+"\n");
+								sb.append("\t\ts.s $f0, "+defParam.getCompleteName()+"_var\n");
+								break;
+							case INT:
+								//TODO se convierte el float a entero y se pierde precision, generar un warning
+								sb.append("\t\tli.s $f4, "+hijo.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE)+"\n");
+								sb.append("\t\tcvt.w.s $f4, $f4\n");
+								sb.append("\t\tmfc1 $t0,$f4\n");
+								sb.append("\t\tsw $t0 "+defParam.getCompleteName()+"_var\n");
+								break;
+							default:
+								//TODO error no se puede pasar de float a char
+								Generator.ERROR = true;
+								break;
+							}
 						}else if(aux.compareTo("int")==0){
 							switch (defParam.getVt()) {
 							case FLOAT:
-								//TODO faltaaaaaaaaaa conversion de tipos
-								break;
-							default:
+								//Se convierten los enteros a float
 								sb.append("\t\tli $t0 "+hijo.getIntAtr(NodeKeys.CONST_INT_VALUE)+"\n");
-								sb.append("\t\tsw $t0 "+defParam.getName()+defParam.getScope()+"_var\n");
+								sb.append("\t\tmtc1 $t0, $f0\n");
+								sb.append("\t\tcvt.s.w $f0, $f0\n");
+								sb.append("\t\ts.s $f0, "+defParam.getCompleteName()+"_var\n");
+								break;
+							case INT:
+								//TODO se convierte el float a entero y se pierde precision, generar un warning
+								sb.append("\t\tli $t0 "+hijo.getIntAtr(NodeKeys.CONST_INT_VALUE)+"\n");
+								sb.append("\t\tsw $t0 "+defParam.getCompleteName()+"_var\n");
+								break;
+							case CHAR:
+								sb.append("\t\tli $t0 "+((int)hijo.getCharAtr(NodeKeys.CONST_CHAR_VALUE).charValue())+"\n");
+								sb.append("\t\tsw $t0 "+defParam.getCompleteName()+"_var\n");
 								break;
 							}
 						}else if(aux.compareTo("char")==0){
 							//TODO faltaaaaaaaaaa conversion de tipos
 						}else{
+							Generator.ERROR = true;
 							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");//TODO comprobar y quitar?
 						}
 						break;
 					case VAR:
+						//primero miramos el tipo del hijo y luego el tipo de donde lo queremos meter
 						aux = hijo.getStrAtr(NodeKeys.VAR_ID);
 						auxvar = VarTable.getInstance().getVariableByCompleteName(aux);
 						switch (auxvar.getVt()) {
 						case FLOAT:
-							//TODO faltaaaaaaaaaa conversion de tipos
+							switch (defParam.getVt()) {
+							case FLOAT:
+								sb.append("\t\tl.s $f0, "+auxvar.getCompleteName()+"_var\n");
+								sb.append("\t\ts.s $f0, "+defParam.getCompleteName()+"_var\n");
+								break;
+							case INT:
+								//TODO se convierte el float a entero y se pierde precision, generar un warning
+								sb.append("\t\tl.s $f4, "+auxvar.getCompleteName()+"_var\n");
+								sb.append("\t\tcvt.w.s $f4, $f4\n");
+								sb.append("\t\tmfc1 $t0,$f4\n");
+								sb.append("\t\tsw $t0 "+defParam.getCompleteName()+"_var\n");
+								break;
+							default:
+								//TODO error no se puede pasar de float a char
+								Generator.ERROR = true;
+								break;
+							}
 							break;
 						case INT:
 							switch (defParam.getVt()) {
 							case FLOAT:
-								//TODO faltaaaaaaaaaa conversion de tipos
+								// Se pasa de int a float
+								sb.append("\t\tlw $t0 "+auxvar.getCompleteName()+"_var\n");
+								sb.append("\t\tmtc1 $t0, $f0\n");
+								sb.append("\t\tcvt.s.w $f0, $f0\n");
+								sb.append("\t\ts.s $f0, "+defParam.getCompleteName()+"_var\n");
 								break;
 							default:
-								sb.append("\t\tlw $t0 "+auxvar.getName());
-								if(auxvar.getName().compareTo(auxvar.getScope())!= 0)
-									sb.append(auxvar.getScope());
-								sb.append("_var\n");
-								sb.append("\t\tsw $t0 "+defParam.getName()+defParam.getScope()+"_var\n");
+								sb.append("\t\tlw $t0 "+auxvar.getCompleteName()+"_var\n");
+								sb.append("\t\tsw $t0 "+defParam.getCompleteName()+"_var\n");
 								break;
 							}						
 							break;
@@ -463,7 +508,7 @@ public class NodeAnalyzer {
 						}
 						break;
 					default:
-						System.out.println("ERROR");//TODO comprobar y quitar?
+						System.out.println("ERROR");//TODO comprobar y quitar
 						break;
 					}
 					
@@ -538,19 +583,23 @@ public class NodeAnalyzer {
 	private String getAsignationCode(String strAtr, NodeAnalyzer reciver,
 			NodeAnalyzer value) {
 		StringBuilder sb = new StringBuilder();
+		String varid = reciver.getStrAtr(NodeKeys.VAR_ID);
 		if (strAtr.compareTo("=") == 0) {
-			String tipo = value.getStrAtr(NodeKeys.TYPE);
-			if (tipo.compareTo("float") == 0) {
+			switch (VarTable.getInstance().getVariableByCompleteName(varid).getVt()) {
+			case FLOAT:
 				sb.append(value.getFloatValueCode());
 				sb.append("\t\ts.s $f0, ");
-			} else if (tipo.compareTo("int") == 0) {
+				break;
+			case INT:
 				sb.append(value.getIntValueCode());
 				sb.append("\t\tsw $t0, ");
-			} else if (tipo.compareTo("char") == 0) {
+				break;
+			case CHAR:
 				sb.append(value.getCharValueCode());
 				sb.append("\t\tsw $t0, ");
+				break;
 			}
-			sb.append(reciver.getStrAtr(NodeKeys.VAR_ID));
+			sb.append(varid);
 			sb.append("_var");
 		} else if (strAtr.compareTo("*=") == 0) {
 			sb.append(strAtr);
@@ -563,7 +612,7 @@ public class NodeAnalyzer {
 		}
 		return sb.toString();
 	}
-
+	
 	private String getIntValueCode() {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
@@ -573,8 +622,17 @@ public class NodeAnalyzer {
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
-			sb.append(getGloblCode());			
-			sb.append("\t\tmove $t0, $v0\n");
+			sb.append(getGloblCode());
+			String tipo = getStrAtr(NodeKeys.TYPE);
+			if("float".compareTo(tipo)==0){
+				//TODO se convierte el float a entero y se pierde precision, generar un warning
+				sb.append("\t\tcvt.w.s $f0, $f0\n");
+				sb.append("\t\tmfc1 $t0,$f0\n");
+			}else if("void".compareTo(tipo)==0){
+				Generator.ERROR = true;	
+			}else{
+				sb.append("\t\tmove $t0, $v0\n");
+			}
 			break;
 		default:
 			break;
@@ -593,7 +651,14 @@ public class NodeAnalyzer {
 			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());	
-			sb.append("\t\tmove $t0, $v0\n");
+			String tipo = getStrAtr(NodeKeys.TYPE);
+			if("float".compareTo(tipo)==0){
+				Generator.ERROR = true;
+			}else if("void".compareTo(tipo)==0){
+				Generator.ERROR = true;	
+			}else{
+				sb.append("\t\tmove $t0, $v0\n");
+			}
 			break;
 		default:
 			break;
@@ -611,7 +676,17 @@ public class NodeAnalyzer {
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
-			sb.append(getGloblCode());	
+			sb.append(getGloblCode());
+			String tipo = getStrAtr(NodeKeys.TYPE);
+			if("int".compareTo(tipo)==0){
+				// Se pasa de int a float
+				sb.append("\t\tmtc1 $t0, $f0\n");
+				sb.append("\t\tcvt.s.w $f0, $f0\n");
+			}else if("void".compareTo(tipo)==0){
+				Generator.ERROR = true;	
+			}else{
+				sb.append("\t\tmove $t0, $v0\n");
+			}
 			break;
 		default:
 			break;
