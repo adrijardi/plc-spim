@@ -1,5 +1,7 @@
 
 Medidas tomadas:
+-Se elimina el tipo char?
+-Se decide que en las variables float se realiza una conversion a entero perdiendo precisión y generando un warning
 -Para controlar la definición de variables globales se prohibe la declaración de las mismas una vez se haya declarado una función.
 -Se eliminan los nodos supérfluos en la generación del árbol
 -Se marcan los nodos en los que ha habido un error, también se añade el error a la lista de errores.

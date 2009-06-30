@@ -5,6 +5,8 @@ import java.io.IOException;
 
 public class Generator {
 	
+	public static boolean ERROR = false;
+	private final File f;
 	private final FileWriter file;
 	private final VarTable varTable = VarTable.getInstance();
 	
@@ -26,7 +28,8 @@ public class Generator {
 	public Generator(String filename) throws IOException {
 		
 		String name = filename.substring(0, filename.indexOf('.'));
-		file = new FileWriter(new File(name+".s"));
+		f = new File(name+".s");
+		file = new FileWriter(f);
 	}
 
 	public void generate() {
@@ -46,6 +49,8 @@ public class Generator {
 			file.write(printfstr);
 			file.flush();
 			file.close();
+			if(ERROR)
+				f.delete();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
