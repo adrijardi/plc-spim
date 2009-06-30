@@ -11,6 +11,8 @@ fp3_var:		.float 4.3
 fp1_var:		.float 3.5
 y_var:		.word 10
 prod_var:		.word 2
+j0_10_var:		.float 0.0
+i0_10_var:		.word 1
 fret0_9_var:		.float 0.0
 iret0_9_var:		.word 0
 f0_6_var:		.word 0
@@ -23,10 +25,11 @@ str3_str:		.asciiz "y="
 str2_str:		.asciiz "prod="
 str1_str:		.asciiz "fp1(global)="
 str0_str:		.asciiz "y(global)="
-str22_str:		.asciiz "Saliendo...\n"
-str21_str:		.asciiz "Pruebas Sentencias Control\n"
-str20_str:		.asciiz "Pruebas Operaciones\n"
-str19_str:		.asciiz "Pruebas funciones\n"
+str23_str:		.asciiz "Saliendo...\n"
+str22_str:		.asciiz "Pruebas Sentencias Control\n"
+str21_str:		.asciiz "Pruebas Operaciones\n"
+str20_str:		.asciiz "Pruebas funciones\n"
+str19_str:		.asciiz "Asignaciones con operacion [+=]\n"
 str18_str:		.asciiz "Conversion de asignacion en retorno (conversion int -> float) f5\n"
 str17_str:		.asciiz "Conversion de asignacion en retorno (conversion float -> int) f5f\n"
 str16_str:		.asciiz "Invocacion con parametros variables (conversion float -> int) y retorno [int] f5\n"
@@ -180,7 +183,7 @@ pruebaFunciones_ini:
 	## FUNCTION CALL ##
 		jal f2f_ini
 
-		move $t0, $v0
+		mov.s $f0, $f0
 		s.s $f0, fret0_9_var
 
 		l.s $f12, fret0_9_var
@@ -204,7 +207,7 @@ pruebaFunciones_ini:
 	## FUNCTION CALL ##
 		jal f3f_ini
 
-		move $t0, $v0
+		mov.s $f0, $f0
 		s.s $f0, fret0_9_var
 
 		l.s $f12, fret0_9_var
@@ -246,7 +249,7 @@ pruebaFunciones_ini:
 		s.s $f0, z0_8_var
 		jal f5f_ini
 
-		move $t0, $v0
+		mov.s $f0, $f0
 		s.s $f0, fret0_9_var
 
 		l.s $f12, fret0_9_var
@@ -258,7 +261,7 @@ pruebaFunciones_ini:
 	## FUNCTION CALL ##
 		li.s $f4, 10.5
 		cvt.w.s $f4, $f4
-		mfc1 $t0,$f4
+		mfc1 $t0, $f4
 		sw $t0 z0_7_var
 		jal f5_ini
 
@@ -293,7 +296,7 @@ pruebaFunciones_ini:
 		s.s $f0, z0_8_var
 		jal f5f_ini
 
-		move $t0, $v0
+		mov.s $f0, $f0
 		s.s $f0, fret0_9_var
 
 		l.s $f12, fret0_9_var
@@ -309,7 +312,7 @@ pruebaFunciones_ini:
 		s.s $f0, z0_8_var
 		jal f5f_ini
 
-		move $t0, $v0
+		mov.s $f0, $f0
 		s.s $f0, fret0_9_var
 
 		l.s $f12, fret0_9_var
@@ -324,7 +327,7 @@ pruebaFunciones_ini:
 	## FUNCTION CALL ##
 		l.s $f4, fp3_var
 		cvt.w.s $f4, $f4
-		mfc1 $t0,$f4
+		mfc1 $t0, $f4
 		sw $t0 z0_7_var
 		jal f5_ini
 
@@ -345,7 +348,7 @@ pruebaFunciones_ini:
 		jal f5f_ini
 
 		cvt.w.s $f0, $f0
-		mfc1 $t0,$f0
+		mfc1 $t0, $f0
 		sw $t0, iret0_9_var
 
 		lw $a0, iret0_9_var
@@ -360,11 +363,11 @@ pruebaFunciones_ini:
 	## FUNCTION CALL ##
 		l.s $f4, fp3_var
 		cvt.w.s $f4, $f4
-		mfc1 $t0,$f4
+		mfc1 $t0, $f4
 		sw $t0 z0_7_var
 		jal f5_ini
 
-		mtc1 $t0, $f0
+		mtc1 $v0, $f0
 		cvt.s.w $f0, $f0
 		s.s $f0, fret0_9_var
 
@@ -379,6 +382,93 @@ pruebaFunciones_ret:
 pruebaOperaciones_ini:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
+		la $a0, str19_str
+		jal printf_str
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+	## OPERATION PLUS ##
+		li $t0, 1
+		move $t2, $t0
+		lw $t0, i0_10_var
+		move $t1, $t0
+		add $t0, $t1, $t2
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+	## OPERATION PLUS ##
+		li.s $f2, 1.6
+		lw $t0, i0_10_var
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		add.s $f0, $f1, $f2
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+	## OPERATION PLUS ##
+		lw $t0, i0_10_var
+		mtc1 $t0, $f2
+		cvt.s.w $f2, $f2
+		l.s $f1, j0_10_var
+		add.s $f0, $f1, $f2
+		s.s $f0, j0_10_var
+
+		l.s $f12, j0_10_var
+		jal printf_float
+
+	## OPERATION PLUS ##
+		li $t0, 1
+		mtc1 $t0, $f2
+		cvt.s.w $f2, $f2
+		l.s $f1, j0_10_var
+		add.s $f0, $f1, $f2
+		s.s $f0, j0_10_var
+
+		l.s $f12, j0_10_var
+		jal printf_float
+
+	## OPERATION PLUS ##
+		li.s $f2, 1.5
+		l.s $f1, j0_10_var
+		add.s $f0, $f1, $f2
+		s.s $f0, j0_10_var
+
+		l.s $f12, j0_10_var
+		jal printf_float
+
+	## OPERATION PLUS ##
+		mtc1 $t0, $f2
+		cvt.s.w $f2, $f2
+		l.s $f1, j0_10_var
+		add.s $f0, $f1, $f2
+		s.s $f0, j0_10_var
+
+		l.s $f12, j0_10_var
+		jal printf_float
+
+		li $t0, 2
+		sw $t0, i0_10_var
+
+	## OPERATION MULT ##
+		li.s $f2, 1.5
+		lw $t0, i0_10_var
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		mul.s $f0, $f1, $f2
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
 pruebaOperaciones_ret:
 		lw $ra,  ($sp) #Restauracion de $ra
 		add $sp,$sp,4 #liberacion de la pila
@@ -395,25 +485,25 @@ pruebaSentenciasControl_ret:
  __start:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
-		la $a0, str19_str
+		la $a0, str20_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaFunciones_ini
 
-		la $a0, str20_str
+		la $a0, str21_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaOperaciones_ini
 
-		la $a0, str21_str
+		la $a0, str22_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaSentenciasControl_ini
 
-		la $a0, str22_str
+		la $a0, str23_str
 		jal printf_str
 
 		li $v0, 0
