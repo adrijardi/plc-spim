@@ -47,8 +47,7 @@ public class NodeAnalyzer {
 				String varname = getStrAtr(NodeKeys.VAR_ID);
 				VarTipo tipo = null;
 				try {
-					tipo = VarTipo.valueOf(getStrAtr(NodeKeys.TYPE)
-							.toUpperCase());
+					tipo = VarTipo.valueOf(getStrAtr(NodeKeys.TYPE).toUpperCase());
 				} catch (Exception e) {
 				}
 				Variable var = null;
@@ -82,8 +81,7 @@ public class NodeAnalyzer {
 						syntactic.addError("Variable " + var + " duplicada");
 					} else {
 						if (!va.isGlobal()) {
-							setAtribute(NodeKeys.VAR_ID, var.getName()
-									+ var.getScope());
+							setAtribute(NodeKeys.VAR_ID, var.getName() + var.getScope());
 							if (getBooleanAtr(NodeKeys.IS_PARAM))
 								fu.addParameter(fu.getActualKey(), var);
 						}
@@ -100,8 +98,7 @@ public class NodeAnalyzer {
 				break;
 
 			case FUNCTION_CALL:
-				String ret = va
-						.getReturnforFuction(getStrAtr(NodeKeys.FUNC_ID));
+				String ret = va.getReturnforFuction(getStrAtr(NodeKeys.FUNC_ID));
 				if (ret == null) {
 					// TODO Error
 					System.out.println("ERROR funcion con retorno null");
@@ -318,6 +315,9 @@ public class NodeAnalyzer {
 		String aux;
 		if (nodeType != null) {
 			switch (nodeType) {
+			case OPERATION:
+				sb.append(getOperationCode());
+				break;
 			case FUNCTION_DEC:
 				String fname = getStrAtr(NodeKeys.FUNC_ID);
 				if (fname.equals("main")) {
@@ -345,14 +345,12 @@ public class NodeAnalyzer {
 			case ASIGNATION:
 				NodeAnalyzer reciver = hijos.get(0);
 				NodeAnalyzer value = hijos.get(1);
-				sb.append(getAsignationCode(getStrAtr(NodeKeys.ASIGNMENT),
-						reciver, value));
+				sb.append(getAsignationCode(OperationKey.getOperationKey(this), reciver, value));
 				sb.append("\n\n");
 				break;
 			case PRINTFID:
 				String varid = getStrAtr(NodeKeys.VAR_ID);
-				Variable variable = VarTable.getInstance()
-						.getVariableByCompleteName(varid);
+				Variable variable = VarTable.getInstance().getVariableByCompleteName(varid);
 				if (variable != null) {
 					switch (variable.getVt()) {
 					case INT:
@@ -383,8 +381,7 @@ public class NodeAnalyzer {
 				sb.append("\n\n");
 				break;
 			case FUNCTION_CALL:
-				FunTable.getInstance()
-						.setActualKey(getStrAtr(NodeKeys.FUNC_ID));
+				FunTable.getInstance().setActualKey(getStrAtr(NodeKeys.FUNC_ID));
 				sb.append(getFunctionCall());
 				break;
 			case RETURN:
@@ -424,20 +421,13 @@ public class NodeAnalyzer {
 						if (aux.compareTo("float") == 0) {
 							switch (defParam.getVt()) {
 							case FLOAT:
-								sb
-										.append("\t\tli.s $f0, "
-												+ hijo
-														.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE)
-												+ "\n");
-								sb
-										.append("\t\ts.s $f0, "
-												+ defParam.getCompleteName()
-												+ "_var\n");
+								sb.append("\t\tli.s $f0, " + hijo.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE) + "\n");
+								sb.append("\t\ts.s $f0, " + defParam.getCompleteName() + "_var\n");
 								break;
 							case INT:
-								sb.append("\t\tli.s $f4, "+ hijo.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE)+ "\n");
+								sb.append("\t\tli.s $f4, " + hijo.getFloatAtr(NodeKeys.CONST_FLOAT_VALUE) + "\n");
 								sb.append(conversionFloatInt("$f4", "$t0"));
-								sb.append("\t\tsw $t0 "+ defParam.getCompleteName()+ "_var\n");
+								sb.append("\t\tsw $t0 " + defParam.getCompleteName() + "_var\n");
 								break;
 							default:
 								// TODO error no se puede pasar de float a char
@@ -448,38 +438,24 @@ public class NodeAnalyzer {
 							switch (defParam.getVt()) {
 							case FLOAT:
 								// Se convierten los enteros a float
-								sb
-										.append("\t\tli $t0 "
-												+ hijo
-														.getIntAtr(NodeKeys.CONST_INT_VALUE)
-												+ "\n");
+								sb.append("\t\tli $t0 " + hijo.getIntAtr(NodeKeys.CONST_INT_VALUE) + "\n");
 								sb.append(conversionIntFloat("$t0", "$f0"));
-								sb
-										.append("\t\ts.s $f0, "
-												+ defParam.getCompleteName()
-												+ "_var\n");
+								sb.append("\t\ts.s $f0, " + defParam.getCompleteName() + "_var\n");
 								break;
 							case INT:
-								sb.append("\t\tli $t0 "	+ hijo.getIntAtr(NodeKeys.CONST_INT_VALUE)+ "\n");
-								sb.append("\t\tsw $t0 "	+ defParam.getCompleteName()+ "_var\n");
+								sb.append("\t\tli $t0 " + hijo.getIntAtr(NodeKeys.CONST_INT_VALUE) + "\n");
+								sb.append("\t\tsw $t0 " + defParam.getCompleteName() + "_var\n");
 								break;
 							case CHAR:
-								sb.append("\t\tli $t0 "
-										+ ((int) hijo.getCharAtr(
-												NodeKeys.CONST_CHAR_VALUE)
-												.charValue()) + "\n");
-								sb
-										.append("\t\tsw $t0 "
-												+ defParam.getCompleteName()
-												+ "_var\n");
+								sb.append("\t\tli $t0 " + ((int) hijo.getCharAtr(NodeKeys.CONST_CHAR_VALUE).charValue()) + "\n");
+								sb.append("\t\tsw $t0 " + defParam.getCompleteName() + "_var\n");
 								break;
 							}
 						} else if (aux.compareTo("char") == 0) {
 							// TODO faltaaaaaaaaaa conversion de tipos
 						} else {
 							Generator.ERROR = true;
-							System.out
-									.println("ERROR NO SE ACEPTAN OTROS TIPOS");// TODO
+							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");// TODO
 							// comprobar
 							// y
 							// quitar?
@@ -489,24 +465,19 @@ public class NodeAnalyzer {
 						// primero miramos el tipo del hijo y luego el tipo de
 						// donde lo queremos meter
 						aux = hijo.getStrAtr(NodeKeys.VAR_ID);
-						auxvar = VarTable.getInstance()
-								.getVariableByCompleteName(aux);
+						auxvar = VarTable.getInstance().getVariableByCompleteName(aux);
 						switch (auxvar.getVt()) {
 						case FLOAT:
 							switch (defParam.getVt()) {
 							case FLOAT:
-								sb.append("\t\tl.s $f0, "
-										+ auxvar.getCompleteName() + "_var\n");
-								sb
-										.append("\t\ts.s $f0, "
-												+ defParam.getCompleteName()
-												+ "_var\n");
+								sb.append("\t\tl.s $f0, " + auxvar.getCompleteName() + "_var\n");
+								sb.append("\t\ts.s $f0, " + defParam.getCompleteName() + "_var\n");
 								break;
 							case INT:
 
-								sb.append("\t\tl.s $f4, "+ auxvar.getCompleteName() + "_var\n");
+								sb.append("\t\tl.s $f4, " + auxvar.getCompleteName() + "_var\n");
 								sb.append(conversionFloatInt("$f4", "$t0"));
-								sb.append("\t\tsw $t0 "	+ defParam.getCompleteName()+ "_var\n");
+								sb.append("\t\tsw $t0 " + defParam.getCompleteName() + "_var\n");
 								break;
 							default:
 								// TODO error no se puede pasar de float a char
@@ -518,17 +489,13 @@ public class NodeAnalyzer {
 							switch (defParam.getVt()) {
 							case FLOAT:
 								// Se pasa de int a float
-								sb.append("\t\tlw $t0 "	+ auxvar.getCompleteName() + "_var\n");
+								sb.append("\t\tlw $t0 " + auxvar.getCompleteName() + "_var\n");
 								sb.append(conversionIntFloat("$t0", "$f0"));
-								sb.append("\t\ts.s $f0, "+ defParam.getCompleteName()+ "_var\n");
+								sb.append("\t\ts.s $f0, " + defParam.getCompleteName() + "_var\n");
 								break;
 							default:
-								sb.append("\t\tlw $t0 "
-										+ auxvar.getCompleteName() + "_var\n");
-								sb
-										.append("\t\tsw $t0 "
-												+ defParam.getCompleteName()
-												+ "_var\n");
+								sb.append("\t\tlw $t0 " + auxvar.getCompleteName() + "_var\n");
+								sb.append("\t\tsw $t0 " + defParam.getCompleteName() + "_var\n");
 								break;
 							}
 							break;
@@ -537,8 +504,7 @@ public class NodeAnalyzer {
 							break;
 
 						default:
-							System.out
-									.println("ERROR NO SE ACEPTAN OTROS TIPOS");// TODO
+							System.out.println("ERROR NO SE ACEPTAN OTROS TIPOS");// TODO
 							// comprobar
 							// y
 							// quitar?
@@ -575,8 +541,7 @@ public class NodeAnalyzer {
 				sb.append("\n");
 			} else if ("char".compareTo(tipo) == 0) {
 				sb.append("\t\tli $v0, ");
-				sb.append((int) return_value
-						.getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+				sb.append((int) return_value.getCharAtr(NodeKeys.CONST_CHAR_VALUE));
 				sb.append("\n");
 			} else if ("float".compareTo(tipo) == 0) {
 				sb.append("\t\tli.s $f0, ");
@@ -619,13 +584,12 @@ public class NodeAnalyzer {
 	 *            el nodo que contiene el valor
 	 * @return el codigo de la asignacion
 	 */
-	private String getAsignationCode(String strAtr, NodeAnalyzer reciver,
-			NodeAnalyzer value) {
+	private String getAsignationCode(OperationKey ok, NodeAnalyzer reciver, NodeAnalyzer value) {
 		StringBuilder sb = new StringBuilder();
 		String varid = reciver.getStrAtr(NodeKeys.VAR_ID);
-		VarTipo vtid = VarTable.getInstance().getVariableByCompleteName(varid)
-		.getVt();
-		if (strAtr.compareTo("=") == 0) {
+		VarTipo vtid = VarTable.getInstance().getVariableByCompleteName(varid).getVt();
+		switch (ok) {
+		case EQ:
 			switch (vtid) {
 			case FLOAT:
 				sb.append(value.getFloatValueCode("$f0"));
@@ -642,35 +606,23 @@ public class NodeAnalyzer {
 			}
 			sb.append(varid);
 			sb.append("_var");
-		} else {
-			OperationKey ok ;
-			if (strAtr.compareTo("*=") == 0) {
-				ok = OperationKey.MULT;
-			} else if (strAtr.compareTo("/=") == 0) {
-				ok = OperationKey.DIV;
-			} else if (strAtr.compareTo("+=") == 0) {
-				ok = OperationKey.PLUS;
-			} else if (strAtr.compareTo("-=") == 0) {
-				ok = OperationKey.MINUS;
-			} else{
-				ok = null;
-			}
-			
+			break;
+		default:
 			boolean f1 = (vtid == VarTipo.FLOAT);
 			boolean f2 = (value.getVarTipoDelNodo() == VarTipo.FLOAT);
 			// Se genera el codigo de la operacion
 			sb.append(getOperationCode(f1, reciver, f2, value, ok));
-			
+
 			boolean ifFloat = f1 | f2;
 			switch (vtid) {
 			case FLOAT:
-				if(!ifFloat){
+				if (!ifFloat) {
 					sb.append(conversionIntFloat("$t0", "$f0"));
 				}
 				sb.append("\t\ts.s $f0, ");
 				break;
 			default:
-				if(ifFloat){
+				if (ifFloat) {
 					sb.append(conversionFloatInt("$f0", "$t0"));
 				}
 				sb.append("\t\tsw $t0, ");
@@ -678,35 +630,79 @@ public class NodeAnalyzer {
 			}
 			sb.append(varid);
 			sb.append("_var");
+			break;
 		}
-
 		return sb.toString();
 	}
 
 	private enum OperationKey {
-		PLUS, MINUS, MULT, DIV;
+		PLUS, MINUS, MULT, DIV, EQ;
+
+		private static OperationKey getOperationKey(NodeAnalyzer na) {
+			String strAtr = na.getStrAtr(NodeKeys.ASIGNMENT);
+			OperationKey ret = null;
+			if(strAtr != null){
+				if (strAtr.compareTo("=") == 0) {
+					ret = OperationKey.EQ;
+				} else if (strAtr.compareTo("*=") == 0) {
+					ret = OperationKey.MULT;
+				} else if (strAtr.compareTo("/=") == 0) {
+					ret = OperationKey.DIV;
+				} else if (strAtr.compareTo("+=") == 0) {
+					ret = OperationKey.PLUS;
+				} else if (strAtr.compareTo("-=") == 0) {
+					ret = OperationKey.MINUS;
+				} 
+			}else{
+				strAtr = na.getStrAtr(NodeKeys.OPERATION);
+				if(strAtr != null){
+					if (strAtr.compareTo("*") == 0) {
+						ret = OperationKey.MULT;
+					} else if (strAtr.compareTo("/") == 0) {
+						ret = OperationKey.DIV;
+					} else if (strAtr.compareTo("+") == 0) {
+						ret = OperationKey.PLUS;
+					} else if (strAtr.compareTo("-") == 0) {
+						ret = OperationKey.MINUS;
+					} 
+				}
+			}
+			return ret;
+		}
+	}
+	
+	private String getOperationCode(){
+		NodeAnalyzer p1 = hijos.get(0);
+		boolean f1 = (p1.getVarTipoDelNodo() == VarTipo.FLOAT);
+		NodeAnalyzer p2 = hijos.get(1);
+		boolean f2 = (p2.getVarTipoDelNodo() == VarTipo.FLOAT);
+		return getOperationCode(f1, p1, f2, p2, OperationKey.getOperationKey(this));
 	}
 
-	private String getOperationCode(boolean f1, NodeAnalyzer p1, boolean f2,
-			NodeAnalyzer p2, OperationKey op) {
+	private String getOperationCode(boolean f1, NodeAnalyzer p1, boolean f2, NodeAnalyzer p2, OperationKey op) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t## OPERATION "+op+" ##\n");
+		sb.append("\t## OPERATION " + op + " ##\n");
 		if (f1 || f2) {
-			//Se obtiene el valor del primer parametro
-			if(f2){
+			// Se obtiene el valor del primer parametro
+			sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+			sb.append("\t\ts.s $f2,  ($sp) #Salvado de $ra\n");
+			if (f2) {
 				sb.append(p2.getFloatValueCode("$f2"));
-			}else{
+			} else {
 				sb.append(p2.getIntValueCode("$t0"));
 				sb.append(conversionIntFloat("$t0", "$f2"));
 			}
-			//Se obtiene el valor del segundo parametro
-			if(f1){
+			
+			// Se obtiene el valor del segundo parametro
+			sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+			sb.append("\t\ts.s $f1,  ($sp) #Salvado de $ra\n");
+			if (f1) {
 				sb.append(p1.getFloatValueCode("$f1"));
-			}else{
+			} else {
 				sb.append(p1.getIntValueCode("$t0"));
 				sb.append(conversionIntFloat("$t0", "$f1"));
 			}
-			
+
 			switch (op) {
 			case PLUS:
 				sb.append("\t\tadd.s $f0, $f1, $f2\n");
@@ -721,11 +717,22 @@ public class NodeAnalyzer {
 				sb.append("\t\tdiv.s $f0, $f1, $f2\n");
 				break;
 			}
+			
+			sb.append("\t\tl.s $f1,  ($sp) #Restauracion de $ra\n");
+			sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
+			sb.append("\t\tl.s $f2,  ($sp) #Restauracion de $ra\n");
+			sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
 		} else {
+			sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+			sb.append("\t\tsw $t2,  ($sp) #Salvado de $ra\n");
 			sb.append(p2.getIntValueCode("$t0"));
 			sb.append("\t\tmove $t2, $t0\n");
+			
+			sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
+			sb.append("\t\tsw $t1,  ($sp) #Salvado de $ra\n");
 			sb.append(p1.getIntValueCode("$t0"));
 			sb.append("\t\tmove $t1, $t0\n");
+			
 			switch (op) {
 			case PLUS:
 				sb.append("\t\tadd $t0, $t1, $t2\n");
@@ -742,15 +749,22 @@ public class NodeAnalyzer {
 				sb.append("\t\tmflo $t0\n");
 				break;
 			}
+			
+			sb.append("\t\tlw $t1,  ($sp) #Restauracion de $ra\n");
+			sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
+			sb.append("\t\tlw $t2,  ($sp) #Restauracion de $ra\n");
+			sb.append("\t\tadd $sp,$sp,4 #liberacion de la pila\n");
 		}
 		return sb.toString();
 	}
-	
+
 	/**
-	 * Obtiene el valor numerico del nodo en el registro especifico para el tipo concreto del nodo
+	 * Obtiene el valor numerico del nodo en el registro especifico para el tipo
+	 * concreto del nodo
+	 * 
 	 * @return Codigo para obtener el valor numerico del nodo
 	 */
-	private String getValueCode(String registro){
+	private String getValueCode(String registro) {
 		switch (getVarTipoDelNodo()) {
 		case FLOAT:
 			return getFloatValueCode(registro);
@@ -776,16 +790,25 @@ public class NodeAnalyzer {
 				sb.append(conversionFloatInt("$f0", registro));
 				break;
 			default:
-				sb.append("\t\tlw "+registro+", ");
+				sb.append("\t\tlw " + registro + ", ");
 				sb.append(getStrAtr(NodeKeys.VAR_ID) + "_var");
 				sb.append("\n");
 				break;
 			}
 			break;
 		case OPERATION:
+			sb.append(getOperationCode());
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				sb.append(conversionFloatInt("$f0", registro));
+				break;
+			default:
+				sb.append("\t\tmove " + registro + ", $t0\n");
+				break;
+			}
 			break;
 		case CONSTANT:
-			sb.append("\t\tli "+registro+", ");
+			sb.append("\t\tli " + registro + ", ");
 			sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
 			sb.append("\n");
 			break;
@@ -797,7 +820,7 @@ public class NodeAnalyzer {
 			} else if ("void".compareTo(tipo) == 0) {
 				Generator.ERROR = true;
 			} else {
-				sb.append("\t\tmove "+registro+", $v0\n");
+				sb.append("\t\tmove " + registro + ", $v0\n");
 			}
 			break;
 		default:
@@ -811,6 +834,8 @@ public class NodeAnalyzer {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
 		case OPERATION:
+			sb.append(getOperationCode());
+			//TODO FALTA todo lo del registro que hay en int y en float
 			break;
 		case CONSTANT:
 			sb.append("\t\tli $t0, ");
@@ -841,7 +866,7 @@ public class NodeAnalyzer {
 		case VAR:
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
-				sb.append("\t\tl.s "+registro+", ");
+				sb.append("\t\tl.s " + registro + ", ");
 				sb.append(getStrAtr(NodeKeys.VAR_ID) + "_var");
 				sb.append("\n");
 				break;
@@ -854,9 +879,18 @@ public class NodeAnalyzer {
 			}
 			break;
 		case OPERATION:
+			sb.append(getOperationCode());
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				sb.append("\t\tmov.s " + registro + ", $f0\n");
+				break;
+			default:
+				sb.append(conversionIntFloat("$t0", registro));
+				break;
+			}
 			break;
 		case CONSTANT:
-			sb.append("\t\tli.s "+registro+", ");
+			sb.append("\t\tli.s " + registro + ", ");
 			sb.append(getFloatAtr(NodeKeys.CONST_FLOAT_VALUE));
 			sb.append("\n");
 			break;
@@ -868,7 +902,7 @@ public class NodeAnalyzer {
 			} else if ("void".compareTo(tipo) == 0) {
 				Generator.ERROR = true;
 			} else {
-				sb.append("\t\tmov.s "+registro+", $f0\n");
+				sb.append("\t\tmov.s " + registro + ", $f0\n");
 			}
 			break;
 		default:
@@ -880,6 +914,7 @@ public class NodeAnalyzer {
 
 	/**
 	 * Se obtiene el codigo de generación de los hijos.
+	 * 
 	 * @return el codigo de generacion
 	 */
 	private String getChildernGlobCode() {
@@ -889,39 +924,48 @@ public class NodeAnalyzer {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
-	 * Realiza una conversion de un registro float a entero
-	 * TODO falta incluir un warning por la perdida de precision
-	 * @param f registro float en el que se desea almacenar, ejm. $f0
-	 * @param i registro entero que contiene el dato, ejm. $t0
+	 * Realiza una conversion de un registro float a entero TODO falta incluir
+	 * un warning por la perdida de precision
+	 * 
+	 * @param f
+	 *            registro float en el que se desea almacenar, ejm. $f0
+	 * @param i
+	 *            registro entero que contiene el dato, ejm. $t0
 	 * @return Se retorna la cadena con el codigo
 	 */
-	private String conversionFloatInt(String f, String i){
+	private String conversionFloatInt(String f, String i) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t\tcvt.w.s "+f+", "+f+"\n");
-		sb.append("\t\tmfc1 "+i+", "+f+"\n");
+		sb.append("\t\tcvt.w.s " + f + ", " + f + "\n");
+		sb.append("\t\tmfc1 " + i + ", " + f + "\n");
 		return sb.toString();
 	}
-	
+
 	/**
-	 * Realiza una conversion de un registro entero a float, no hay perdida de precision
-	 * @param i registro entero que contiene el dato, ejm. $t0
-	 * @param f registro float en el que se desea almacenar, ejm. $f0
+	 * Realiza una conversion de un registro entero a float, no hay perdida de
+	 * precision
+	 * 
+	 * @param i
+	 *            registro entero que contiene el dato, ejm. $t0
+	 * @param f
+	 *            registro float en el que se desea almacenar, ejm. $f0
 	 * @return Se retorna la cadena con el codigo
 	 */
-	private String conversionIntFloat(String i, String f){
+	private String conversionIntFloat(String i, String f) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t\tmtc1 "+i+", "+f+"\n");
-		sb.append("\t\tcvt.s.w "+f+", "+f+"\n");
+		sb.append("\t\tmtc1 " + i + ", " + f + "\n");
+		sb.append("\t\tcvt.s.w " + f + ", " + f + "\n");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Obtiene el tipo de variable que almacena el nodo
-	 * @return Devuelve el tipo de variable (FLOAT, INT, CHAR), no incluye el tipo VOID de las funciones
+	 * 
+	 * @return Devuelve el tipo de variable (FLOAT, INT, CHAR), no incluye el
+	 *         tipo VOID de las funciones
 	 */
-	private VarTipo getVarTipoDelNodo(){
+	private VarTipo getVarTipoDelNodo() {
 		VarTipo ret = null;
 		String aux;
 		switch (nodeType) {
@@ -942,7 +986,14 @@ public class NodeAnalyzer {
 			ret = VarTable.getInstance().getVariableByCompleteName(aux).getVt();
 			break;
 		case OPERATION:
-			//TODO Falta por completar esto
+			VarTipo h1 = hijos.get(0).getVarTipoDelNodo();
+			VarTipo h2 = hijos.get(1).getVarTipoDelNodo();
+			if(h1 == VarTipo.FLOAT || h2 == VarTipo.FLOAT)
+				ret = VarTipo.FLOAT;
+			else if(h1 == VarTipo.INT || h2 == VarTipo.INT)
+				ret = VarTipo.INT;
+			else
+				ret = VarTipo.CHAR;
 			break;
 		}
 		return ret;

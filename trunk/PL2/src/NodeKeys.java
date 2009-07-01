@@ -9,7 +9,7 @@ public enum NodeKeys {
 	DEBUG("int"),
 	FUNC_ID("String"),
 	STRING("String"), 
-	IS_PARAM("boolean"), PARAM_POS("int");
+	IS_PARAM("boolean"), PARAM_POS("int"), OPERATION("String");
 
 	private final String type;
 
