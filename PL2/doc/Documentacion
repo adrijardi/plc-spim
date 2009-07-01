@@ -1,5 +1,6 @@
 
 Medidas tomadas:
+-Falta controlar division por 0
 -Se elimina el tipo char?
 -Se decide que en las variables float se realiza una conversion a entero perdiendo precisión y generando un warning
 -Para controlar la definición de variables globales se prohibe la declaración de las mismas una vez se haya declarado una función.
