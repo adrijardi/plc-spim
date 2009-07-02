@@ -21,41 +21,66 @@ z0_8_var:		.float 0.0
 z0_6_var:		.word 0
 y0_9_var:		.word 3
 c0_6_var:		.word 0
-str3_str:		.asciiz "y="
-str2_str:		.asciiz "prod="
-str1_str:		.asciiz "fp1(global)="
-str0_str:		.asciiz "y(global)="
-str29_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en entero [(1+2)*(3-4.0)]\n"
-str28_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en float [1*(2+3)/4]\n"
-str27_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en entero [((4+2)*3)/4]\n"
-str26_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en float [1-6*3/4.0]\n"
-str25_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en entero [1+2*3-4.0]\n"
-str24_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en float [1*2+3/4]\n"
-str23_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en entero [4+2*3/4]\n"
-str22_str:		.asciiz "Asignaciones con operacion [/=]\n"
-str21_str:		.asciiz "Asignaciones con operacion [*=]\n"
-str20_str:		.asciiz "Asignaciones con operacion [-=]\n"
-str34_str:		.asciiz "Saliendo...\n"
-str33_str:		.asciiz "Pruebas Sentencias Control\n"
-str32_str:		.asciiz "Pruebas Operaciones\n"
-str31_str:		.asciiz "Pruebas funciones\n"
-str30_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en float [(1-6)*3/4.0]\n"
-str19_str:		.asciiz "Asignaciones con operacion [+=]\n"
-str18_str:		.asciiz "Conversion de asignacion en retorno (conversion int -> float) f5\n"
-str17_str:		.asciiz "Conversion de asignacion en retorno (conversion float -> int) f5f\n"
-str16_str:		.asciiz "Invocacion con parametros variables (conversion float -> int) y retorno [int] f5\n"
-str15_str:		.asciiz "Invocacion con parametros variables (conversion int -> float) y retorno [int] f5f\n"
-str14_str:		.asciiz "Invocacion con parametros variables y retorno [int] f5f\n"
-str13_str:		.asciiz "Invocacion con parametros variables y retorno [int] f5\n"
-str9_str:		.asciiz "Invocacion con parametros constantes[int, int, int] f4\n"
-str12_str:		.asciiz "Invocacion con parametros constantes (conversion float -> int) y retorno [int] f5\n"
-str8_str:		.asciiz "Invocacion vacia con retorno variable[float] f3f\n"
-str11_str:		.asciiz "Invocacion con parametros constantes (conversion int -> float) y retorno [int] f5f\n"
-str7_str:		.asciiz "Invocacion vacia con retorno variable[int] f3\n"
-str10_str:		.asciiz "Invocacion con parametros constantes y retorno [int] f5\n"
 str6_str:		.asciiz "Invocacion vacia con retorno constante[float] f2f\n"
 str5_str:		.asciiz "Invocacion vacia con retorno constante[int] f2\n"
 str4_str:		.asciiz "Invocacion vacia f1\n"
+str29_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en entero [(1+2)*(3-4.0)]\n"
+str28_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en float [1*(2+3)/4]\n"
+str3_str:		.asciiz "y="
+str59_str:		.asciiz "Saliendo...\n"
+str27_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en entero [((4+2)*3)/4]\n"
+str2_str:		.asciiz "prod="
+str58_str:		.asciiz "Pruebas Sentencias Control\n"
+str26_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en float [1-6*3/4.0]\n"
+str1_str:		.asciiz "fp1(global)="
+str57_str:		.asciiz "Pruebas Operaciones\n"
+str25_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en entero [1+2*3-4.0]\n"
+str0_str:		.asciiz "y(global)="
+str56_str:		.asciiz "Pruebas funciones\n"
+str24_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en float [1*2+3/4]\n"
+str55_str:		.asciiz " 2 es menor que 1\n"
+str23_str:		.asciiz "Pruebas de precedencia sin parentesis almacenano en entero [4+2*3/4]\n"
+str54_str:		.asciiz " 2 no es menor que 1\n"
+str22_str:		.asciiz "Asignaciones con operacion [/=]\n"
+str53_str:		.asciiz "Prueba if [2<1]\n"
+str21_str:		.asciiz "Asignaciones con operacion [*=]\n"
+str52_str:		.asciiz " 1 es menor que 2\n"
+str20_str:		.asciiz "Asignaciones con operacion [-=]\n"
+str51_str:		.asciiz "Prueba if [1<2]\n"
+str50_str:		.asciiz "Pruebas constantes float operaciones logicas [(1>=2)||(1<=2.4f)]\n"
+str19_str:		.asciiz "Asignaciones con operacion [+=]\n"
+str18_str:		.asciiz "Conversion de asignacion en retorno (conversion int -> float) f5\n"
+str49_str:		.asciiz "Pruebas constantes float operaciones logicas [(1<=2.4f)&&(1>=2)]\n"
+str17_str:		.asciiz "Conversion de asignacion en retorno (conversion float -> int) f5f\n"
+str48_str:		.asciiz "Pruebas constantes int operaciones logicas [(1>2)||(2>1)]\n"
+str16_str:		.asciiz "Invocacion con parametros variables (conversion float -> int) y retorno [int] f5\n"
+str47_str:		.asciiz "Pruebas constantes int operaciones logicas [(1<2)&&(2>1)]\n"
+str15_str:		.asciiz "Invocacion con parametros variables (conversion int -> float) y retorno [int] f5f\n"
+str46_str:		.asciiz "Pruebas constantes float operaciones logicas [1.0>1.0]\n"
+str14_str:		.asciiz "Invocacion con parametros variables y retorno [int] f5f\n"
+str45_str:		.asciiz "Pruebas constantes float operaciones logicas [2.4<2.0]\n"
+str13_str:		.asciiz "Invocacion con parametros variables y retorno [int] f5\n"
+str44_str:		.asciiz "Pruebas constantes float operaciones logicas [1.1>=1.1]\n"
+str12_str:		.asciiz "Invocacion con parametros constantes (conversion float -> int) y retorno [int] f5\n"
+str43_str:		.asciiz "Pruebas constantes float operaciones logicas [1<=2.4]\n"
+str11_str:		.asciiz "Invocacion con parametros constantes (conversion int -> float) y retorno [int] f5f\n"
+str42_str:		.asciiz "Pruebas constantes int operaciones logicas [1>1]\n"
+str10_str:		.asciiz "Invocacion con parametros constantes y retorno [int] f5\n"
+str41_str:		.asciiz "Pruebas constantes int operaciones logicas [1<2]\n"
+str40_str:		.asciiz "Pruebas constantes int operaciones logicas [1>=1]\n"
+str39_str:		.asciiz "Pruebas constantes int operaciones logicas [1<=2]\n"
+str38_str:		.asciiz "Pruebas constantes float operaciones logicas [1.0!=1.0]\n"
+str37_str:		.asciiz "Pruebas constantes float operaciones logicas [2.4!=2.0]\n"
+str36_str:		.asciiz "Pruebas constantes float operaciones logicas [1.1==1.1]\n"
+str35_str:		.asciiz "Pruebas constantes float operaciones logicas [1==2.4]\n"
+str34_str:		.asciiz "Pruebas constantes int operaciones logicas [1!=1]\n"
+str33_str:		.asciiz "Pruebas constantes int operaciones logicas [1!=2]\n"
+str32_str:		.asciiz "Pruebas constantes int operaciones logicas [1==1]\n"
+str31_str:		.asciiz "Pruebas constantes int operaciones logicas [1==2]\n"
+str30_str:		.asciiz "Pruebas de precedencia con parentesis almacenano en float [(1-6)*3/4.0]\n"
+str9_str:		.asciiz "Invocacion con parametros constantes[int, int, int] f4\n"
+str8_str:		.asciiz "Invocacion vacia con retorno variable[float] f3f\n"
+str7_str:		.asciiz "Invocacion vacia con retorno variable[int] f3\n"
 ln_str:		.asciiz "\n"
 
 		.text
@@ -1346,6 +1371,638 @@ pruebaOperaciones_ini:
 		l.s $f12, j0_10_var
 		jal printf_float
 
+		la $a0, str31_str
+		jal printf_str
+
+	## OPERATION EQEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		seq $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str32_str
+		jal printf_str
+
+	## OPERATION EQEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		seq $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str33_str
+		jal printf_str
+
+	## OPERATION NOTEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sne $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str34_str
+		jal printf_str
+
+	## OPERATION NOTEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sne $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str35_str
+		jal printf_str
+
+	## OPERATION EQEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.4
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		li.s $f0, 1.0
+		c.eq.s $f1, $f2
+		bc1t J_ET_M_T_0
+		li.s $f0, 0.0
+	J_ET_M_T_0:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str36_str
+		jal printf_str
+
+	## OPERATION EQEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 1.1
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 1.1
+		li.s $f0, 1.0
+		c.eq.s $f1, $f2
+		bc1t J_ET_M_T_1
+		li.s $f0, 0.0
+	J_ET_M_T_1:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str37_str
+		jal printf_str
+
+	## OPERATION NOTEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.0
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 2.4
+		li.s $f0, 0.0
+		c.eq.s $f1, $f2
+		bc1t J_ET_M_T_2
+		li.s $f0, 1.0
+	J_ET_M_T_2:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str38_str
+		jal printf_str
+
+	## OPERATION NOTEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 1.0
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 1.0
+		li.s $f0, 0.0
+		c.eq.s $f1, $f2
+		bc1t J_ET_M_T_3
+		li.s $f0, 1.0
+	J_ET_M_T_3:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str39_str
+		jal printf_str
+
+	## OPERATION LDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sle $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str40_str
+		jal printf_str
+
+	## OPERATION GDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sge $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str41_str
+		jal printf_str
+
+	## OPERATION LD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		slt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str42_str
+		jal printf_str
+
+	## OPERATION GD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sgt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str43_str
+		jal printf_str
+
+	## OPERATION LDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.4
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		li.s $f0, 1.0
+		c.le.s $f1, $f2
+		bc1t J_ET_M_T_4
+		li.s $f0, 0.0
+	J_ET_M_T_4:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str44_str
+		jal printf_str
+
+	## OPERATION GDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 1.1
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 1.1
+		li.s $f0, 0.0
+		c.lt.s $f1, $f2
+		bc1t J_ET_M_T_5
+		li.s $f0, 1.0
+	J_ET_M_T_5:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str45_str
+		jal printf_str
+
+	## OPERATION LD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.0
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 2.4
+		li.s $f0, 1.0
+		c.lt.s $f1, $f2
+		bc1t J_ET_M_T_6
+		li.s $f0, 0.0
+	J_ET_M_T_6:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str46_str
+		jal printf_str
+
+	## OPERATION GD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 1.0
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li.s $f1, 1.0
+		li.s $f0, 0.0
+		c.le.s $f1, $f2
+		bc1t J_ET_M_T_7
+		li.s $f0, 1.0
+	J_ET_M_T_7:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str47_str
+		jal printf_str
+
+	## OPERATION ANDAND ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+	## OPERATION GD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t1, $t0
+		sgt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+	## OPERATION LD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		slt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		move $t1, $t0
+		li $t0, 0
+		beqz $t1, J_ET_M_T_8
+		beqz $t2, J_ET_M_T_8
+		li $t0, 1
+	J_ET_M_T_8:
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str48_str
+		jal printf_str
+
+	## OPERATION OROR ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+	## OPERATION GD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t1, $t0
+		sgt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+	## OPERATION GD ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sgt $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		move $t1, $t0
+		li $t0, 1
+		bnez $t1, J_ET_M_T_9
+		bnez $t2, J_ET_M_T_9
+		li $t0, 0
+	J_ET_M_T_9:
+		sle $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str49_str
+		jal printf_str
+
+	## OPERATION ANDAND ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+	## OPERATION GDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sge $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		mtc1 $t0, $f2
+		cvt.s.w $f2, $f2
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+	## OPERATION LDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.4
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		li.s $f0, 1.0
+		c.le.s $f1, $f2
+		bc1t J_ET_M_T_10
+		li.s $f0, 0.0
+	J_ET_M_T_10:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		mov.s $f1, $f0
+		li.s $f0, 0.0
+		c.eq.s $f1, $f0
+		bc1t J_ET_M_T_11
+		c.eq.s $f2, $f0
+		bc1t J_ET_M_T_11
+		li.s $f0, 1.0
+	J_ET_M_T_11:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
+		la $a0, str50_str
+		jal printf_str
+
+	## OPERATION OROR ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+	## OPERATION LDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f2,  ($sp) #Salvado de $ra
+		li.s $f2, 2.4
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		li.s $f0, 1.0
+		c.le.s $f1, $f2
+		bc1t J_ET_M_T_12
+		li.s $f0, 0.0
+	J_ET_M_T_12:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		mov.s $f2, $f0
+		sub $sp,$sp,4 #Reserva de la pila
+		s.s $f1,  ($sp) #Salvado de $ra
+	## OPERATION GDEQ ##
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t2,  ($sp) #Salvado de $ra
+		li $t0, 2
+		move $t2, $t0
+		sub $sp,$sp,4 #Reserva de la pila
+		sw $t1,  ($sp) #Salvado de $ra
+		li $t0, 1
+		move $t1, $t0
+		sge $t0, $t1, $t2
+		lw $t1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		lw $t2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		move $t0, $t0
+		mtc1 $t0, $f1
+		cvt.s.w $f1, $f1
+		li.s $f0, 1.0
+		li.s $f5, 0.0
+		c.eq.s $f1, $f5
+		bc1f J_ET_M_T_13
+		c.eq.s $f2, $f5
+		bc1f J_ET_M_T_13
+		li.s $f0, 0.0
+	J_ET_M_T_13:
+		l.s $f1,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		l.s $f2,  ($sp) #Restauracion de $ra
+		add $sp,$sp,4 #liberacion de la pila
+		cvt.w.s $f0, $f0
+		mfc1 $t0, $f0
+		sw $t0, i0_10_var
+
+		lw $a0, i0_10_var
+		jal printf_int
+
 pruebaOperaciones_ret:
 		lw $ra,  ($sp) #Restauracion de $ra
 		add $sp,$sp,4 #liberacion de la pila
@@ -1354,7 +2011,13 @@ pruebaOperaciones_ret:
 pruebaSentenciasControl_ini:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
-pruebaSentenciasControl_ret:
+		la $a0, str51_str
+		jal printf_str
+
+null		la $a0, str53_str
+		jal printf_str
+
+nullpruebaSentenciasControl_ret:
 		lw $ra,  ($sp) #Restauracion de $ra
 		add $sp,$sp,4 #liberacion de la pila
 		jr $ra	# retorna al invocador
@@ -1362,25 +2025,25 @@ pruebaSentenciasControl_ret:
  __start:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
-		la $a0, str31_str
+		la $a0, str56_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaFunciones_ini
 
-		la $a0, str32_str
+		la $a0, str57_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaOperaciones_ini
 
-		la $a0, str33_str
+		la $a0, str58_str
 		jal printf_str
 
 	## FUNCTION CALL ##
 		jal pruebaSentenciasControl_ini
 
-		la $a0, str34_str
+		la $a0, str59_str
 		jal printf_str
 
 		li $v0, 0

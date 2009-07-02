@@ -11,6 +11,8 @@ public class NodeAnalyzer {
 	// private String states = "";
 	private NodeType nodeType;
 	private HashMap<NodeKeys, String> nodeAtributes;
+	private final String etiquetaSalto="J_ET_M_T_";
+	private static int contadorSalto= 0;
 
 	private boolean error;
 
@@ -315,6 +317,12 @@ public class NodeAnalyzer {
 		String aux;
 		if (nodeType != null) {
 			switch (nodeType) {
+			case IF:
+				sb.append(getIFCode());
+				break;
+			case IFELSE:
+				sb.append(getIFELSECode());
+				break;
 			case OPERATION:
 				sb.append(getOperationCode());
 				break;
@@ -397,6 +405,25 @@ public class NodeAnalyzer {
 			sb.append(getChildernGlobCode());
 		}
 
+		return sb.toString();
+	}
+
+	private String getIFELSECode() {
+		StringBuilder sb = new StringBuilder();
+		
+		NodeAnalyzer ifstament = hijos.get(0);
+		NodeAnalyzer elsestament = hijos.get(1);
+		NodeAnalyzer condicion = hijos.get(2);
+		
+		return sb.toString();
+	}
+
+	private String getIFCode() {
+		StringBuilder sb = new StringBuilder();
+		
+		NodeAnalyzer ifstament = hijos.get(0);
+		NodeAnalyzer condicion = hijos.get(1);
+		
 		return sb.toString();
 	}
 
@@ -636,7 +663,7 @@ public class NodeAnalyzer {
 	}
 
 	private enum OperationKey {
-		PLUS, MINUS, MULT, DIV, EQ;
+		PLUS, MINUS, MULT, DIV, EQ, EQEQ, NOTEQ, GD, LD, GDEQ, LDEQ, ANDAND, OROR;
 
 		private static OperationKey getOperationKey(NodeAnalyzer na) {
 			String strAtr = na.getStrAtr(NodeKeys.ASIGNMENT);
@@ -664,6 +691,22 @@ public class NodeAnalyzer {
 						ret = OperationKey.PLUS;
 					} else if (strAtr.compareTo("-") == 0) {
 						ret = OperationKey.MINUS;
+					} else if (strAtr.compareTo("==") == 0) {
+						ret = OperationKey.EQEQ;
+					} else if (strAtr.compareTo("!=") == 0) {
+						ret = OperationKey.NOTEQ;
+					} else if (strAtr.compareTo(">") == 0) {
+						ret = OperationKey.GD;
+					} else if (strAtr.compareTo("<") == 0) {
+						ret = OperationKey.LD;
+					} else if (strAtr.compareTo(">=") == 0) {
+						ret = OperationKey.GDEQ;
+					} else if (strAtr.compareTo("<=") == 0) {
+						ret = OperationKey.LDEQ;
+					} else if (strAtr.compareTo("&&") == 0) {
+						ret = OperationKey.ANDAND;
+					} else if (strAtr.compareTo("||") == 0) {
+						ret = OperationKey.OROR;
 					} 
 				}
 			}
@@ -716,6 +759,75 @@ public class NodeAnalyzer {
 			case DIV:
 				sb.append("\t\tdiv.s $f0, $f1, $f2\n");
 				break;
+			case EQEQ:
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t\tc.eq.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case NOTEQ:
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t\tc.eq.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case GD:
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t\tc.le.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case LD:
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t\tc.lt.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case GDEQ:
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t\tc.lt.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case LDEQ:
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t\tc.le.s $f1, $f2\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case ANDAND:
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t\tc.eq.s $f1, $f0\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tc.eq.s $f2, $f0\n");
+				sb.append("\t\tbc1t "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case OROR:
+				sb.append("\t\tli.s $f0, 1.0\n");
+				sb.append("\t\tli.s $f5, 0.0\n");
+				sb.append("\t\tc.eq.s $f1, $f5\n");
+				sb.append("\t\tbc1f "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tc.eq.s $f2, $f5\n");
+				sb.append("\t\tbc1f "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli.s $f0, 0.0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
 			}
 			
 			sb.append("\t\tl.s $f1,  ($sp) #Restauracion de $ra\n");
@@ -747,6 +859,41 @@ public class NodeAnalyzer {
 			case DIV:
 				sb.append("\t\tdiv $t1, $t2\n");
 				sb.append("\t\tmflo $t0\n");
+				break;
+			case EQEQ:
+				sb.append("\t\tseq $t0, $t1, $t2\n");
+				break;
+			case NOTEQ:
+				sb.append("\t\tsne $t0, $t1, $t2\n");
+				break;
+			case GD:
+				sb.append("\t\tsgt $t0, $t1, $t2\n");
+				break;
+			case LD:
+				sb.append("\t\tslt $t0, $t1, $t2\n");
+				break;
+			case GDEQ:
+				sb.append("\t\tsge $t0, $t1, $t2\n");
+				break;
+			case LDEQ:
+				sb.append("\t\tsle $t0, $t1, $t2\n");
+				break;
+			case ANDAND:
+				sb.append("\t\tli $t0, 0\n");
+				sb.append("\t\tbeqz $t1, "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tbeqz $t2, "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli $t0, 1\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				break;
+			case OROR:
+				sb.append("\t\tli $t0, 1\n");
+				sb.append("\t\tbnez $t1, "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tbnez $t2, "+etiquetaSalto+contadorSalto+"\n");
+				sb.append("\t\tli $t0, 0\n");
+				sb.append("\t"+etiquetaSalto+contadorSalto+":\n");
+				contadorSalto++;
+				sb.append("\t\tsle $t0, $t1, $t2\n");
 				break;
 			}
 			

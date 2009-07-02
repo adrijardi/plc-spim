@@ -675,6 +675,7 @@ start with Program;
  SelectionStm ::= IF LPAREN Exp:e RPAREN Stm:s {:
 	System.out.println("SelectionStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	nodo.setNodeType(NodeType.IF);
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
 	RESULT = nodo;
@@ -682,6 +683,7 @@ start with Program;
  SelectionStm ::= IF LPAREN Exp:e RPAREN Stm:s ELSE Stm:se {:
 	System.out.println("SelectionStm");
 	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	nodo.setNodeType(NodeType.IFELSE);
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
 	nodo.addLeftHijo((NodeAnalyzer)se);
@@ -798,9 +800,13 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp3");
 	RESULT = e4;
  :};
- Exp3 ::= Exp3 OROR Exp4 {:
+ Exp3 ::= Exp3:e3 OROR Exp4:e4 {:
 	System.out.println("Exp3");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp3");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e4);
+	nodo.addLeftHijo((NodeAnalyzer)e3);
+	nodo.setAtribute(NodeKeys.OPERATION, "||");
 	RESULT = nodo;
  :};
  
@@ -808,9 +814,13 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp4");
 	RESULT = e5;
  :};
- Exp4 ::= Exp4 ANDAND Exp5 {:
+ Exp4 ::= Exp4:e4 ANDAND Exp5:e5 {:
 	System.out.println("Exp4");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp4");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e5);
+	nodo.addLeftHijo((NodeAnalyzer)e4);
+	nodo.setAtribute(NodeKeys.OPERATION, "&&");
 	RESULT = nodo;
  :};
 
@@ -818,14 +828,22 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp5");
 	RESULT = e6;
  :};
- Exp5 ::= Exp5 EQEQ Exp6 {:
+ Exp5 ::= Exp5:e5 EQEQ Exp6:e6 {:
 	System.out.println("Exp5");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp5");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.addLeftHijo((NodeAnalyzer)e5);
+	nodo.setAtribute(NodeKeys.OPERATION, "==");
 	RESULT = nodo;
  :};
- Exp5 ::= Exp5 NOTEQ Exp6 {:
+ Exp5 ::= Exp5:e5 NOTEQ Exp6:e6 {:
 	System.out.println("Exp5");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp5");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.addLeftHijo((NodeAnalyzer)e5);
+	nodo.setAtribute(NodeKeys.OPERATION, "!=");
 	RESULT = nodo;
  :};
  
@@ -833,24 +851,40 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp6");
 	RESULT = e7;
  :};
- Exp6 ::= Exp6 LT Exp7 {:
+ Exp6 ::= Exp6:e6 LT Exp7:e7 {:
 	System.out.println("Exp6");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e7);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.setAtribute(NodeKeys.OPERATION, "<");
 	RESULT = nodo;
  :};
- Exp6 ::= Exp6 GT Exp7 {:
+ Exp6 ::= Exp6:e6 GT Exp7:e7 {:
 	System.out.println("Exp6");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e7);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.setAtribute(NodeKeys.OPERATION, ">");
 	RESULT = nodo;
  :};
- Exp6 ::= Exp6 LTEQ Exp7 {:
+ Exp6 ::= Exp6:e6 LTEQ Exp7:e7 {:
 	System.out.println("Exp6");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e7);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.setAtribute(NodeKeys.OPERATION, "<=");
 	RESULT = nodo;
  :};
- Exp6 ::= Exp6 GTEQ Exp7 {:
+ Exp6 ::= Exp6:e6 GTEQ Exp7:e7 {:
 	System.out.println("Exp6");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	nodo.setNodeType(NodeType.OPERATION);
+	nodo.addLeftHijo((NodeAnalyzer)e7);
+	nodo.addLeftHijo((NodeAnalyzer)e6);
+	nodo.setAtribute(NodeKeys.OPERATION, ">=");
 	RESULT = nodo;
  :};
  

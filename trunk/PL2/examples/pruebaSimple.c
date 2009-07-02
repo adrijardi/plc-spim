@@ -200,10 +200,81 @@ void pruebaOperaciones(){
  j = (1-6)*3/4.0f;
  printf("%f\n",j);
  
+ printf("%s","Pruebas constantes int operaciones logicas [1==2]\n");
+ i = 1==2;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1==1]\n");
+ i = 1==1;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1!=2]\n");
+ i = 1!=2;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1!=1]\n");
+ i = 1!=1;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1==2.4]\n");
+ i = 1==2.4f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1.1==1.1]\n");
+ i = 1.1f==1.1f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [2.4!=2.0]\n");
+ i = 2.4f!=2.0f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1.0!=1.0]\n");
+ i = 1.0f!=1.0f;
+ printf("%d\n",i);
+ 
+ printf("%s","Pruebas constantes int operaciones logicas [1<=2]\n");
+ i = 1<=2;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1>=1]\n");
+ i = 1>=1;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1<2]\n");
+ i = 1<2;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [1>1]\n");
+ i = 1>1;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1<=2.4]\n");
+ i = 1<=2.4f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1.1>=1.1]\n");
+ i = 1.1f>=1.1f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [2.4<2.0]\n");
+ i = 2.4f<2.0f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [1.0>1.0]\n");
+ i = 1.0f>1.0f;
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [(1<2)&&(2>1)]\n");
+ i = (1<2)&&(2>1);
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes int operaciones logicas [(1>2)||(2>1)]\n");
+ i = (1>2)||(2>1);
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [(1<=2.4f)&&(1>=2)]\n");
+ i = (1<=2.4f)&&(1>=2);
+ printf("%d\n",i);
+ printf("%s","Pruebas constantes float operaciones logicas [(1>=2)||(1<=2.4f)]\n");
+ i = (1>=2)||(1<=2.4f);
+ printf("%d\n",i);
 }
 
 void pruebaSentenciasControl(){
-
+ printf("%s","Prueba if [1<2]\n");
+ if(1<2){
+	printf("%s"," 1 es menor que 2\n");
+ }
+ 
+ printf("%s","Prueba if [2<1]\n");
+ if(2<1){
+	printf("%s"," 2 es menor que 1\n");
+ }else{
+ 	printf("%s"," 2 no es menor que 1\n");
+ }
 }
 
 int main(){  
