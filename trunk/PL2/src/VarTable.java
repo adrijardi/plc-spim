@@ -231,10 +231,24 @@ public class VarTable {
 				switch (variable.getVt()) {
 				case INT:
 					sb.append(".word ");
-					if (variable.isValue())
-						sb.append(variable.getIvalue());
-					else
+					if(variable.getSize() == null){
+						if (variable.isValue())
+							sb.append(variable.getIvalue());
+						else
+							sb.append(0);
+					}else{
+						int size[] = variable.getSize();
+						int count = 1;
+						for (int i = 0; i < size.length; i++) {
+							count *= size[i];
+						}
+						for (int i = 0; i < count-1; i++) {
+							sb.append(0);
+							sb.append(", ");
+						}
+						
 						sb.append(0);
+					}
 					break;
 				case CHAR:
 					sb.append(".word ");
@@ -245,12 +259,26 @@ public class VarTable {
 					break;
 				case FLOAT:
 					sb.append(".float ");
-					if (variable.isValue()){
-						float f = variable.getFvalue();
-						sb.append(f);
+					if(variable.getSize() == null){
+						if (variable.isValue()){
+							float f = variable.getFvalue();
+							sb.append(f);
+							
+						}else
+							sb.append("0.0");
+					}else{
+						int size[] = variable.getSize();
+						int count = 1;
+						for (int i = 0; i < size.length; i++) {
+							count *= size[i];
+						}
+						for (int i = 0; i < count-1; i++) {
+							sb.append("0.0");
+							sb.append(", ");
+						}
 						
-					}else
 						sb.append("0.0");
+					}
 					break;
 				}
 				sb.append("\n");
@@ -268,10 +296,24 @@ public class VarTable {
 				switch (variable.getVt()) {
 				case INT:
 					sb.append(".word ");
-					if (variable.isValue())
-						sb.append(variable.getIvalue());
-					else
+					if(variable.getSize() == null){
+						if (variable.isValue())
+							sb.append(variable.getIvalue());
+						else
+							sb.append(0);
+					}else{
+						int size[] = variable.getSize();
+						int count = 1;
+						for (int i = 0; i < size.length; i++) {
+							count *= size[i];
+						}
+						for (int i = 0; i < count-1; i++) {
+							sb.append(i);
+							sb.append(", ");
+						}
+						
 						sb.append(0);
+					}
 					break;
 				case CHAR:
 					sb.append(".word ");
@@ -282,10 +324,26 @@ public class VarTable {
 					break;
 				case FLOAT:
 					sb.append(".float ");
-					if (variable.isValue())
-						sb.append(variable.getFvalue());
-					else
+					if(variable.getSize() == null){
+						if (variable.isValue()){
+							float f = variable.getFvalue();
+							sb.append(f);
+							
+						}else
+							sb.append("0.0");
+					}else{
+						int size[] = variable.getSize();
+						int count = 1;
+						for (int i = 0; i < size.length; i++) {
+							count *= size[i];
+						}
+						for (int i = 0; i < count-1; i++) {
+							sb.append("0.0");
+							sb.append(", ");
+						}
+						
 						sb.append("0.0");
+					}
 					break;
 				}
 				sb.append("\n");
