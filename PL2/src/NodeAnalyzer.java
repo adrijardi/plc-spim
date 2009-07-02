@@ -44,7 +44,14 @@ public class NodeAnalyzer {
 		VarTable va = VarTable.getInstance();
 		FunTable fu = FunTable.getInstance();
 		if (nodeType != null) {
+			int size[] = null;
 			switch (nodeType) {
+			case ARRAYVARDEC:
+				size = new int[hijos.size()];
+				int z = hijos.size();
+				for (NodeAnalyzer hijo : hijos) {
+					size[--z] = hijo.getIntAtr(NodeKeys.CONST_INT_VALUE);
+				}
 			case VARDEC:
 				String varname = getStrAtr(NodeKeys.VAR_ID);
 				VarTipo tipo = null;
@@ -54,25 +61,25 @@ public class NodeAnalyzer {
 				}
 				Variable var = null;
 				if (tipo != null) {
-					var = new Variable(varname, tipo);
+					var = new Variable(varname, tipo, size);
 
 					switch (tipo) {
 					case INT:
 						Integer i = getIntAtr(NodeKeys.CONST_INT_VALUE);
 						if (i != null) {
-							var = new Variable(varname, i.intValue(), tipo);
+							var = new Variable(varname, i.intValue(), tipo, size);
 						}
 						break;
 					case CHAR:
 						Character c = getCharAtr(NodeKeys.CONST_CHAR_VALUE);
 						if (c != null) {
-							var = new Variable(varname, c.charValue(), tipo);
+							var = new Variable(varname, c.charValue(), tipo, size);
 						}
 						break;
 					case FLOAT:
 						Float f = getFloatAtr(NodeKeys.CONST_FLOAT_VALUE);
 						if (f != null) {
-							var = new Variable(varname, f.floatValue(), tipo);
+							var = new Variable(varname, f.floatValue(), tipo, size);
 						}
 						break;
 					}
@@ -317,6 +324,9 @@ public class NodeAnalyzer {
 		String aux;
 		if (nodeType != null) {
 			switch (nodeType) {
+			case WHILE:
+				sb.append(getWHILECode());
+				break;
 			case IF:
 				sb.append(getIFCode());
 				break;
@@ -408,12 +418,42 @@ public class NodeAnalyzer {
 		return sb.toString();
 	}
 
+	private String getWHILECode() {
+		StringBuilder sb = new StringBuilder();
+		
+		NodeAnalyzer stament = hijos.get(0);
+		NodeAnalyzer condicion = hijos.get(1);
+		
+		String etiqueta = etiquetaSalto+contadorSalto;
+		contadorSalto++;
+		
+		sb.append("\t"+etiqueta+"_while:\n");
+		sb.append(condicion.getIntValueCode("$t0"));
+		sb.append("\t\tbeqz $t0, "+etiqueta+"_fin\n");
+		sb.append(stament.getGloblCode());
+		sb.append("\t\tb "+etiqueta+"_while\n");
+		sb.append("\t"+etiqueta+"_fin:\n");
+		
+		return sb.toString();
+	}
+
 	private String getIFELSECode() {
 		StringBuilder sb = new StringBuilder();
 		
-		NodeAnalyzer ifstament = hijos.get(0);
-		NodeAnalyzer elsestament = hijos.get(1);
+		NodeAnalyzer ifstament = hijos.get(1);
+		NodeAnalyzer elsestament = hijos.get(0);
 		NodeAnalyzer condicion = hijos.get(2);
+		
+		String etiqueta = etiquetaSalto+contadorSalto;
+		contadorSalto++;
+		
+		sb.append(condicion.getIntValueCode("$t0"));
+		sb.append("\t\tbeqz $t0, "+etiqueta+"_else\n");
+		sb.append(ifstament.getGloblCode());
+		sb.append("\t\tb "+etiqueta+"_fin\n");
+		sb.append("\t"+etiqueta+"_else:\n");
+		sb.append(elsestament.getGloblCode());
+		sb.append("\t"+etiqueta+"_fin:\n");
 		
 		return sb.toString();
 	}
@@ -423,6 +463,14 @@ public class NodeAnalyzer {
 		
 		NodeAnalyzer ifstament = hijos.get(0);
 		NodeAnalyzer condicion = hijos.get(1);
+		
+		String etiqueta = etiquetaSalto+contadorSalto;
+		contadorSalto++;
+		
+		sb.append(condicion.getIntValueCode("$t0"));
+		sb.append("\t\tbeqz $t0, "+etiqueta+"_fin\n");
+		sb.append(ifstament.getGloblCode());
+		sb.append("\t"+etiqueta+"_fin:\n");
 		
 		return sb.toString();
 	}
@@ -617,6 +665,14 @@ public class NodeAnalyzer {
 		VarTipo vtid = VarTable.getInstance().getVariableByCompleteName(varid).getVt();
 		switch (ok) {
 		case EQ:
+			
+			switch (reciver.getNodeType()) {
+				case ARRAYVAR:
+					sb.append("\t# ARRAYVAR #\n");
+					sb.append(getDesp(reciver));				
+					break;
+			}
+			
 			switch (vtid) {
 			case FLOAT:
 				sb.append(value.getFloatValueCode("$f0"));
@@ -631,8 +687,15 @@ public class NodeAnalyzer {
 				sb.append("\t\tsw $t0, ");
 				break;
 			}
-			sb.append(varid);
-			sb.append("_var");
+			switch (reciver.getNodeType()) {
+				case ARRAYVAR:	
+					sb.append(" 0($t1)\n");
+					break;
+				default:
+					sb.append(varid);
+					sb.append("_var\n");
+					break;
+			}
 			break;
 		default:
 			boolean f1 = (vtid == VarTipo.FLOAT);
@@ -641,6 +704,14 @@ public class NodeAnalyzer {
 			sb.append(getOperationCode(f1, reciver, f2, value, ok));
 
 			boolean ifFloat = f1 | f2;
+			
+			switch (reciver.getNodeType()) {
+			case ARRAYVAR:
+				sb.append("\t# ARRAYVAR #\n");
+				sb.append(getDesp(reciver));				
+				break;
+			}
+			
 			switch (vtid) {
 			case FLOAT:
 				if (!ifFloat) {
@@ -655,8 +726,16 @@ public class NodeAnalyzer {
 				sb.append("\t\tsw $t0, ");
 				break;
 			}
-			sb.append(varid);
-			sb.append("_var");
+			
+			switch (reciver.getNodeType()) {
+				case ARRAYVAR:	
+					sb.append(" 0($t1)\n");
+					break;
+				default:
+					sb.append(varid);
+					sb.append("_var\n");
+					break;
+			}
 			break;
 		}
 		return sb.toString();
@@ -924,10 +1003,55 @@ public class NodeAnalyzer {
 			return null;
 		}
 	}
+	
+	private String getDesp(NodeAnalyzer nodeAnalyzer) {
+		StringBuilder sb = new StringBuilder();
+		int size[] = VarTable.getInstance().getVariableByCompleteName(getStrAtr(NodeKeys.VAR_ID)).getSize();
+		int mult = 1;
+		int value = 0;
+		int i = 1;
+		int lenght = size.length;
+		sb.append("\t\tli $t5, 0\n");
+		for (NodeAnalyzer hijo : hijos) {
+			switch (hijo.getNodeType()) {
+			case CONSTANT:
+				value = (mult *hijo.getIntAtr(NodeKeys.CONST_INT_VALUE));
+				sb.append("\t\tli $t4, "+value+"\n");
+				sb.append("\t\tadd $t5, $t4, $t5\n");
+				break;
+			case VAR:
+				sb.append("\t\tli $t6, "+mult+"\n");
+				sb.append("\t\tlw $t4, "+getStrAtr(NodeKeys.VAR_ID) + "_var\n");
+				sb.append("\t\tmult $t6, $t4\n");
+				sb.append("\t\tmflo $t4\n");
+				sb.append("\t\tadd $t5, $t4, $t5\n");
+				break;
+			}
+			mult *= size[lenght-i];
+			i++;
+		}
+		sb.append("\t\tadd $t5, $t5, $t5\n");
+		sb.append("\t\tadd $t5, $t5, $t5\n");
+		sb.append("\t\tadd $t1, $t5, $t3\n");
+		return sb.toString();
+	}
 
 	private String getIntValueCode(String registro) {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
+		case ARRAYVAR:
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				
+				break;
+			default:
+				sb.append("\t\tla $t3 " + getStrAtr(NodeKeys.VAR_ID) + "_var\n");
+				sb.append(getDesp(this));
+				sb.append("\t\tlw $t0, 0($t1)\n");
+				sb.append("\t\tmove " + registro + ", $t0\n");
+				break;
+			}
+			break;
 		case VAR:
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
@@ -1010,6 +1134,16 @@ public class NodeAnalyzer {
 	private String getFloatValueCode(String registro) {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
+		case ARRAYVAR:
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				
+				break;
+			default:
+				
+				break;
+			}
+			break;
 		case VAR:
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
@@ -1128,6 +1262,7 @@ public class NodeAnalyzer {
 				ret = VarTipo.FLOAT;
 			}
 			break;
+		case ARRAYVAR:
 		case VAR:
 			aux = getStrAtr(NodeKeys.VAR_ID);
 			ret = VarTable.getInstance().getVariableByCompleteName(aux).getVt();

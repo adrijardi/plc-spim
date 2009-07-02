@@ -264,17 +264,47 @@ void pruebaOperaciones(){
 }
 
 void pruebaSentenciasControl(){
+ int i;
  printf("%s","Prueba if [1<2]\n");
  if(1<2){
 	printf("%s"," 1 es menor que 2\n");
  }
  
+ i = 2<1;
+ printf("%d\n",i);
  printf("%s","Prueba if [2<1]\n");
  if(2<1){
 	printf("%s"," 2 es menor que 1\n");
  }else{
  	printf("%s"," 2 no es menor que 1\n");
  }
+ 
+ printf("%s","Prueba while [i = 0; i < 10]\n");
+ i = 0;
+ while(i < 10){
+ 	printf("%d\n",i);
+ 	i+= 1;
+ }
+ 
+}
+
+void pruebasArrays(){
+ float far1[10];
+ float far2[3][4];
+ int ar1[10];
+ int ar2[3][4];
+ int ar3[3][4][5];
+ int ar4[3][4][5][6];
+ int i;
+ 
+ ar1[1] = 5;
+ 
+ i = ar1[1];
+ printf("%d\n",i);
+ i = ar2[1][3];
+ printf("%d\n",i);
+ i = ar3[1][3][2];
+ printf("%d\n",i);
 }
 
 int main(){  
@@ -286,6 +316,9 @@ int main(){
  
  printf("%s","Pruebas Sentencias Control\n");
  pruebaSentenciasControl();
+ 
+ printf("%s","Pruebas Arrays\n");
+ pruebasArrays();
  
  printf("%s","Saliendo...\n");
  return 0;

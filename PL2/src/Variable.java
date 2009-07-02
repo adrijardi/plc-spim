@@ -4,6 +4,7 @@ public class Variable {
 	private final VarTipo vt;
 	private String scope;
 	private boolean value;
+	private int[] size;
 
 	public String getScope() {
 		return scope;
@@ -21,31 +22,32 @@ public class Variable {
 	private char cvalue;
 	private float fvalue;
 
-	public Variable(String name, VarTipo vt) {
+	public Variable(String name, VarTipo vt, int[] size) {
 		this.name = name;
 		this.scope = name;
 		this.vt = vt;
 		this.value = false;
+		this.size = size;
 	}
 
-	public Variable(String name, int value, VarTipo vt) {
-		this(name, vt);
+	public Variable(String name, int value, VarTipo vt, int[] size) {
+		this(name, vt, size);
 		this.ivalue = value;
 		this.cvalue = (char) value;
 		this.fvalue = value;
 		this.value = true;
 	}
 
-	public Variable(String name, char value, VarTipo vt) {
-		this(name, vt);
+	public Variable(String name, char value, VarTipo vt, int[] size) {
+		this(name, vt, size);
 		this.ivalue = value;
 		this.cvalue = value;
 		this.fvalue = value;
 		this.value = true;
 	}
 
-	public Variable(String name, float value, VarTipo vt) {
-		this(name, vt);
+	public Variable(String name, float value, VarTipo vt, int[] size) {
+		this(name, vt, size);
 		this.ivalue = (int) value;
 		this.cvalue = (char) value;
 		this.fvalue = value;
@@ -116,8 +118,20 @@ public class Variable {
 				break;
 			}
 		}
+		sb.append(" ");
+		if(size != null){
+			for (int i = 0; i < size.length; i++) {
+				sb.append("[");
+				sb.append(size[i]);
+				sb.append("]");
+			}
+		}
 
 		return sb.toString();
+	}
+
+	public int[] getSize() {
+		return size;
 	}
 
 }

@@ -323,7 +323,18 @@ start with Program;
 			aux.setAtribute(NodeKeys.CONST_FLOAT_VALUE, cad);
 		
 		aux.copyHijos(nah.getHijos());
-		aux.setNodeType(NodeType.VARDEC);
+		switch (nah.getNodeType()) {
+		case ARRAYVAR:
+			aux.setNodeType(NodeType.ARRAYVARDEC);
+			break;
+		case VAR:
+			aux.setNodeType(NodeType.VARDEC);
+			break;
+		default:
+			parser.addError("Error en la declaracion de variable.", -1);
+ 			nodo.setError(true);
+			break;
+		}
 		
 		if(nodo == null){
 			nodo = aux;
@@ -695,6 +706,7 @@ start with Program;
 	NodeAnalyzer nodo =new NodeAnalyzer("IterStm");
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
+	nodo.setNodeType(NodeType.WHILE);
 	RESULT = nodo;
  :};
 
@@ -969,10 +981,11 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp10");
 	RESULT = e11;
  :};
- Exp10 ::= Exp10 LBRACK Exp RBRACK {:
+ Exp10 ::= Exp10:e10 LBRACK Exp:e RBRACK {:
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
-	RESULT = nodo;
+    ((NodeAnalyzer)e10).setNodeType(NodeType.ARRAYVAR);
+    ((NodeAnalyzer)e10).addLeftHijo((NodeAnalyzer)e);
+	RESULT = e10;
  :};
  Exp10 ::= Exp10:e10 LPAREN RPAREN {:
 	System.out.println("Exp10");
@@ -1058,8 +1071,7 @@ _Stm_ ::= error _Stm_:ls {:
 
  ConstantExpression ::= Exp3:e3 {:
 	System.out.println("ConstantExpression");
-	NodeAnalyzer nodo =new NodeAnalyzer("ConstantExpression");
-	RESULT = nodo ;
+	RESULT = e3 ;
  :};
 
  _Exp2_ ::= Exp2:e2 {:
