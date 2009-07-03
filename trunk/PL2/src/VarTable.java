@@ -308,7 +308,7 @@ public class VarTable {
 							count *= size[i];
 						}
 						for (int i = 0; i < count-1; i++) {
-							sb.append(i);
+							sb.append(0);
 							sb.append(", ");
 						}
 						

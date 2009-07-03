@@ -269,9 +269,6 @@ void pruebaSentenciasControl(){
  if(1<2){
 	printf("%s"," 1 es menor que 2\n");
  }
- 
- i = 2<1;
- printf("%d\n",i);
  printf("%s","Prueba if [2<1]\n");
  if(2<1){
 	printf("%s"," 2 es menor que 1\n");
@@ -285,7 +282,6 @@ void pruebaSentenciasControl(){
  	printf("%d\n",i);
  	i+= 1;
  }
- 
 }
 
 void pruebasArrays(){
@@ -298,6 +294,8 @@ void pruebasArrays(){
  int i;
  
  ar1[1] = 5;
+ ar2[1][3] = 15;
+ ar3[1][3][2] = 25;
  
  i = ar1[1];
  printf("%d\n",i);
@@ -307,18 +305,47 @@ void pruebasArrays(){
  printf("%d\n",i);
 }
 
+void pruebaOperaciones2(){
+ int i;
+ int j;
+ i = 0;
+ j = 0;
+ printf("%s","Prueba de operaciones avanzdas [j = ++i] se muestra i y luego j\n");
+ j = ++i;
+ printf("%d\n",i);
+ printf("%d\n",j);
+ printf("%s","Prueba de operaciones avanzdas [j = --i] se muestra i y luego j\n");
+ j= --i;
+ printf("%d\n",i);
+ printf("%d\n",j);
+ printf("%s","Prueba de operaciones avanzdas [j = i++] se muestra i y luego j\n");
+ j = i++;
+ printf("%d\n",i);
+ printf("%d\n",j);
+ printf("%s","Prueba de operaciones avanzdas [j = i--] se muestra i y luego j\n");
+ j= i--;
+ printf("%d\n",i);
+ printf("%d\n",j);
+ j = 2 +i++;
+ printf("%d\n",i);
+ printf("%d\n",j);
+}
+
 int main(){  
- printf("%s","Pruebas funciones\n");
+ printf("%s","# Pruebas funciones\n");
  pruebaFunciones();
  
- printf("%s","Pruebas Operaciones\n");
+ printf("%s","# Pruebas Operaciones\n");
  pruebaOperaciones();
  
- printf("%s","Pruebas Sentencias Control\n");
+ printf("%s","# Pruebas Sentencias Control\n");
  pruebaSentenciasControl();
  
- printf("%s","Pruebas Arrays\n");
+ printf("%s","# Pruebas Arrays\n");
  pruebasArrays();
+ 
+ printf("%s","Pruebas Operaciones2\n");
+ pruebaOperaciones2();
  
  printf("%s","Saliendo...\n");
  return 0;
