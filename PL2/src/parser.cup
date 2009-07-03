@@ -961,14 +961,62 @@ _Stm_ ::= error _Stm_:ls {:
 	System.out.println("Exp9");
 	RESULT = e10;
  :};
- Exp9 ::= PLUSPLUS Exp9 {:
+ Exp9 ::= PLUSPLUS Exp9:e9 {:
 	System.out.println("Exp9");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
+	
+	// Se define el uno
+	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	uno.setNodeType(NodeType.CONSTANT);
+	uno.setAtribute(NodeKeys.TYPE, "int");
+	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
+	
+	// Se define el nodo de operacion suma
+	NodeAnalyzer suma = new NodeAnalyzer("Exp7");
+	suma.setNodeType(NodeType.OPERATION);
+	suma.addLeftHijo(uno);
+	suma.addLeftHijo((NodeAnalyzer)e9);
+	suma.setAtribute(NodeKeys.OPERATION, "+");
+	
+	//Se define la suma +1
+	nodo.addLeftHijo(suma);
+	
+	//Se define el receptor
+	NodeAnalyzer reciver = (NodeAnalyzer)e9;
+	reciver.setCad("reciver("+reciver.getCad()+")");
+	nodo.setNodeType(NodeType.ASIGNATION);
+	nodo.addLeftHijo(reciver);
+	nodo.setAtribute(NodeKeys.ASIGNMENT, "=");	
+	
 	RESULT = nodo;
  :};
- Exp9 ::= MINUSMINUS Exp9 {:
-	System.out.println("Exp9");
+ Exp9 ::= MINUSMINUS Exp9:e9 {:
+	 System.out.println("Exp9");
 	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
+	
+	// Se define el uno
+	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	uno.setNodeType(NodeType.CONSTANT);
+	uno.setAtribute(NodeKeys.TYPE, "int");
+	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
+	
+	// Se define el nodo de operacion suma
+	NodeAnalyzer suma = new NodeAnalyzer("Exp7");
+	suma.setNodeType(NodeType.OPERATION);
+	suma.addLeftHijo(uno);
+	suma.addLeftHijo((NodeAnalyzer)e9);
+	suma.setAtribute(NodeKeys.OPERATION, "-");
+	
+	//Se define la suma +1
+	nodo.addLeftHijo(suma);
+	
+	//Se define el receptor
+	NodeAnalyzer reciver = (NodeAnalyzer)e9;
+	reciver.setCad("reciver("+reciver.getCad()+")");
+	nodo.setNodeType(NodeType.ASIGNATION);
+	nodo.addLeftHijo(reciver);
+	nodo.setAtribute(NodeKeys.ASIGNMENT, "=");	
+	
 	RESULT = nodo;
  :};
  Exp9 ::= NOT Exp12 {:
@@ -1014,14 +1062,34 @@ _Stm_ ::= error _Stm_:ls {:
 	nodo.copyHijos(((NodeAnalyzer)e2).getHijos());
 	RESULT = nodo;
  :};
- Exp10 ::= Exp10 PLUSPLUS {:
+ Exp10 ::= Exp10:e10 PLUSPLUS {:
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	//Se define el uno
+	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	uno.setNodeType(NodeType.CONSTANT);
+	uno.setAtribute(NodeKeys.TYPE, "int");
+	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
+	
+ 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	nodo.setNodeType(NodeType.OPERATION);
+ 	nodo.addLeftHijo(uno);
+	nodo.addLeftHijo((NodeAnalyzer)e10);
+	nodo.setAtribute(NodeKeys.OPERATION, "++");
 	RESULT = nodo;
  :};
- Exp10 ::= Exp10 MINUSMINUS {:
+ Exp10 ::= Exp10:e10 MINUSMINUS {:
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	//Se define el uno
+	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	uno.setNodeType(NodeType.CONSTANT);
+	uno.setAtribute(NodeKeys.TYPE, "int");
+	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
+	
+ 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	nodo.setNodeType(NodeType.OPERATION);
+ 	nodo.addLeftHijo(uno);
+ 	nodo.addLeftHijo((NodeAnalyzer)e10);
+ 	nodo.setAtribute(NodeKeys.OPERATION, "--");
 	RESULT = nodo;
  :};
  
