@@ -378,9 +378,11 @@ public class NodeAnalyzer {
 						sb.append("\n\n");
 						break;
 					case CHAR:
-						sb.append("\t\tlw $a0, ");
+						sb.append("\t\tlw $t0, ");
 						sb.append(getStrAtr(NodeKeys.VAR_ID));
-						sb.append("_var\n\t\tjal printf_int");
+						sb.append("_var\n\t\tsw $t0, charPrintHelper\n");
+						sb.append("\t\tla $a0, charPrintHelper\n");
+						sb.append("\n\t\tjal printf_str");
 						sb.append("\n\n");
 						break;
 					case FLOAT:
@@ -1164,7 +1166,7 @@ public class NodeAnalyzer {
 			break;
 		case CONSTANT:
 			sb.append("\t\tli $t0, ");
-			sb.append(getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+			sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
