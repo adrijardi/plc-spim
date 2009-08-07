@@ -14,7 +14,8 @@ public class Generator {
 	private final String cabecera = "#\n# UC3M - PROCESADORES DEL LENGUAJE\n# Codigo generado por los alumnos:\n# Adrian Lopez Perez\n# Daniel Conde Garcia\n###################################\n";
 	private final String text = "\n\t\t.text";
 	private final String globl = "\n\t\t.globl __start";
-	private final String data = "\n\t\t.data";
+	private final String data = "\n\t\t.data\n";
+	private final String charPrintHelper = "charPrintHelper:\t\t.asciiz \"-\"";
 	private NodeAnalyzer main;
 	
 	private final String printfint="printf_int:\n\t\tli $v0, 1\n\t\tsyscall\n\t\tla $a0, ln_str\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
@@ -39,6 +40,7 @@ public class Generator {
 		try {
 			file.write(cabecera);
 			file.write(data);
+			file.write(charPrintHelper);
 			file.write(getDataCode());
 			file.write(text);
 			file.write(getTextCode());

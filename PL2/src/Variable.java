@@ -1,3 +1,5 @@
+import sun.misc.Sort;
+
 public class Variable {
 
 	private final String name;
@@ -19,7 +21,7 @@ public class Variable {
 	}
 
 	private int ivalue;
-	private char cvalue;
+	private int cvalue;
 	private float fvalue;
 
 	public Variable(String name, VarTipo vt, int[] size) {
@@ -66,7 +68,7 @@ public class Variable {
 		return ivalue;
 	}
 
-	public char getCvalue() {
+	public int getCvalue() {
 		return cvalue;
 	}
 
