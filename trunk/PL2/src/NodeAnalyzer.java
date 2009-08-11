@@ -15,9 +15,11 @@ public class NodeAnalyzer {
 	private static int contadorSalto= 0;
 
 	private boolean error;
+	private int line;
 
-	public NodeAnalyzer(String cad) {
+	public NodeAnalyzer(String cad, int line) {
 		this.cad = cad;
+		this.line = line + 1;
 		hijos = new LinkedList<NodeAnalyzer>();
 		hermanos = new LinkedList<NodeAnalyzer>();
 		nodeAtributes = new HashMap<NodeKeys, String>();
@@ -1136,7 +1138,10 @@ public class NodeAnalyzer {
 			break;
 		case CONSTANT:
 			sb.append("\t\tli " + registro + ", ");
-			sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
+			if(this.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0)
+				sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+			else
+				sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
@@ -1165,9 +1170,14 @@ public class NodeAnalyzer {
 			//TODO FALTA todo lo del registro que hay en int y en float
 			break;
 		case CONSTANT:
-			sb.append("\t\tli $t0, ");
-			sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
-			sb.append("\n");
+			if(nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0){
+				sb.append("\t\tli $t0, ");
+				sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
+				sb.append("\n");
+			}
+			else
+				System.err.println("Error en linea "+line+" conversión de tipos ilegal");
+				Generator.ERROR = true;
 			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());

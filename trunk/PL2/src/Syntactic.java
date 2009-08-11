@@ -8,6 +8,8 @@ import java_cup.runtime.*;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import sun.security.action.GetLongAction;
+
 /** CUP v0.11a beta 20060608 generated parser.
   * @version Tue Jul 14 17:30:27 CEST 2009
   */
@@ -716,7 +718,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("AssignmentOp");
-	NodeAnalyzer nodo = new NodeAnalyzer("AssignmentOp");
+	NodeAnalyzer nodo = new NodeAnalyzer("AssignmentOp", parser.getLine());
 	nodo.setAtribute(NodeKeys.ASIGNMENT, "-=");
 	RESULT = nodo;
  
@@ -730,7 +732,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("AssignmentOp");
-	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp");
+	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp", parser.getLine());
 	nodo.setAtribute(NodeKeys.ASIGNMENT, "+=");
 	RESULT = nodo;
  
@@ -744,7 +746,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("AssignmentOp");
-	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp");
+	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp", parser.getLine());
 	nodo.setAtribute(NodeKeys.ASIGNMENT, "/=");
 	RESULT = nodo;
  
@@ -758,7 +760,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("AssignmentOp");
-	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp");
+	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp", parser.getLine());
 	nodo.setAtribute(NodeKeys.ASIGNMENT, "*=");
 	RESULT = nodo;
  
@@ -772,7 +774,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("AssignmentOp");
-	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp");
+	NodeAnalyzer nodo =new NodeAnalyzer("AssignmentOp", parser.getLine());
 	nodo.setAtribute(NodeKeys.ASIGNMENT, "=");
 	RESULT = nodo;
  
@@ -808,7 +810,7 @@ class CUP$Syntactic$actions {
 		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_Exp2_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Exp2_", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)e2);
 	RESULT = nodo;
  
@@ -840,7 +842,7 @@ class CUP$Syntactic$actions {
 		Integer i = (Integer)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Constant");
-	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	NodeAnalyzer nodo =new NodeAnalyzer("Constant", parser.getLine());
 	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "int");
 	nodo.setAtribute(NodeKeys.CONST_INT_VALUE, ""+i.intValue());
@@ -859,7 +861,7 @@ class CUP$Syntactic$actions {
 		Character c = (Character)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Constant");
-	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	NodeAnalyzer nodo =new NodeAnalyzer("Constant", parser.getLine());
 	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "char");
 	nodo.setAtribute(NodeKeys.CONST_CHAR_VALUE, ""+c.charValue());
@@ -878,7 +880,7 @@ class CUP$Syntactic$actions {
 		Float f = (Float)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Constant");
-	NodeAnalyzer nodo =new NodeAnalyzer("Constant");
+	NodeAnalyzer nodo =new NodeAnalyzer("Constant", parser.getLine());
 	nodo.setNodeType(NodeType.CONSTANT);
 	nodo.setAtribute(NodeKeys.TYPE, "float");
 	nodo.setAtribute(NodeKeys.CONST_FLOAT_VALUE, ""+f.floatValue());
@@ -912,7 +914,7 @@ class CUP$Syntactic$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp11");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp11");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp11", parser.getLine());
 	//nodo.setStates(parser.getState().getDecStates().name());
 	nodo.setNodeType(NodeType.VAR);
 	nodo.setAtribute(NodeKeys.VAR_ID, id.toString());
@@ -949,12 +951,12 @@ class CUP$Syntactic$actions {
 		
 	System.out.println("Exp10");
  	//Se define el uno
-	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	NodeAnalyzer uno =new NodeAnalyzer("Constant", parser.getLine());
 	uno.setNodeType(NodeType.CONSTANT);
 	uno.setAtribute(NodeKeys.TYPE, "int");
 	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
 	
- 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10", parser.getLine());
  	nodo.setNodeType(NodeType.OPERATION);
  	nodo.addLeftHijo(uno);
  	nodo.addLeftHijo((NodeAnalyzer)e10);
@@ -975,12 +977,12 @@ class CUP$Syntactic$actions {
 		
 	System.out.println("Exp10");
  	//Se define el uno
-	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	NodeAnalyzer uno =new NodeAnalyzer("Constant", parser.getLine());
 	uno.setNodeType(NodeType.CONSTANT);
 	uno.setAtribute(NodeKeys.TYPE, "int");
 	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
 	
- 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+ 	NodeAnalyzer nodo =new NodeAnalyzer("Exp10", parser.getLine());
  	nodo.setNodeType(NodeType.OPERATION);
  	nodo.addLeftHijo(uno);
 	nodo.addLeftHijo((NodeAnalyzer)e10);
@@ -1003,7 +1005,7 @@ class CUP$Syntactic$actions {
 		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp10", parser.getLine());
 	nodo.setNodeType(NodeType.FUNCTION_CALL);
 	String id = ((NodeAnalyzer)e10).getStrAtr(NodeKeys.VAR_ID);
 	if(id != null)
@@ -1028,7 +1030,7 @@ class CUP$Syntactic$actions {
 		Object e10 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-2)).value;
 		
 	System.out.println("Exp10");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp10");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp10", parser.getLine());
 	nodo.setNodeType(NodeType.FUNCTION_CALL);
 	String id = ((NodeAnalyzer)e10).getStrAtr(NodeKeys.VAR_ID);
 	if(id != null)
@@ -1084,7 +1086,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("Exp9");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp9", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("Exp9",22, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -1100,16 +1102,16 @@ class CUP$Syntactic$actions {
 		Object e9 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	 System.out.println("Exp9");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp9", parser.getLine());
 	
 	// Se define el uno
-	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	NodeAnalyzer uno =new NodeAnalyzer("Constant", parser.getLine());
 	uno.setNodeType(NodeType.CONSTANT);
 	uno.setAtribute(NodeKeys.TYPE, "int");
 	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
 	
 	// Se define el nodo de operacion suma
-	NodeAnalyzer suma = new NodeAnalyzer("Exp7");
+	NodeAnalyzer suma = new NodeAnalyzer("Exp7", parser.getLine());
 	suma.setNodeType(NodeType.OPERATION);
 	suma.addLeftHijo(uno);
 	suma.addLeftHijo((NodeAnalyzer)e9);
@@ -1140,16 +1142,16 @@ class CUP$Syntactic$actions {
 		Object e9 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp9");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp9");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp9", parser.getLine());
 	
 	// Se define el uno
-	NodeAnalyzer uno =new NodeAnalyzer("Constant");
+	NodeAnalyzer uno =new NodeAnalyzer("Constant", parser.getLine());
 	uno.setNodeType(NodeType.CONSTANT);
 	uno.setAtribute(NodeKeys.TYPE, "int");
 	uno.setAtribute(NodeKeys.CONST_INT_VALUE, "1");
 	
 	// Se define el nodo de operacion suma
-	NodeAnalyzer suma = new NodeAnalyzer("Exp7");
+	NodeAnalyzer suma = new NodeAnalyzer("Exp7", parser.getLine());
 	suma.setNodeType(NodeType.OPERATION);
 	suma.addLeftHijo(uno);
 	suma.addLeftHijo((NodeAnalyzer)e9);
@@ -1193,7 +1195,7 @@ class CUP$Syntactic$actions {
 		
 	System.out.println("Exp12");
  	//TODO conversor
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp12");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp12", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("Exp12",25, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-3)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -1227,7 +1229,7 @@ class CUP$Syntactic$actions {
 		Object e12 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp8");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp8");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp8", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e12);
 	nodo.addLeftHijo((NodeAnalyzer)e8);
@@ -1250,7 +1252,7 @@ class CUP$Syntactic$actions {
 		Object e12 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp8");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp8");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp8", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e12);
 	nodo.addLeftHijo((NodeAnalyzer)e8);
@@ -1288,7 +1290,7 @@ class CUP$Syntactic$actions {
 		Object e8 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp7");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp7");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp7", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e8);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
@@ -1311,7 +1313,7 @@ class CUP$Syntactic$actions {
 		Object e8 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp7");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp7");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp7", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e8);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
@@ -1349,7 +1351,7 @@ class CUP$Syntactic$actions {
 		Object e7 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp6");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp6", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
@@ -1372,7 +1374,7 @@ class CUP$Syntactic$actions {
 		Object e7 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp6");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp6", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
@@ -1395,7 +1397,7 @@ class CUP$Syntactic$actions {
 		Object e7 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp6");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp6", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
@@ -1418,7 +1420,7 @@ class CUP$Syntactic$actions {
 		Object e7 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp6");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp6");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp6", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e7);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
@@ -1456,7 +1458,7 @@ class CUP$Syntactic$actions {
 		Object e6 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp5");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp5");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp5", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
 	nodo.addLeftHijo((NodeAnalyzer)e5);
@@ -1479,7 +1481,7 @@ class CUP$Syntactic$actions {
 		Object e6 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp5");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp5");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp5", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e6);
 	nodo.addLeftHijo((NodeAnalyzer)e5);
@@ -1517,7 +1519,7 @@ class CUP$Syntactic$actions {
 		Object e5 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp4");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp4");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp4", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e5);
 	nodo.addLeftHijo((NodeAnalyzer)e4);
@@ -1555,7 +1557,7 @@ class CUP$Syntactic$actions {
 		Object e4 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp3");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp3");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp3", parser.getLine());
 	nodo.setNodeType(NodeType.OPERATION);
 	nodo.addLeftHijo((NodeAnalyzer)e4);
 	nodo.addLeftHijo((NodeAnalyzer)e3);
@@ -1596,7 +1598,7 @@ class CUP$Syntactic$actions {
 		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Exp2");
- 	NodeAnalyzer nodo =new NodeAnalyzer("Exp2");
+ 	NodeAnalyzer nodo =new NodeAnalyzer("Exp2", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)e2);
 	NodeAnalyzer reciver = (NodeAnalyzer)e9;
 	nodo.setNodeType(NodeType.ASIGNATION);
@@ -1630,7 +1632,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("Exp");
-	NodeAnalyzer nodo =new NodeAnalyzer("Exp");
+	NodeAnalyzer nodo =new NodeAnalyzer("Exp", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("Exp",14, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-2)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -1662,7 +1664,7 @@ class CUP$Syntactic$actions {
 		
 	parser.addError("Error sintactico.", -1);
 	System.out.println("error _Stm_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_", parser.getLine());
 	nodo.setError(true);
 	((NodeAnalyzer)ls).addLeftHijo(nodo);
 	RESULT = ls;
@@ -1699,7 +1701,7 @@ class CUP$Syntactic$actions {
 		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_Stm_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Stm_", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)s);
 	RESULT = nodo;
  
@@ -1713,7 +1715,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("GetsStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("GetsStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("GetsStm", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("GetsStm",29, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-3)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -1729,7 +1731,7 @@ class CUP$Syntactic$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("PrintfStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm", parser.getLine());
 	nodo.setNodeType(NodeType.PRINTFID);
 	nodo.setAtribute(NodeKeys.VAR_ID, (String)id);
 	RESULT = nodo;
@@ -1747,7 +1749,7 @@ class CUP$Syntactic$actions {
 		String s = (String)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("PrintfStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("PrintfStm", parser.getLine());
 	nodo.setNodeType(NodeType.PRINTFSTRING);
 	nodo.setAtribute(NodeKeys.STRING, s);
 	RESULT = nodo;
@@ -1765,7 +1767,7 @@ class CUP$Syntactic$actions {
 		Object e = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("JumpStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("JumpStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("JumpStm", parser.getLine());
 	nodo.setNodeType(NodeType.RETURN);
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	RESULT = nodo;
@@ -1786,7 +1788,7 @@ class CUP$Syntactic$actions {
 		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("IterStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("IterStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("IterStm", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
 	nodo.setNodeType(NodeType.WHILE);
@@ -1811,7 +1813,7 @@ class CUP$Syntactic$actions {
 		Object se = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("SelectionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm", parser.getLine());
 	nodo.setNodeType(NodeType.IFELSE);
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
@@ -1834,7 +1836,7 @@ class CUP$Syntactic$actions {
 		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("SelectionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("SelectionStm", parser.getLine());
 	nodo.setNodeType(NodeType.IF);
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	nodo.addLeftHijo((NodeAnalyzer)s);
@@ -1883,7 +1885,7 @@ class CUP$Syntactic$actions {
 		Object e = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("ExpressionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)e);
 	RESULT = nodo;
  
@@ -1897,7 +1899,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("ExpressionStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("ExpressionStm", parser.getLine());
 	parser.addWarning("Expresion vacia.");
 	RESULT = nodo;
  
@@ -1917,7 +1919,7 @@ class CUP$Syntactic$actions {
 		Object ls = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("CompoundStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm", parser.getLine());
 	nodo.copyHijos(((NodeAnalyzer)ld).getHijos());
 	nodo.copyHijos(((NodeAnalyzer)ls).getHijos());
 	RESULT = nodo;
@@ -1935,7 +1937,7 @@ class CUP$Syntactic$actions {
 		Object ld = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("CompoundStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm", parser.getLine());
 	nodo.copyHijos(((NodeAnalyzer)ld).getHijos());
 	RESULT = nodo;
  
@@ -1952,7 +1954,7 @@ class CUP$Syntactic$actions {
 		Object ls = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-1)).value;
 		
 	System.out.println("CompoundStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm", parser.getLine());
 	nodo.copyHijos(((NodeAnalyzer)ls).getHijos());
 	RESULT = nodo;
  
@@ -1966,7 +1968,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("CompoundStm");
-	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm");
+	NodeAnalyzer nodo =new NodeAnalyzer("CompoundStm", parser.getLine());
 	parser.addWarning("Cuerpo de sentencias vacio.");
 	RESULT = nodo;
  
@@ -2055,7 +2057,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("_Initializer_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Initializer_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Initializer_", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("_Initializer_",5, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-2)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2068,7 +2070,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("_Initializer_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Initializer_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Initializer_", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("_Initializer_",5, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2081,7 +2083,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("Initializer");
-	NodeAnalyzer nodo =new NodeAnalyzer("Initializer");
+	NodeAnalyzer nodo =new NodeAnalyzer("Initializer", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("Initializer",31, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-3)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2094,7 +2096,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("Initializer");
-	NodeAnalyzer nodo =new NodeAnalyzer("Initializer");
+	NodeAnalyzer nodo =new NodeAnalyzer("Initializer", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("Initializer",31, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-2)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2125,7 +2127,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("_Ident_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Ident_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Ident_", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("_Ident_",3, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.elementAt(CUP$Syntactic$top-2)), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2138,7 +2140,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("_Ident_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Ident_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Ident_", parser.getLine());
 	RESULT = nodo;
  
               CUP$Syntactic$result = parser.getSymbolFactory().newSymbol("_Ident_",3, ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntactic$stack.peek()), RESULT);
@@ -2157,7 +2159,7 @@ class CUP$Syntactic$actions {
 		Object dd = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("ParameterDeclaration");
-	NodeAnalyzer nodo =new NodeAnalyzer("ParameterDeclaration");
+	NodeAnalyzer nodo =new NodeAnalyzer("ParameterDeclaration", parser.getLine());
 	NodeAnalyzer nadd = (NodeAnalyzer)dd;
 	nodo.setAtribute(NodeKeys.TYPE, ((NodeAnalyzer)ts).getStrAtr(NodeKeys.TYPE));
  	switch (nadd.getNodeType()) {
@@ -2213,7 +2215,7 @@ class CUP$Syntactic$actions {
 		Object pd = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_ParameterDeclaration_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_ParameterDeclaration_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_ParameterDeclaration_", parser.getLine());
 	nodo.addRightHijo((NodeAnalyzer)pd);
 	((NodeAnalyzer)pd).setAtribute(NodeKeys.PARAM_POS, ""+parser.auxCountParamDec++);
 	RESULT = nodo;
@@ -2350,7 +2352,7 @@ class CUP$Syntactic$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("DirectDeclarator");
-	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator");
+	NodeAnalyzer nodo =new NodeAnalyzer("DirectDeclarator", parser.getLine());
 	//nodo.setStates(parser.getState().getDecStates().name());
 	nodo.setNodeType(NodeType.VAR);
 	nodo.setAtribute(NodeKeys.VAR_ID, id.toString());
@@ -2369,7 +2371,7 @@ class CUP$Syntactic$actions {
 		Float f = (Float)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("TypeSpecifier");
-	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier", parser.getLine());
 	nodo.setAtribute(NodeKeys.TYPE, "float");
 	nodo.setAtribute(NodeKeys.CONST_FLOAT_VALUE, ""+f.floatValue());
 	RESULT = nodo;
@@ -2387,7 +2389,7 @@ class CUP$Syntactic$actions {
 		Integer i = (Integer)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("TypeSpecifier");
-	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier", parser.getLine());
 	nodo.setAtribute(NodeKeys.TYPE, "int");
 	nodo.setAtribute(NodeKeys.CONST_INT_VALUE, ""+i.intValue());
 	RESULT = nodo;
@@ -2405,7 +2407,7 @@ class CUP$Syntactic$actions {
 		Character c = (Character)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("TypeSpecifier");
-	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier", parser.getLine());
 	nodo.setAtribute(NodeKeys.TYPE, "char");
 	nodo.setAtribute(NodeKeys.CONST_CHAR_VALUE, ""+c.charValue());
 	RESULT = nodo;
@@ -2420,7 +2422,7 @@ class CUP$Syntactic$actions {
               Object RESULT =null;
 		
 	System.out.println("TypeSpecifier");
-	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier");
+	NodeAnalyzer nodo =new NodeAnalyzer("TypeSpecifier", parser.getLine());
 	nodo.setAtribute(NodeKeys.TYPE, "void");
 	RESULT = nodo;
  
@@ -2509,7 +2511,7 @@ class CUP$Syntactic$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_InitDeclarator_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_InitDeclarator_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_InitDeclarator_", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)id);
 	RESULT = nodo;
  
@@ -2545,7 +2547,7 @@ class CUP$Syntactic$actions {
 		Object d = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_Dec_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_Dec_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_Dec_", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)d);
 	RESULT = nodo;
  
@@ -2573,7 +2575,7 @@ class CUP$Syntactic$actions {
  	LinkedList<NodeAnalyzer> hijos = ((NodeAnalyzer)lid).getHijos();
  	
  	for (NodeAnalyzer nah : hijos) {
-		aux =new NodeAnalyzer("Dec");
+		aux =new NodeAnalyzer("Dec", parser.getLine());
 		aux.setAtribute(NodeKeys.TYPE, type);
 		aux.setAtribute(NodeKeys.VAR_ID, nah.getStrAtr(NodeKeys.VAR_ID));
 		//TODO falta comprobar el tipo de la asignacion
@@ -2635,7 +2637,7 @@ class CUP$Syntactic$actions {
 		Object cs = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("FunctionDef");
-	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef");
+	NodeAnalyzer nodo =new NodeAnalyzer("FunctionDef", parser.getLine());
 	nodo.addLeftHijo((NodeAnalyzer)cs);
 	//nodo.addLeftHijo((NodeAnalyzer)dd);
 	nodo.copyLeftHijos(((NodeAnalyzer)dd).getHijos());
@@ -2706,7 +2708,7 @@ class CUP$Syntactic$actions {
 		
 	parser.addError("Error sintactico.", -1);
 	System.out.println("error _ExternalDeclaration_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_", parser.getLine());
 	nodo.setError(true);
 	((NodeAnalyzer)led).addLeftHijo(nodo);
 	RESULT = led;
@@ -2743,7 +2745,7 @@ class CUP$Syntactic$actions {
 		Object ed = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("_ExternalDeclaration_");
-	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_");
+	NodeAnalyzer nodo =new NodeAnalyzer("_ExternalDeclaration_", parser.getLine());
 	nodo.copyLeftHijos(((NodeAnalyzer)ed).extractHermanos());
 	nodo.addLeftHijo((NodeAnalyzer)ed);
 	RESULT = nodo; 
@@ -2760,7 +2762,7 @@ class CUP$Syntactic$actions {
 		Object led = (Object)((java_cup.runtime.Symbol) CUP$Syntactic$stack.peek()).value;
 		
 	System.out.println("Program");
-	NodeAnalyzer nodo =new NodeAnalyzer("Program");
+	NodeAnalyzer nodo =new NodeAnalyzer("Program", parser.getLine());
 	nodo.copyHijos(((NodeAnalyzer)led).getHijos());
 	parser.setMain(nodo);
 	RESULT = nodo; 
