@@ -1,27 +1,14 @@
 #include <stdio.h>
 
-int c;
-int f;
-int g;
-int h;
-int i;
-
-
-
-
-void main2(){
-
- int c = 4;
- c = (int) 3.5f;
- c = (int) (3.5f + 4);
-
-}
-
-void main2(){
-}
-
-void main2(){
-}
+char f;
+char c[5];
 
 void main(){
+f = 'b';
+c[0] = 'a';
+c[1] = 'b';
+f = c[0];
+printf("%c",f);
+f = c[1];
+printf("%c",f);
 }
