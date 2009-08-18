@@ -15,14 +15,28 @@ public class NodeAnalyzer {
 	private static int contadorSalto= 0;
 
 	private boolean error;
+	private String warning;
 	private int line;
+	
+	public NodeAnalyzer(int line, String cad ) {
+		this(cad,line);
+	}
 
 	public NodeAnalyzer(String cad, int line) {
 		this.cad = cad;
-		this.line = line + 1;
+		this.line = line;
+		this.warning = null;
 		hijos = new LinkedList<NodeAnalyzer>();
 		hermanos = new LinkedList<NodeAnalyzer>();
 		nodeAtributes = new HashMap<NodeKeys, String>();
+	}
+
+	public String getWarning() {
+		return warning;
+	}
+
+	public void setWarning(String warning) {
+		this.warning = warning;
 	}
 
 	public void addLeftHermano(NodeAnalyzer hermano) {
@@ -31,6 +45,10 @@ public class NodeAnalyzer {
 
 	public void addLeftHijo(NodeAnalyzer hijo) {
 		hijos.addFirst(hijo);
+	}
+
+	public void setLine(int line) {
+		this.line = line;
 	}
 
 	public void addRightHermano(NodeAnalyzer hermano) {
@@ -89,7 +107,7 @@ public class NodeAnalyzer {
 
 				if (var != null) {
 					if (!va.addVariable(var)) {
-						syntactic.addError("Variable " + var + " duplicada");
+						syntactic.addError(line, "Variable " + var + " duplicada");
 					} else {
 						if (!va.isGlobal()) {
 							setAtribute(NodeKeys.VAR_ID, var.getName() + var.getScope());
@@ -275,6 +293,8 @@ public class NodeAnalyzer {
 		sb.append('[');
 		sb.append(getStrAttr());
 		sb.append(']');
+		sb.append(" Line:");
+		sb.append(line);
 		if (error)
 			sb.append("error");
 		System.out.println(sb);
@@ -284,6 +304,10 @@ public class NodeAnalyzer {
 		for (NodeAnalyzer hermano : hermanos) {
 			hermano.print(level);
 		}
+	}
+
+	public int getLine() {
+		return line;
 	}
 
 	@Override

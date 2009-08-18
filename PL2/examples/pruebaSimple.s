@@ -6,6 +6,7 @@
 ###################################
 
 		.data
+charPrintHelper:		.asciiz "-"
 fp2_var:		.float 6.3
 fp3_var:		.float 4.3
 fp1_var:		.float 3.5

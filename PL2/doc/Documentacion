@@ -18,3 +18,20 @@ Controles semanticos:
 - Se comprueba que el formato de declaracion de una funcion sea la correcta.
 - Se comprueba que el formato de llamada de una funcion sea la correcta.
 
+
+
+||||TypeSpecifier
+||||DirectDeclarator
+||||InitDeclarator
+||||_InitDeclarator_
+|||\Dec
+||\ExternalDeclaration
+||
+||||TypeSpecifier
+||||DirectDeclarator
+||||DirectDeclarator
+||||CompoundStm
+|||\FunctionDef
+||\ExternalDeclaration
+||
+\Program
