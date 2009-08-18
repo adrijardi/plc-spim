@@ -1175,9 +1175,10 @@ public class NodeAnalyzer {
 				sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
 				sb.append("\n");
 			}
-			else
+			else{
 				System.err.println("Error en linea "+line+" conversión de tipos ilegal");
 				Generator.ERROR = true;
+			}
 			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
