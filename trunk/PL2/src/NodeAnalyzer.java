@@ -1204,6 +1204,18 @@ public class NodeAnalyzer {
 				Generator.ERROR = true;
 			}
 			break;
+		/*case ARRAYVAR:
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				
+				break;
+			default:
+				sb.append(getDesp(this));
+				sb.append("\t\tlw $t0, 0($t1)\n");
+				sb.append("\t\tmove " + "lalalala" + ", $t0\n");
+				break;
+			}
+			break;*/
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
 			String tipo = getStrAtr(NodeKeys.TYPE);
