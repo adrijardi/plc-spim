@@ -15,7 +15,7 @@ public class Generator {
 	private final String text = "\n\t\t.text";
 	private final String globl = "\n\t\t.globl __start";
 	private final String data = "\n\t\t.data\n";
-	private final String charPrintHelper = "charPrintHelper:\t\t.asciiz \"-\"";
+	private final String charPrintHelper = "charPrintHelper:\t\t.word 0\ncharPrintHelperz:\t\t.word 0";
 	private NodeAnalyzer main;
 	
 	private final String printfint="printf_int:\n\t\tli $v0, 1\n\t\tsyscall\n\t\tla $a0, ln_str\n\t\tli $v0, 4\n\t\tsyscall\n\t\tjr $ra\t# retorna al invocador\n\n";
