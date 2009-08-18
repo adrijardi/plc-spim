@@ -252,10 +252,24 @@ public class VarTable {
 					break;
 				case CHAR:
 					sb.append(".word ");
+					if(variable.getSize() == null){
 					if (variable.isValue())
 						sb.append(variable.getCvalue());
 					else
 						sb.append(0);
+					}else{
+						int size[] = variable.getSize();
+						int count = 1;
+						for (int i = 0; i < size.length; i++) {
+							count *= size[i];
+						}
+						for (int i = 0; i < count-1; i++) {
+							sb.append(0);
+							sb.append(", ");
+						}
+						
+						sb.append(0);
+					}
 					break;
 				case FLOAT:
 					sb.append(".float ");
