@@ -33,19 +33,6 @@ ln_str:		.asciiz "\n"
 		sw $t0, s0_1_var
 
 
-	# ARRAYVAR DESP#
-		la $t3 a0_1_var
-		li $t5, 0
-		li $t4, 0
-		add $t5, $t4, $t5
-		add $t5, $t5, $t5
-		add $t5, $t5, $t5
-		add $t1, $t5, $t3
-		lw $t0, 0($t1)
-		move $t0, $t0
-		sw $t0, s0_1_var
-
-
 		lw $t0, s0_1_var
 		sw $t0, charPrintHelper
 		la $a0, charPrintHelper

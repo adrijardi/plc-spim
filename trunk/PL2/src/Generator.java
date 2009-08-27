@@ -13,7 +13,7 @@ public class Generator {
 	//Variables para generar codigo
 	private final String cabecera = "#\n# UC3M - PROCESADORES DEL LENGUAJE\n# Codigo generado por los alumnos:\n# Adrian Lopez Perez\n# Daniel Conde Garcia\n###################################\n";
 	private final String text = "\n\t\t.text";
-	private final String globl = "\n\t\t.globl __start";
+	private final String globl = "\n\t\t.globl main";
 	private final String data = "\n\t\t.data\n";
 	private final String charPrintHelper = "charPrintHelper:\t\t.word 0\ncharPrintHelperz:\t\t.word 0";
 	private NodeAnalyzer main;
