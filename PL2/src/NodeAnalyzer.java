@@ -365,7 +365,7 @@ public class NodeAnalyzer {
 			case FUNCTION_DEC:
 				String fname = getStrAtr(NodeKeys.FUNC_ID);
 				if (fname.equals("main")) {
-					sb.append(" __start:\n");
+					sb.append(" main:\n");
 					sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
 					sb.append("\t\tsw $ra,  ($sp) #Salvado de $ra\n");
 					sb.append(getChildernGlobCode());
@@ -710,7 +710,7 @@ public class NodeAnalyzer {
 				sb.append("\t\tsw $t0, ");
 				break;
 			case CHAR:
-				sb.append(value.getCharValueCode());
+				sb.append(value.getCharValueCode("$t0"));
 				sb.append("\t\tsw $t0, ");
 				break;
 			}
@@ -1059,7 +1059,7 @@ public class NodeAnalyzer {
 		case INT:
 			return getIntValueCode(registro);
 		case CHAR:
-			return getCharValueCode();
+			return getCharValueCode(registro);
 
 		default:
 			return null;
@@ -1186,7 +1186,7 @@ public class NodeAnalyzer {
 		return sb.toString();
 	}
 
-	private String getCharValueCode() {
+	private String getCharValueCode(String registro) {
 		StringBuilder sb = new StringBuilder();
 		switch (nodeType) {
 		case OPERATION:
@@ -1204,7 +1204,7 @@ public class NodeAnalyzer {
 				Generator.ERROR = true;
 			}
 			break;
-		/*case ARRAYVAR:
+		case ARRAYVAR:
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
 				
@@ -1212,10 +1212,10 @@ public class NodeAnalyzer {
 			default:
 				sb.append(getDesp(this));
 				sb.append("\t\tlw $t0, 0($t1)\n");
-				sb.append("\t\tmove " + "lalalala" + ", $t0\n");
+				sb.append("\t\tmove " + registro + ", $t0\n");
 				break;
 			}
-			break;*/
+			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
 			String tipo = getStrAtr(NodeKeys.TYPE);

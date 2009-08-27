@@ -1,14 +1,10 @@
 #include <stdio.h>
 
-char f;
-char c[5];
-
 void main(){
-f = 'b';
-c[0] = 'a';
-c[1] = 'b';
-f = c[0];
-printf("%c",f);
-f = c[1];
-printf("%c",f);
+char a[5];
+char s;
+a[0] = 'a';
+s = 'b';
+s = a[0];
+printf("%c",s);
 }
