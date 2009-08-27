@@ -51,13 +51,16 @@ public class Generator {
 			file.write(printfstr);
 			file.flush();
 			file.close();
-			if(ERROR)
+			if(ERROR){
+				System.out.println("\nFICHERO NO GENERADO");
 				f.delete();
+			}else
+				System.out.println("\nFICHERO GENERADO");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("\nFICHERO GENERADO");
+		
 	}
 
 	private String getDataCode() {

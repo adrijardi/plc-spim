@@ -1,10 +1,11 @@
 #include <stdio.h>
 
 void main(){
-char a[5];
-char s;
-a[0] = 'a';
-s = 'b';
-s = a[0];
-printf("%c",s);
+int a;
+float b = 1.5f;
+char c = 'c';
+a = 10;
+printf("%d",a);
+c = 3.5f;
+printf("%d",a);
 }
