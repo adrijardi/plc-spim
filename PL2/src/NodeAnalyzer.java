@@ -347,7 +347,6 @@ public class NodeAnalyzer {
 	 */
 	public String getGloblCode() {
 		StringBuilder sb = new StringBuilder();
-		String aux;
 		if (nodeType != null) {
 			switch (nodeType) {
 			case WHILE:
@@ -1102,6 +1101,7 @@ public class NodeAnalyzer {
 
 	private String getIntValueCode(String registro) {
 		StringBuilder sb = new StringBuilder();
+		String tipo;
 		switch (nodeType) {
 		case ASIGNATION:
 			NodeAnalyzer reciver = hijos.get(0);
@@ -1137,10 +1137,12 @@ public class NodeAnalyzer {
 		case VAR:
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
-				sb.append("\t\tl.s $f0, ");
+				Generator.ERROR = true;
+				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				/*sb.append("\t\tl.s $f0, ");
 				sb.append(getStrAtr(NodeKeys.VAR_ID) + "_var");
 				sb.append("\n");
-				sb.append(conversionFloatInt("$f0", registro));
+				sb.append(conversionFloatInt("$f0", registro));*/
 				break;
 			default:
 				sb.append("\t\tlw " + registro + ", ");
@@ -1162,15 +1164,19 @@ public class NodeAnalyzer {
 			break;
 		case CONSTANT:
 			sb.append("\t\tli " + registro + ", ");
-			if(this.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0)
+			/*if(this.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0)
 				sb.append((int)getCharAtr(NodeKeys.CONST_CHAR_VALUE));
-			else
+			else */if(this.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.INT.name()) == 0)
 				sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
+			else{
+				Generator.ERROR = true;
+				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+			}
 			sb.append("\n");
 			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
-			String tipo = getStrAtr(NodeKeys.TYPE);
+			tipo = getStrAtr(NodeKeys.TYPE);
 			if ("float".compareTo(tipo) == 0) {
 				sb.append(conversionFloatInt("$f0", registro));
 			} else if ("void".compareTo(tipo) == 0) {
@@ -1179,6 +1185,23 @@ public class NodeAnalyzer {
 				sb.append("\t\tmove " + registro + ", $v0\n");
 			}
 			break;
+		case CONVERTER:
+			tipo = getStrAtr(NodeKeys.TYPE);
+			NodeAnalyzer valueC = hijos.get(0);
+			if(tipo.compareToIgnoreCase(VarTipo.CHAR.name()) == 0 || tipo.compareToIgnoreCase(VarTipo.INT.name()) == 0){
+				if(valueC.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.INT.name()) == 0
+						|| valueC.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0){
+					sb.append(valueC.getValueCode(registro));
+				}else if(valueC.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.FLOAT.name()) == 0){
+					sb.append(valueC.getValueCode("$f0"));
+					sb.append("\t\tcvt.w.s $f0, $f0\n\t\tmfc1 $t0,$f0\n");
+				}
+					
+			}else{
+				Generator.ERROR = true;
+				System.out.println("Error en línea "+line+", el tipo destino no es el adecuado");
+			}
+			sb.append(getGloblCode());
 		default:
 			break;
 		}
@@ -1188,6 +1211,7 @@ public class NodeAnalyzer {
 
 	private String getCharValueCode(String registro) {
 		StringBuilder sb = new StringBuilder();
+		String tipo;
 		switch (nodeType) {
 		case OPERATION:
 			sb.append(getOperationCode());
@@ -1200,8 +1224,25 @@ public class NodeAnalyzer {
 				sb.append("\n");
 			}
 			else{
-				System.err.println("Error en linea "+line+" conversión de tipos ilegal");
+				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
 				Generator.ERROR = true;
+			}
+			break;
+		case VAR:
+			switch (getVarTipoDelNodo()) {
+			case FLOAT:
+				Generator.ERROR = true;
+				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				break;
+			case INT:
+				Generator.ERROR = true;
+				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				break;
+			default:
+				sb.append("\t\tlw " + registro + ", ");
+				sb.append(getStrAtr(NodeKeys.VAR_ID) + "_var");
+				sb.append("\n");
+				break;
 			}
 			break;
 		case ARRAYVAR:
@@ -1218,7 +1259,7 @@ public class NodeAnalyzer {
 			break;
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
-			String tipo = getStrAtr(NodeKeys.TYPE);
+			tipo = getStrAtr(NodeKeys.TYPE);
 			if ("float".compareTo(tipo) == 0) {
 				Generator.ERROR = true;
 			} else if ("void".compareTo(tipo) == 0) {
@@ -1227,6 +1268,22 @@ public class NodeAnalyzer {
 				sb.append("\t\tmove $t0, $v0\n");
 			}
 			break;
+		case CONVERTER:
+			tipo = getStrAtr(NodeKeys.TYPE);
+			if(tipo.compareToIgnoreCase(VarTipo.CHAR.name()) == 0){
+				NodeAnalyzer value = hijos.get(0);
+				if(value.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.INT.name()) == 0
+						|| value.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0){
+					sb.append(value.getValueCode(registro));
+				}else if(value.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.FLOAT.name()) == 0){
+					sb.append(value.getValueCode("$f0"));
+					sb.append("\t\tcvt.w.s $f0, $f0\n\t\tmfc1 $t0,$f0\n");
+				}
+			}else{
+				Generator.ERROR = true;
+				System.out.println("Error en línea "+line+", el tipo destino no es el adecuado");
+			}
+			sb.append(getGloblCode());
 		default:
 			break;
 		}
