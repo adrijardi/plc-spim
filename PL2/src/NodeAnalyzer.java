@@ -1141,7 +1141,7 @@ public class NodeAnalyzer {
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				break;
 			default:
 				sb.append(getDesp(this));
@@ -1154,7 +1154,7 @@ public class NodeAnalyzer {
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				break;
 			default:
 				sb.append("\t\tlw " + registro + ", ");
@@ -1182,7 +1182,7 @@ public class NodeAnalyzer {
 				sb.append(getIntAtr(NodeKeys.CONST_INT_VALUE));
 			else{
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 			}
 			sb.append("\n");
 			break;
@@ -1291,7 +1291,7 @@ public class NodeAnalyzer {
 				sb.append("\n");
 			}
 			else{
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				Generator.ERROR = true;
 			}
 			break;
@@ -1299,11 +1299,11 @@ public class NodeAnalyzer {
 			switch (getVarTipoDelNodo()) {
 			case FLOAT:
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				break;
 			case INT:
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				break;
 			default:
 				sb.append("\t\tlw " + registro + ", ");
@@ -1452,7 +1452,7 @@ public class NodeAnalyzer {
 				break;
 			default:
 				Generator.ERROR = true;
-				System.err.println("Error en linea "+line+", conversión de tipos ilegal");
+				System.out.println("Error en linea "+line+", conversión de tipos ilegal");
 				break;
 			}
 			break;
@@ -1490,7 +1490,7 @@ public class NodeAnalyzer {
 			}
 			else{
 				Generator.ERROR = true;
-				System.err.println("Tipo especificado no válido en línea "+line+" .");
+				System.out.println("Tipo especificado no válido en línea "+line+" .");
 			}
 			break;
 		case FUNCTION_CALL:
