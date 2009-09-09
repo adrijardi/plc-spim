@@ -1,11 +1,10 @@
 #include <stdio.h>
 
 void main(){
-int a;
-float b = 1.5f;
-char c = 'c';
-a = 10;
-printf("%d",a);
-c = 3.5f;
-printf("%d",a);
+	float b[5];
+	float a;
+	
+	b[3] = (float) (50 * 3);
+	a= b[3];
+	printf("%f",a);
 }
