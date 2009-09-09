@@ -6,7 +6,8 @@
 ###################################
 
 		.data
-charPrintHelper:		.asciiz "-"
+charPrintHelper:		.word 0
+charPrintHelperz:		.word 0
 fp2_var:		.float 6.3
 fp3_var:		.float 4.3
 fp1_var:		.float 3.5
@@ -103,7 +104,7 @@ ln_str:		.asciiz "\n"
 
 		.text
 
-		.globl __start
+		.globl main
 f1_ini:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
@@ -2473,7 +2474,7 @@ pruebaOperaciones2_ret:
 		add $sp,$sp,4 #liberacion de la pila
 		jr $ra	# retorna al invocador
 
- __start:
+ main:
 		sub $sp,$sp,4 #Reserva de la pila
 		sw $ra,  ($sp) #Salvado de $ra
 		la $a0, str61_str
