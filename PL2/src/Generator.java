@@ -51,11 +51,13 @@ public class Generator {
 			file.write(printfstr);
 			file.flush();
 			file.close();
+			VarTable.getInstance().printTable();
+			FunTable.getInstance().printTable();
 			if(ERROR){
 				System.out.println("\nFICHERO NO GENERADO");
 				f.delete();
 			}else
-				System.out.println("\nFICHERO GENERADO");
+				System.out.println("\nFICHERO GENERADO: "+f.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
