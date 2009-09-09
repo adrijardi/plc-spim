@@ -976,9 +976,12 @@ public class NodeAnalyzer {
 			
 			sb.append("\t\tsub $sp,$sp,4 #Reserva de la pila\n");
 			sb.append("\t\tsw $t1,  ($sp) #Salvado de $ra\n");
-			if(p1.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.INT.name()) == 0){
+			VarTipo tipo = p1.getVarTipoDelNodo();
+			switch(tipo){
+			case INT:
 				sb.append(p1.getIntValueCode("$t0"));
-			}else if(p1.nodeAtributes.get(NodeKeys.TYPE).compareToIgnoreCase(VarTipo.CHAR.name()) == 0){
+				break;
+			case CHAR:
 				sb.append(p1.getCharValueCode("$t0"));
 			}
 			sb.append("\t\tmove $t1, $t0\n");
@@ -1188,7 +1191,9 @@ public class NodeAnalyzer {
 			tipo = getStrAtr(NodeKeys.TYPE);
 			if ("float".compareTo(tipo) == 0) {
 				sb.append(conversionFloatInt("$f0", registro));
+				System.out.println("Warning en línea "+line+" perdida de precisión en la conversión de tipos");
 			} else if ("void".compareTo(tipo) == 0) {
+				System.out.println("Error en línea "+line+" no se admiten tipos void.");
 				Generator.ERROR = true;
 			} else {
 				sb.append("\t\tmove " + registro + ", $v0\n");
@@ -1326,9 +1331,11 @@ public class NodeAnalyzer {
 			sb.append(getGloblCode());
 			tipo = getStrAtr(NodeKeys.TYPE);
 			if ("float".compareTo(tipo) == 0) {
-				Generator.ERROR = true;
+				sb.append(conversionFloatInt("$f0", registro));
+				System.out.println("Warning en línea "+line+" perdida de precisión en la conversión de tipos");
 			} else if ("void".compareTo(tipo) == 0) {
 				Generator.ERROR = true;
+				System.out.println("Error en línea "+line+" no se admiten tipos void.");
 			} else {
 				sb.append("\t\tmove $t0, $v0\n");
 			}
@@ -1489,10 +1496,11 @@ public class NodeAnalyzer {
 		case FUNCTION_CALL:
 			sb.append(getGloblCode());
 			String tipo = getStrAtr(NodeKeys.TYPE);
-			if ("int".compareTo(tipo) == 0) {
+			if ("int".compareToIgnoreCase(tipo) == 0 || "char".compareToIgnoreCase(tipo) == 0) {
 				sb.append(conversionIntFloat("$v0", registro));
 			} else if ("void".compareTo(tipo) == 0) {
 				Generator.ERROR = true;
+				System.out.println("Error en línea "+line+" no se admiten tipos void.");
 			} else {
 				sb.append("\t\tmov.s " + registro + ", $f0\n");
 			}
